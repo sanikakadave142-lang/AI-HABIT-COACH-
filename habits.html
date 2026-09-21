@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Habit Coach - My Activities</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <h2>🤖 AI Habit Coach</h2>
+
+        <nav>
+
+            <a href="dashboard.html">
+                🏠 Dashboard
+            </a>
+
+            <a href="habits.html" class="active">
+                📋 My Activities
+            </a>
+
+            <a href="progress.html">
+                📊 Progress
+            </a>
+
+            <a href="ai-coach.html">
+                🤖 AI Coach
+            </a>
+
+        </nav>
+
+        <button
+            class="logout-btn"
+            onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- Header -->
+
+        <header class="top-header">
+
+            <div>
+
+                <h1>
+                    My Activities
+                </h1>
+
+                <p>
+                    Track your daily good activities.
+                </p>
+
+            </div>
+
+            <div class="profile">
+                👤
+            </div>
+
+        </header>
+
+
+        <!-- ================= ADD ACTIVITY ================= -->
+
+        <section class="add-habit-box">
+
+            <h2>
+                ➕ Add New Activity
+            </h2>
+
+
+            <form id="habitForm">
+
+
+                <!-- Activity Name -->
+
+                <div class="form-group">
+
+                    <label>
+                        Activity Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="habitName"
+                        placeholder="Example: Exercise"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Goal -->
+
+                <div class="form-group">
+
+                    <label>
+                        Goal
+                    </label>
+
+                    <input
+                        type="text"
+                        id="habitGoal"
+                        placeholder="Example: 30 minutes"
+                        required
+                    >
+
+                </div>
+<!-- Category -->
+
+                <div class="form-group">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select
+                        id="habitCategory"
+                        required>
+
+                        <option value="Health">
+                            🏃 Health
+                        </option>
+
+                        <option value="Study">
+                            📚 Study
+                        </option>
+
+                        <option value="Fitness">
+                            💪 Fitness
+                        </option>
+
+                        <option value="Personal">
+                            🌱 Personal
+                        </option>
+
+                        <option value="Lifestyle">
+                            🏠 Lifestyle
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Submit Button -->
+
+                <button
+                    type="submit"
+                    class="add-habit-submit">
+
+                    + Add Activity
+
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- ================= ACTIVITY LIST ================= -->
+
+        <section class="my-habits">
+
+            <div class="section-title">
+
+                <h2>
+                    My Daily Activities
+                </h2>
+
+                <span id="habitCount">
+                    0 Activities
+                </span>
+
+            </div>
+
+
+            <!-- JavaScript will display activities here -->
+
+            <div
+                id="habitList">
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- JavaScript -->
+
+<script src="script.js"></script>
+
+</body>
+
+</html>

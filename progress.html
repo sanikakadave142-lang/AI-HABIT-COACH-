@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Habit Coach - Progress</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <h2>🤖 AI Habit Coach</h2>
+
+        <nav>
+
+            <a href="dashboard.html">
+                🏠 Dashboard
+            </a>
+
+            <a href="habits.html">
+                📋 My Activities
+            </a>
+
+            <a href="progress.html" class="active">
+                📊 Progress
+            </a>
+
+            <a href="ai-coach.html">
+                🤖 AI Coach
+            </a>
+
+        </nav>
+
+        <button
+            class="logout-btn"
+            onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- Header -->
+
+        <header class="top-header">
+
+            <div>
+
+                <h1>
+                    My Progress 📊
+                </h1>
+
+                <p>
+                    Track your activity performance and consistency.
+                </p>
+
+            </div>
+
+            <div class="profile">
+                👤
+            </div>
+
+        </header>
+
+
+        <!-- ================= PROGRESS STATISTICS ================= -->
+
+        <section class="progress-stats">
+
+
+            <!-- Total Activities -->
+
+            <div class="progress-stat-card">
+
+                <div class="progress-icon purple">
+                    📋
+                </div>
+
+                <div>
+
+                    <h2 id="progressTotal">
+                        0
+                    </h2>
+
+                    <p>
+                        Total Activities
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Completed -->
+
+            <div class="progress-stat-card">
+
+                <div class="progress-icon green">
+                    ✅
+                </div>
+
+                <div>
+
+                    <h2 id="progressCompleted">
+                        0
+                    </h2>
+
+                    <p>
+                        Completed Activities
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Completion Rate -->
+
+            <div class="progress-stat-card">
+
+                <div class="progress-icon blue">
+                    🎯
+                </div>
+
+                <div>
+
+                    <h2 id="progressRate">
+                        0%
+                    </h2>
+
+                    <p>
+                        Completion Rate
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= OVERALL PROGRESS ================= -->
+
+        <section class="progress-box">
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>
+                        Overall Progress
+                    </h2>
+
+                    <p>
+                        Your current activity completion
+                    </p>
+
+                </div>
+
+                <span
+                    class="week-label"
+                    id="overallPercentage">
+
+                    0%
+
+                </span>
+
+            </div>
+
+
+            <div class="progress-line">
+
+                <div
+                    class="progress-line-fill"
+                    id="overallProgressBar"
+                    style="width: 0%;">
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+    </main>
+
+</div>
+
+
+<!-- JavaScript -->
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
