@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Habit Coach - Login</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-box">
+
+        <!-- LOGO / TITLE -->
+
+        <div class="login-logo">
+            🤖
+        </div>
+
+        <h1>
+            AI Habit Coach
+        </h1>
+
+        <p class="subtitle">
+            Build better habits, one day at a time.
+        </p>
+
+
+        <!-- LOGIN FORM -->
+
+        <form
+            id="loginForm"
+            autocomplete="on"
+        >
+
+
+            <!-- EMAIL -->
+
+            <div class="login-field">
+
+                <label for="loginEmail">
+                    📧 Email
+                </label>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    name="email"
+                    placeholder="Enter your email"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
+
+
+
+            <!-- PASSWORD -->
+
+            <div class="login-field">
+
+                <label for="loginPassword">
+                    🔒 Password
+                </label>
+
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+
+                    <button
+                        type="button"
+                        class="show-password"
+                        onclick="togglePassword()"
+                        aria-label="Show password"
+                    >
+                        👁️
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- REMEMBER ME -->
+
+            <div class="remember-row">
+
+                <label class="remember-label">
+
+                    <input
+                        type="checkbox"
+                        id="rememberMe"
+                        checked
+                    >
+
+                    <span>
+                        Remember me
+                    </span>
+
+                </label>
+
+            </div>
+
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button
+                type="submit"
+                class="login-btn"
+            >
+
+                Login 🚀
+
+            </button>
+
+
+        </form>
+
+
+
+        <!-- REGISTER -->
+
+        <p class="auth-footer">
+
+            Don't have an account?
+
+            <a href="register.html">
+                Create Account
+            </a>
+
+        </p>
+
+
+        <p class="login-note">
+            Your login details will be remembered on this device.
+        </p>
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    /* =====================================================
+       AUTO-FILL SAVED LOGIN DETAILS
+       ===================================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            const savedEmail =
+                localStorage.getItem(
+                    "savedEmail"
+                );
+
+
+            const savedPassword =
+                localStorage.getItem(
+                    "savedPassword"
+                );
+
+
+            const emailInput =
+                document.getElementById(
+                    "loginEmail"
+                );
+
+
+            const passwordInput =
+                document.getElementById(
+                    "loginPassword"
+                );
+
+
+            /*
+               If previous login details
+               are available, automatically
+               fill them.
+            */
+
+            if (
+                savedEmail &&
+                emailInput
+            ) {
+
+                emailInput.value =
+                    savedEmail;
+
+            }
+
+
+            if (
+                savedPassword &&
+                passwordInput
+            ) {
+
+                passwordInput.value =
+                    savedPassword;
+
+            }
+
+
+        }
+    );
+
+
+
+    /* =====================================================
+       LOGIN - BACKEND CONNECTED
+       ===================================================== */
+
+    document
+        .getElementById("loginForm")
+        .addEventListener(
+            "submit",
+            async function (e) {
+
+                e.preventDefault();
+
+                const emailInput =
+                    document.getElementById("loginEmail");
+
+                const passwordInput =
+                    document.getElementById("loginPassword");
+
+                const rememberMeInput =
+                    document.getElementById("rememberMe");
+
+                const email =
+                    emailInput
+                        ? emailInput.value.trim()
+                        : "";
+
+                const password =
+                    passwordInput
+                        ? passwordInput.value.trim()
+                        : "";
+
+                const rememberMe =
+                    rememberMeInput
+                        ? rememberMeInput.checked
+                        : false;
+
+                if (email === "" || password === "") {
+                    alert("Please enter email and password.");
+                    return;
+                }
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "http://127.0.0.1:5000/login",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    email: email,
+                                    password: password
+                                })
+                            }
+                        );
+
+                    let data = {};
+
+                    try {
+                        data = await response.json();
+                    } catch (jsonError) {
+                        data = {};
+                    }
+
+                    if (!response.ok) {
+                        alert(
+                            data.message ||
+                            "Invalid email or password."
+                        );
+                        return;
+                    }
+
+                    const userId =
+                        data.user_id !== undefined
+                            ? data.user_id
+                            : data.id;
+
+                    if (
+                        userId === undefined ||
+                        userId === null
+                    ) {
+                        console.error(
+                            "Login response did not contain user_id:",
+                            data
+                        );
+
+                        alert(
+                            "Login succeeded, but user ID was not returned by the backend."
+                        );
+                        return;
+                    }
+
+                    /* ================================
+                       SAVE BACKEND SESSION DETAILS
+                       ================================ */
+
+                    localStorage.setItem(
+                        "userId",
+                        String(userId)
+                    );
+
+                    localStorage.setItem(
+                        "userName",
+                        data.name || ""
+                    );
+
+                    localStorage.setItem(
+                        "loginEmail",
+                        email
+                    );
+
+                    localStorage.setItem(
+                        "loggedIn",
+                        "true"
+                    );
+
+                    /* Remember only the email.
+                       Password is not stored in localStorage. */
+                    if (rememberMe) {
+                        localStorage.setItem(
+                            "savedEmail",
+                            email
+                        );
+                    } else {
+                        localStorage.removeItem(
+                            "savedEmail"
+                        );
+                    }
+
+                    alert("Login successful!");
+
+                    window.location.href =
+                        "dashboard.html";
+                }
+                catch (error) {
+
+                    console.error(
+                        "Backend Login Error:",
+                        error
+                    );
+
+                    alert(
+                        "Unable to connect to backend. Make sure Flask backend is running on http://127.0.0.1:5000"
+                    );
+                }
+            }
+        );
+
+
+
+    /* =====================================================
+       SHOW / HIDE PASSWORD
+       ===================================================== */
+
+    function togglePassword() {
+
+
+        const passwordInput =
+            document.getElementById(
+                "loginPassword"
+            );
+
+
+        const button =
+            document.querySelector(
+                ".show-password"
+            );
+
+
+        if (
+            passwordInput.type ===
+            "password"
+        ) {
+
+            passwordInput.type =
+                "text";
+
+
+            button.textContent =
+                "🙈";
+
+        }
+
+        else {
+
+            passwordInput.type =
+                "password";
+
+
+            button.textContent =
+                "👁️";
+
+        }
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
