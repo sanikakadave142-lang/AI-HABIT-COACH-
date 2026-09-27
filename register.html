@@ -110,7 +110,8 @@
 
                 <button
                     type="submit"
-                    class="auth-btn">
+                    class="auth-btn"
+                    id="registerButton">
 
                     Create Account
 
@@ -134,7 +135,225 @@
     </div>
 
 
-    <script src="script.js"></script>
+    <script>
+
+        /* ==========================================
+           ONLINE BACKEND URL
+           ========================================== */
+
+        const API_URL =
+            "https://ai-habit-coach-xmfn.onrender.com";
+
+
+        /* ==========================================
+           REGISTER
+           ========================================== */
+
+        document
+            .getElementById("registerForm")
+            .addEventListener(
+                "submit",
+                async function (e) {
+
+                    e.preventDefault();
+
+
+                    const name =
+                        document
+                            .getElementById(
+                                "registerName"
+                            )
+                            .value
+                            .trim();
+
+
+                    const email =
+                        document
+                            .getElementById(
+                                "registerEmail"
+                            )
+                            .value
+                            .trim();
+
+
+                    const password =
+                        document
+                            .getElementById(
+                                "registerPassword"
+                            )
+                            .value
+                            .trim();
+
+
+                    const confirmPassword =
+                        document
+                            .getElementById(
+                                "confirmPassword"
+                            )
+                            .value
+                            .trim();
+
+
+                    const button =
+                        document
+                            .getElementById(
+                                "registerButton"
+                            );
+
+
+                    /* ==========================
+                       VALIDATION
+                       ========================== */
+
+                    if (
+                        !name ||
+                        !email ||
+                        !password ||
+                        !confirmPassword
+                    ) {
+
+                        alert(
+                            "Please fill all fields."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (
+                        password !==
+                        confirmPassword
+                    ) {
+
+                        alert(
+                            "Passwords do not match."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (password.length < 6) {
+
+                        alert(
+                            "Password must be at least 6 characters."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /* ==========================
+                       BUTTON LOADING
+                       ========================== */
+
+                    button.disabled = true;
+
+                    button.textContent =
+                        "Creating Account...";
+
+
+                    try {
+
+                        /* ==========================
+                           SEND DATA TO BACKEND
+                           ========================== */
+
+                        const response =
+                            await fetch(
+                                `${API_URL}/register`,
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            name: name,
+                                            email: email,
+                                            password: password
+                                        })
+                                }
+                            );
+
+
+                        const data =
+                            await response.json();
+
+
+                        /* ==========================
+                           BACKEND ERROR
+                           ========================== */
+
+                        if (!response.ok) {
+
+                            alert(
+                                data.message ||
+                                "Registration failed."
+                            );
+
+                            return;
+
+                        }
+
+
+                        /* ==========================
+                           SUCCESS
+                           ========================== */
+
+                        alert(
+                            "Account created successfully! Please login."
+                        );
+
+
+                        /* Save email for login */
+
+                        localStorage.setItem(
+                            "savedEmail",
+                            email
+                        );
+
+
+                        /* Go to login */
+
+                        window.location.href =
+                            "index.html";
+
+
+                    }
+                    catch (error) {
+
+                        console.error(
+                            "Registration error:",
+                            error
+                        );
+
+
+                        alert(
+                            "Unable to connect to the online backend."
+                        );
+
+                    }
+                    finally {
+
+                        button.disabled = false;
+
+                        button.textContent =
+                            "Create Account";
+
+                    }
+
+                }
+            );
+
+    </script>
+
 
 </body>
 
