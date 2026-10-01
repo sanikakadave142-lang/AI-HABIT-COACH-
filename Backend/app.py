@@ -196,6 +196,9 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Initialize database
+init_db()
+
 
 # ==========================================
 # Home
