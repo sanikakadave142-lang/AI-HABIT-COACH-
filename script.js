@@ -2983,7 +2983,7 @@ window.quickQuestion =
 // Flask the source of truth for login, habits and AI data.
 // ======================================================
 
-const API_BASE_URL = "http://127.0.0.1:5000";
+const API_BASE_URL = "https://ai-habit-coach-xmfn.onrender.com";
 
 function backendUserId() {
     return Number(localStorage.getItem("userId") || 0);
