@@ -44,12 +44,11 @@ if (loginForm) {
 
         try {
 
-            const response =
-                await fetch(
-                    "https://ai-habit-coach-xmfn.onrender.com/login"
-                    {
-                        method: "POST",
-
+           const response =
+    await fetch(
+        "https://ai-habit-coach-xmfn.onrender.com/login",
+        {
+            method: "POST",
                         headers: {
                             "Content-Type":
                                 "application/json"
