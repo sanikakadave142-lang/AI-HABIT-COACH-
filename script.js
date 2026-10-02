@@ -3277,7 +3277,7 @@ document.addEventListener(
                     })
                 }
             )
-               .then(function (data) {
+               .then(async function (data) {
 
     saveBackendUser(
         data,
@@ -3285,12 +3285,22 @@ document.addEventListener(
         data.name || ""
     );
 
-    // Clear previous user's local habit data
+    // Remove previous user's local data
     localStorage.removeItem("habits");
     localStorage.removeItem("activities");
+    localStorage.removeItem("defaultActivitiesAdded");
 
     // Clear previous user's sync state
     sessionStorage.clear();
+
+    // Load only the newly logged-in user's habits
+    const synced =
+        await syncBackendHabitsToLocal();
+
+    if (!synced) {
+        localStorage.setItem("habits", "[]");
+        localStorage.setItem("activities", "[]");
+    }
 
     window.location.href =
         "dashboard.html";
