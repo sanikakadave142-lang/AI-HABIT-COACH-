@@ -12,9 +12,13 @@
     box-sizing:border-box;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
     margin:0;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
     background:#eef2ff;
     color:#172033;
 }
@@ -108,7 +112,7 @@ button{
     background:#111827;
     color:white;
     padding:25px 18px;
-    z-index:10;
+    z-index:100;
 }
 
 .brand{
@@ -136,6 +140,15 @@ button{
     margin:7px 0;
     border-radius:10px;
     color:#cbd5e1;
+    cursor:pointer;
+    transition:.2s;
+    user-select:none;
+}
+
+.nav-item:hover{
+    background:#1f2937;
+    color:white;
+    transform:translateX(3px);
 }
 
 .nav-item.active{
@@ -150,6 +163,10 @@ button{
     right:18px;
     background:#dc2626;
     color:white;
+}
+
+.logout:hover{
+    background:#b91c1c;
 }
 
 /* ================= MAIN ================= */
@@ -262,8 +279,8 @@ button{
 }
 
 canvas{
-    width:100% !important;
-    height:100% !important;
+    width:100%!important;
+    height:100%!important;
 }
 
 /* ================= AI INSIGHTS ================= */
@@ -274,6 +291,7 @@ canvas{
     padding:25px;
     border-radius:20px;
     margin-bottom:25px;
+    scroll-margin-top:20px;
 }
 
 .ai-title{
@@ -323,6 +341,7 @@ canvas{
     padding:25px;
     border-radius:20px;
     box-shadow:0 5px 20px rgba(0,0,0,.06);
+    scroll-margin-top:20px;
 }
 
 .section-header{
@@ -480,6 +499,16 @@ td{
         padding:20px;
     }
 
+    .logout{
+        left:10px;
+        right:10px;
+        font-size:0;
+    }
+
+    .logout:first-letter{
+        font-size:18px;
+    }
+
 }
 
 @media(max-width:600px){
@@ -580,19 +609,31 @@ td{
 
         </div>
 
-        <div class="nav-item active">
+        <div
+            class="nav-item active"
+            data-target="dashboardSection"
+        >
             📊 <span>Dashboard</span>
         </div>
 
-        <div class="nav-item">
+        <div
+            class="nav-item"
+            data-target="usersSection"
+        >
             👥 <span>Users</span>
         </div>
 
-        <div class="nav-item">
+        <div
+            class="nav-item"
+            data-target="habitsSection"
+        >
             📋 <span>Habits</span>
         </div>
 
-        <div class="nav-item">
+        <div
+            class="nav-item"
+            data-target="aiSection"
+        >
             🤖 <span>AI Insights</span>
         </div>
 
@@ -607,87 +648,119 @@ td{
 
     <main class="main">
 
-        <!-- TOP BAR -->
+        <!-- ================= DASHBOARD SECTION ================= -->
 
-        <div class="topbar">
+        <div id="dashboardSection">
 
-            <div>
-                <h1>Dashboard Overview</h1>
-                <p>Monitor your AI Habit Coach system</p>
+            <div class="topbar">
+
+                <div>
+
+                    <h1>Dashboard Overview</h1>
+
+                    <p>
+                        Monitor your AI Habit Coach system
+                    </p>
+
+                </div>
+
+                <div class="admin-badge">
+                    👑 Administrator
+                </div>
+
             </div>
 
-            <div class="admin-badge">
-                👑 Administrator
+
+            <!-- STATS -->
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <div class="stat-top">
+
+                        <p>Total Users</p>
+
+                        <div class="stat-icon">
+                            👥
+                        </div>
+
+                    </div>
+
+                    <h2 id="totalUsers">0</h2>
+
+                    <p>Registered users</p>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-top">
+
+                        <p>Total Habits</p>
+
+                        <div class="stat-icon">
+                            📋
+                        </div>
+
+                    </div>
+
+                    <h2 id="totalHabits">0</h2>
+
+                    <p>Created habits</p>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-top">
+
+                        <p>Completed</p>
+
+                        <div class="stat-icon">
+                            ✅
+                        </div>
+
+                    </div>
+
+                    <h2 id="completedHabits">0</h2>
+
+                    <p>Completed habits</p>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-top">
+
+                        <p>Pending</p>
+
+                        <div class="stat-icon">
+                            ⏳
+                        </div>
+
+                    </div>
+
+                    <h2 id="pendingHabits">0</h2>
+
+                    <p>Pending habits</p>
+
+                </div>
+
             </div>
 
         </div>
 
 
-        <!-- ================= STATS ================= -->
+        <!-- ================= HABITS SECTION ================= -->
 
-        <div class="stats">
-
-            <div class="stat">
-
-                <div class="stat-top">
-                    <p>Total Users</p>
-                    <div class="stat-icon">👥</div>
-                </div>
-
-                <h2 id="totalUsers">0</h2>
-
-                <p>Registered users</p>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-top">
-                    <p>Total Habits</p>
-                    <div class="stat-icon">📋</div>
-                </div>
-
-                <h2 id="totalHabits">0</h2>
-
-                <p>Created habits</p>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-top">
-                    <p>Completed</p>
-                    <div class="stat-icon">✅</div>
-                </div>
-
-                <h2 id="completedHabits">0</h2>
-
-                <p>Completed habits</p>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-top">
-                    <p>Pending</p>
-                    <div class="stat-icon">⏳</div>
-                </div>
-
-                <h2 id="pendingHabits">0</h2>
-
-                <p>Pending habits</p>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= ANALYTICS ================= -->
-
-        <div class="analytics">
+        <div
+            id="habitsSection"
+            class="analytics"
+        >
 
             <!-- COMPLETION CHART -->
 
@@ -695,10 +768,16 @@ td{
 
                 <h2>📊 Habit Completion</h2>
 
-                <p>Completed vs pending habits</p>
+                <p>
+                    Completed vs pending habits
+                </p>
 
                 <div class="chart-wrapper">
-                    <canvas id="completionChart"></canvas>
+
+                    <canvas
+                        id="completionChart"
+                    ></canvas>
+
                 </div>
 
             </div>
@@ -710,10 +789,16 @@ td{
 
                 <h2>📚 Habit Categories</h2>
 
-                <p>Distribution of habits by category</p>
+                <p>
+                    Distribution of habits by category
+                </p>
 
                 <div class="chart-wrapper">
-                    <canvas id="categoryChart"></canvas>
+
+                    <canvas
+                        id="categoryChart"
+                    ></canvas>
+
                 </div>
 
             </div>
@@ -721,16 +806,25 @@ td{
         </div>
 
 
-        <!-- USER-WISE CHART -->
+        <!-- USER HABIT CHART -->
 
-        <div class="chart-card" style="margin-bottom:25px;">
+        <div
+            class="chart-card"
+            style="margin-bottom:25px;"
+        >
 
             <h2>👥 User Habit Activity</h2>
 
-            <p>Number of habits created by each user</p>
+            <p>
+                Number of habits created by each user
+            </p>
 
             <div class="chart-wrapper">
-                <canvas id="userChart"></canvas>
+
+                <canvas
+                    id="userChart"
+                ></canvas>
+
             </div>
 
         </div>
@@ -738,7 +832,10 @@ td{
 
         <!-- ================= AI INSIGHTS ================= -->
 
-        <div class="ai-section">
+        <div
+            id="aiSection"
+            class="ai-section"
+        >
 
             <div class="ai-title">
 
@@ -747,10 +844,17 @@ td{
                 </div>
 
                 <div>
-                    <h2>AI Dashboard Insights</h2>
+
+                    <h2>
+                        AI Dashboard Insights
+                    </h2>
+
                     <p style="margin:5px 0;color:#64748b;">
+
                         Automatic analysis of habit data
+
                     </p>
+
                 </div>
 
             </div>
@@ -822,15 +926,20 @@ td{
         </div>
 
 
-        <!-- ================= USERS ================= -->
+        <!-- ================= USERS SECTION ================= -->
 
-        <div class="section">
+        <div
+            id="usersSection"
+            class="section"
+        >
 
             <div class="section-header">
 
                 <div>
 
-                    <h2>👥 User Management</h2>
+                    <h2>
+                        👥 User Management
+                    </h2>
 
                     <p>
                         All registered users and their habits
@@ -865,8 +974,11 @@ td{
 
 <script>
 
+/* ================= API ================= */
+
 const API =
     "https://ai-habit-coach-xmfn.onrender.com";
+
 
 let allUsers = [];
 
@@ -896,8 +1008,10 @@ async function adminLogin(email,password){
             }
         );
 
+
     const data =
         await response.json();
+
 
     if(!response.ok){
 
@@ -907,6 +1021,7 @@ async function adminLogin(email,password){
         );
 
     }
+
 
     localStorage.setItem(
         "adminToken",
@@ -925,6 +1040,7 @@ async function loadUsers(){
             "adminToken"
         );
 
+
     const response =
         await fetch(
             API + "/admin/users",
@@ -936,8 +1052,10 @@ async function loadUsers(){
             }
         );
 
+
     const data =
         await response.json();
+
 
     if(!response.ok){
 
@@ -948,15 +1066,29 @@ async function loadUsers(){
 
     }
 
-    allUsers = data || [];
 
-    updateStats(data);
+    allUsers =
+        data || [];
 
-    renderUsers(data);
 
-    createCharts(data);
+    updateStats(
+        allUsers
+    );
 
-    createInsights(data);
+
+    renderUsers(
+        allUsers
+    );
+
+
+    createCharts(
+        allUsers
+    );
+
+
+    createInsights(
+        allUsers
+    );
 
 }
 
@@ -966,19 +1098,30 @@ async function loadUsers(){
 function updateStats(users){
 
     let totalHabits = 0;
+
     let completed = 0;
+
     let pending = 0;
+
 
     users.forEach(user=>{
 
         totalHabits +=
-            Number(user.total_habits || 0);
+            Number(
+                user.total_habits || 0
+            );
+
 
         completed +=
-            Number(user.completed_habits || 0);
+            Number(
+                user.completed_habits || 0
+            );
+
 
         pending +=
-            Number(user.pending_habits || 0);
+            Number(
+                user.pending_habits || 0
+            );
 
     });
 
@@ -1009,16 +1152,18 @@ function updateStats(users){
 }
 
 
-/* ================= CHARTS ================= */
+/* ================= CREATE CHARTS ================= */
 
 function createCharts(users){
 
-    let totalHabits = 0;
     let completed = 0;
+
     let pending = 0;
 
     const categories = {};
+
     const userNames = [];
+
     const userHabitCounts = [];
 
 
@@ -1028,16 +1173,17 @@ function createCharts(users){
             user.habits || [];
 
 
-        totalHabits += habits.length;
-
-
         habits.forEach(habit=>{
 
-            if(habit.status === "Completed"){
+            if(
+                habit.status ===
+                "Completed"
+            ){
 
                 completed++;
 
-            }else{
+            }
+            else{
 
                 pending++;
 
@@ -1048,15 +1194,21 @@ function createCharts(users){
                 habit.category ||
                 "Other";
 
+
             categories[category] =
-                (categories[category] || 0) + 1;
+                (
+                    categories[category] ||
+                    0
+                ) + 1;
 
         });
 
 
         userNames.push(
-            user.name || "User"
+            user.name ||
+            "User"
         );
+
 
         userHabitCounts.push(
             habits.length
@@ -1105,6 +1257,7 @@ function createCharts(users){
 
                 options:{
                     responsive:true,
+
                     maintainAspectRatio:false,
 
                     plugins:{
@@ -1133,13 +1286,6 @@ function createCharts(users){
     }
 
 
-    const categoryLabels =
-        Object.keys(categories);
-
-    const categoryValues =
-        Object.values(categories);
-
-
     categoryChart =
         new Chart(
             categoryCanvas,
@@ -1147,13 +1293,19 @@ function createCharts(users){
                 type:"bar",
 
                 data:{
-                    labels:categoryLabels,
+                    labels:
+                        Object.keys(
+                            categories
+                        ),
 
                     datasets:[{
 
                         label:"Habits",
 
-                        data:categoryValues
+                        data:
+                            Object.values(
+                                categories
+                            )
 
                     }]
 
@@ -1161,11 +1313,13 @@ function createCharts(users){
 
                 options:{
                     responsive:true,
+
                     maintainAspectRatio:false,
 
                     scales:{
                         y:{
                             beginAtZero:true,
+
                             ticks:{
                                 precision:0
                             }
@@ -1211,7 +1365,8 @@ function createCharts(users){
 
                         label:"Habits",
 
-                        data:userHabitCounts
+                        data:
+                            userHabitCounts
 
                     }]
 
@@ -1219,11 +1374,13 @@ function createCharts(users){
 
                 options:{
                     responsive:true,
+
                     maintainAspectRatio:false,
 
                     scales:{
                         y:{
                             beginAtZero:true,
+
                             ticks:{
                                 precision:0
                             }
@@ -1235,6 +1392,7 @@ function createCharts(users){
                             display:false
                         }
                     }
+
                 }
 
             }
@@ -1248,11 +1406,13 @@ function createCharts(users){
 function createInsights(users){
 
     let total = 0;
+
     let completed = 0;
 
     const categories = {};
 
     let activeUser = null;
+
     let maxHabits = 0;
 
 
@@ -1262,12 +1422,16 @@ function createInsights(users){
             user.habits || [];
 
 
-        total += habits.length;
+        total +=
+            habits.length;
 
 
         habits.forEach(habit=>{
 
-            if(habit.status === "Completed"){
+            if(
+                habit.status ===
+                "Completed"
+            ){
 
                 completed++;
 
@@ -1280,18 +1444,26 @@ function createInsights(users){
 
 
             categories[category] =
-                (categories[category] || 0) + 1;
+                (
+                    categories[category] ||
+                    0
+                ) + 1;
 
         });
 
 
-        if(habits.length > maxHabits){
+        if(
+            habits.length >
+            maxHabits
+        ){
 
             maxHabits =
                 habits.length;
 
+
             activeUser =
-                user.name || "User";
+                user.name ||
+                "User";
 
         }
 
@@ -1303,7 +1475,10 @@ function createInsights(users){
     const rate =
         total > 0
         ? Math.round(
-            (completed / total) * 100
+            (
+                completed /
+                total
+            ) * 100
           )
         : 0;
 
@@ -1316,19 +1491,23 @@ function createInsights(users){
 
     /* POPULAR CATEGORY */
 
-    let popular =
-        "-";
+    let popular = "-";
 
-    let maxCategory =
-        0;
+    let maxCategory = 0;
 
 
-    Object.keys(categories).forEach(category=>{
+    Object.keys(
+        categories
+    ).forEach(category=>{
 
-        if(categories[category] > maxCategory){
+        if(
+            categories[category] >
+            maxCategory
+        ){
 
             maxCategory =
                 categories[category];
+
 
             popular =
                 category;
@@ -1367,12 +1546,19 @@ function renderUsers(users){
     container.innerHTML = "";
 
 
-    if(!users || users.length===0){
+    if(
+        !users ||
+        users.length === 0
+    ){
 
         container.innerHTML =
-            `<div class="empty">
+            `
+            <div class="empty">
+
                 👤 No users found
-            </div>`;
+
+            </div>
+            `;
 
         return;
 
@@ -1384,10 +1570,13 @@ function renderUsers(users){
         let rows = "";
 
 
-        (user.habits || []).forEach(habit=>{
+        (
+            user.habits || []
+        ).forEach(habit=>{
 
             const status =
-                habit.status || "Pending";
+                habit.status ||
+                "Pending";
 
 
             const statusClass =
@@ -1396,25 +1585,29 @@ function renderUsers(users){
                 : "pending";
 
 
-            rows += `
+            rows +=
+                `
 
                 <tr>
 
                     <td>
                         ${escapeHTML(
-                            habit.name || ""
+                            habit.name ||
+                            ""
                         )}
                     </td>
 
                     <td>
                         ${escapeHTML(
-                            habit.category || ""
+                            habit.category ||
+                            ""
                         )}
                     </td>
 
                     <td>
                         ${escapeHTML(
-                            habit.target || ""
+                            habit.target ||
+                            ""
                         )}
                     </td>
 
@@ -1423,21 +1616,26 @@ function renderUsers(users){
                         <span
                             class="status ${statusClass}"
                         >
-                            ${escapeHTML(status)}
+
+                            ${escapeHTML(
+                                status
+                            )}
+
                         </span>
 
                     </td>
 
                 </tr>
 
-            `;
+                `;
 
         });
 
 
         if(!rows){
 
-            rows = `
+            rows =
+                `
 
                 <tr>
 
@@ -1447,20 +1645,23 @@ function renderUsers(users){
 
                 </tr>
 
-            `;
+                `;
 
         }
 
 
         const card =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         card.className =
             "user-card";
 
 
-        card.innerHTML = `
+        card.innerHTML =
+            `
 
             <div class="user-header">
 
@@ -1468,7 +1669,8 @@ function renderUsers(users){
 
                     <div class="user-name">
 
-                        👤 ${escapeHTML(
+                        👤
+                        ${escapeHTML(
                             user.name ||
                             "User"
                         )}
@@ -1492,7 +1694,6 @@ function renderUsers(users){
                     <span class="badge blue">
 
                         ${user.total_habits || 0}
-
                         Habits
 
                     </span>
@@ -1501,7 +1702,6 @@ function renderUsers(users){
                     <span class="badge green">
 
                         ${user.completed_habits || 0}
-
                         Completed
 
                     </span>
@@ -1510,7 +1710,6 @@ function renderUsers(users){
                     <span class="badge orange">
 
                         ${user.pending_habits || 0}
-
                         Pending
 
                     </span>
@@ -1524,13 +1723,21 @@ function renderUsers(users){
 
                 <tr>
 
-                    <th>Habit</th>
+                    <th>
+                        Habit
+                    </th>
 
-                    <th>Category</th>
+                    <th>
+                        Category
+                    </th>
 
-                    <th>Target</th>
+                    <th>
+                        Target
+                    </th>
 
-                    <th>Status</th>
+                    <th>
+                        Status
+                    </th>
 
                 </tr>
 
@@ -1538,17 +1745,19 @@ function renderUsers(users){
 
             </table>
 
-        `;
+            `;
 
 
-        container.appendChild(card);
+        container.appendChild(
+            card
+        );
 
     });
 
 }
 
 
-/* ================= SEARCH ================= */
+/* ================= SEARCH USERS ================= */
 
 function filterUsers(){
 
@@ -1561,41 +1770,65 @@ function filterUsers(){
 
 
     const filtered =
-        allUsers.filter(user=>
+        allUsers.filter(
+            user =>
 
-            (user.name || "")
-            .toLowerCase()
-            .includes(search)
+                (
+                    user.name ||
+                    ""
+                )
+                .toLowerCase()
+                .includes(search)
 
-            ||
+                ||
 
-            (user.email || "")
-            .toLowerCase()
-            .includes(search)
+                (
+                    user.email ||
+                    ""
+                )
+                .toLowerCase()
+                .includes(search)
 
         );
 
 
-    renderUsers(filtered);
+    renderUsers(
+        filtered
+    );
 
 }
 
 
-/* ================= SECURITY ================= */
+/* ================= HTML SECURITY ================= */
 
 function escapeHTML(value){
 
     return String(value)
 
-        .replace(/&/g,"&amp;")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-        .replace(/</g,"&lt;")
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-        .replace(/>/g,"&gt;")
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-        .replace(/"/g,"&quot;")
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-        .replace(/'/g,"&#039;");
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -1613,10 +1846,73 @@ function logoutAdmin(){
 }
 
 
+/* ================= SIDEBAR NAVIGATION ================= */
+
+const navItems =
+    document.querySelectorAll(
+        ".nav-item"
+    );
+
+
+navItems.forEach(item=>{
+
+    item.addEventListener(
+        "click",
+        function(){
+
+            const targetId =
+                this.getAttribute(
+                    "data-target"
+                );
+
+
+            const target =
+                document.getElementById(
+                    targetId
+                );
+
+
+            if(!target){
+
+                return;
+
+            }
+
+
+            navItems.forEach(nav=>{
+
+                nav.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            this.classList.add(
+                "active"
+            );
+
+
+            target.scrollIntoView({
+
+                behavior:"smooth",
+
+                block:"start"
+
+            });
+
+        }
+    );
+
+});
+
+
 /* ================= LOGIN FORM ================= */
 
 document
-.getElementById("adminLoginForm")
+.getElementById(
+    "adminLoginForm"
+)
 .addEventListener(
     "submit",
     async function(e){
