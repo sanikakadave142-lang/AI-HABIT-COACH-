@@ -1,88 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Habit Coach - Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            margin: 0;
-            padding: 20px;
-        }
+<title>AI Habit Coach - Admin Dashboard</title>
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-        }
+<style>
 
-        .box {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
+*{
+    box-sizing:border-box;
+}
 
-        input, button {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            box-sizing: border-box;
-        }
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#eef2ff;
+    color:#172033;
+}
 
-        button {
-            background: #4f46e5;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+/* LOGIN */
 
-        .logout {
-            background: #dc2626;
-        }
+.login-page{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed,#2563eb);
+}
 
-        .user-card {
-            background: #f8fafc;
-            padding: 18px;
-            margin-top: 15px;
-            border-radius: 12px;
-            border: 1px solid #ddd;
-        }
+.login-card{
+    width:400px;
+    background:white;
+    padding:35px;
+    border-radius:24px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
+.logo{
+    width:65px;
+    height:65px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    margin-bottom:18px;
+}
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
+.login-card h1{
+    margin:0;
+    font-size:28px;
+}
 
-        th {
-            background: #e5e7eb;
-        }
+.login-card p{
+    color:#64748b;
+    margin-bottom:25px;
+}
 
-        #adminDashboard {
-            display: none;
-        }
-    </style>
+input{
+    width:100%;
+    padding:14px;
+    margin:8px 0;
+    border:1px solid #dbe1ea;
+    border-radius:12px;
+    outline:none;
+    font-size:15px;
+}
+
+input:focus{
+    border-color:#6366f1;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+    border-radius:12px;
+    padding:13px 18px;
+    font-size:15px;
+    font-weight:bold;
+}
+
+.login-btn{
+    width:100%;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:white;
+    margin-top:10px;
+}
+
+/* DASHBOARD */
+
+#adminDashboard{
+    display:none;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:240px;
+    background:#111827;
+    color:white;
+    padding:25px 18px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:45px;
+}
+
+.brand-icon{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#6366f1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+}
+
+.nav-item{
+    padding:13px 15px;
+    margin:7px 0;
+    border-radius:10px;
+    color:#cbd5e1;
+}
+
+.nav-item.active{
+    background:#4f46e5;
+    color:white;
+}
+
+.logout{
+    position:absolute;
+    bottom:25px;
+    left:18px;
+    right:18px;
+    background:#dc2626;
+    color:white;
+}
+
+/* MAIN */
+
+.main{
+    margin-left:240px;
+    padding:30px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:28px;
+}
+
+.topbar h1{
+    margin:0;
+    font-size:30px;
+}
+
+.admin-badge{
+    background:white;
+    padding:10px 16px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,.06);
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:white;
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+}
+
+.stat-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.stat-icon{
+    width:45px;
+    height:45px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    background:#eef2ff;
+}
+
+.stat h2{
+    margin:15px 0 5px;
+    font-size:30px;
+}
+
+.stat p{
+    margin:0;
+    color:#64748b;
+}
+
+/* USER SECTION */
+
+.section{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+}
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.section-header h2{
+    margin:0;
+}
+
+.search{
+    width:260px;
+    margin:0;
+}
+
+/* USER CARD */
+
+.user-card{
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    margin-bottom:18px;
+    overflow:hidden;
+}
+
+.user-header{
+    padding:20px;
+    background:#f8fafc;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.user-name{
+    font-size:19px;
+    font-weight:bold;
+}
+
+.user-email{
+    color:#64748b;
+    font-size:14px;
+    margin-top:5px;
+}
+
+.user-stats{
+    display:flex;
+    gap:10px;
+}
+
+.badge{
+    padding:7px 11px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.blue{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.green{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.orange{
+    background:#ffedd5;
+    color:#c2410c;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:13px 15px;
+    text-align:left;
+    border-top:1px solid #edf0f4;
+}
+
+th{
+    color:#64748b;
+    font-size:13px;
+    background:#fafafa;
+}
+
+td{
+    font-size:14px;
+}
+
+.status{
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.completed{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.empty{
+    padding:30px;
+    text-align:center;
+    color:#64748b;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:70px;
+        padding:20px 10px;
+    }
+
+    .brand span,
+    .nav-item span{
+        display:none;
+    }
+
+    .main{
+        margin-left:70px;
+        padding:20px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:600px){
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .section-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .search{
+        width:100%;
+    }
+
+    .user-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    table{
+        min-width:600px;
+    }
+
+    .section{
+        overflow-x:auto;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- LOGIN -->
 
-    <div id="loginBox" class="box">
+<div id="loginBox" class="login-page">
 
-        <h1>🤖 AI Habit Coach</h1>
-        <h2>Admin Login</h2>
+    <div class="login-card">
+
+        <div class="logo">🤖</div>
+
+        <h1>AI Habit Coach</h1>
+
+        <p>Administrator Control Center</p>
 
         <form id="adminLoginForm">
 
@@ -100,33 +437,155 @@
                 required
             >
 
-            <button type="submit">
-                Admin Login
+            <button class="login-btn" type="submit">
+                🔐 Secure Admin Login
             </button>
 
         </form>
 
     </div>
 
+</div>
 
-    <div id="adminDashboard">
 
-        <div class="box">
+<!-- DASHBOARD -->
 
-            <h1>Admin Dashboard</h1>
+<div id="adminDashboard">
 
-            <button
-                class="logout"
-                onclick="logoutAdmin()"
-            >
-                Logout
-            </button>
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">🤖</div>
+
+            <span>AI Habit Coach</span>
 
         </div>
 
-        <div class="box">
+        <div class="nav-item active">
+            📊 <span>Dashboard</span>
+        </div>
 
-            <h2>All Users</h2>
+        <div class="nav-item">
+            👥 <span>Users</span>
+        </div>
+
+        <div class="nav-item">
+            📋 <span>Habits</span>
+        </div>
+
+        <div class="nav-item">
+            🤖 <span>AI Insights</span>
+        </div>
+
+        <button class="logout" onclick="logoutAdmin()">
+            🚪 Logout
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Dashboard Overview</h1>
+                <p>Monitor your AI Habit Coach system</p>
+            </div>
+
+            <div class="admin-badge">
+                👑 Administrator
+            </div>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="stat-top">
+                    <p>Total Users</p>
+                    <div class="stat-icon">👥</div>
+                </div>
+
+                <h2 id="totalUsers">0</h2>
+
+                <p>Registered users</p>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-top">
+                    <p>Total Habits</p>
+                    <div class="stat-icon">📋</div>
+                </div>
+
+                <h2 id="totalHabits">0</h2>
+
+                <p>Created habits</p>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-top">
+                    <p>Completed</p>
+                    <div class="stat-icon">✅</div>
+                </div>
+
+                <h2 id="completedHabits">0</h2>
+
+                <p>Completed habits</p>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-top">
+                    <p>Pending</p>
+                    <div class="stat-icon">⏳</div>
+                </div>
+
+                <h2 id="pendingHabits">0</h2>
+
+                <p>Pending habits</p>
+
+            </div>
+
+        </div>
+
+
+        <!-- USERS -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>👥 User Management</h2>
+                    <p>All registered users and their habits</p>
+                </div>
+
+                <input
+                    class="search"
+                    id="searchUser"
+                    placeholder="🔍 Search user..."
+                    oninput="filterUsers()"
+                >
+
+            </div>
 
             <div id="usersContainer">
                 Loading...
@@ -134,7 +593,7 @@
 
         </div>
 
-    </div>
+    </main>
 
 </div>
 
@@ -144,21 +603,22 @@
 const API =
     "https://ai-habit-coach-xmfn.onrender.com";
 
+let allUsers = [];
 
-async function adminLogin(email, password) {
+
+async function adminLogin(email,password){
 
     const response =
         await fetch(
             API + "/admin/login",
             {
-                method: "POST",
-                headers: {
-                    "Content-Type":
-                        "application/json"
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
                 },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
+                body:JSON.stringify({
+                    email:email,
+                    password:password
                 })
             }
         );
@@ -166,21 +626,24 @@ async function adminLogin(email, password) {
     const data =
         await response.json();
 
-    if (!response.ok) {
+    if(!response.ok){
+
         throw new Error(
             data.message ||
             "Admin login failed"
         );
+
     }
 
     localStorage.setItem(
         "adminToken",
         data.token
     );
+
 }
 
 
-async function loadUsers() {
+async function loadUsers(){
 
     const token =
         localStorage.getItem(
@@ -191,7 +654,7 @@ async function loadUsers() {
         await fetch(
             API + "/admin/users",
             {
-                headers: {
+                headers:{
                     "X-Admin-Token":
                         token
                 }
@@ -201,18 +664,67 @@ async function loadUsers() {
     const data =
         await response.json();
 
-    if (!response.ok) {
+    if(!response.ok){
+
         throw new Error(
             data.message ||
             "Unable to load users"
         );
+
     }
 
+    allUsers = data;
+
+    updateStats(data);
+
     renderUsers(data);
+
 }
 
 
-function renderUsers(users) {
+function updateStats(users){
+
+    let totalHabits = 0;
+    let completed = 0;
+    let pending = 0;
+
+    users.forEach(user=>{
+
+        totalHabits +=
+            Number(user.total_habits || 0);
+
+        completed +=
+            Number(user.completed_habits || 0);
+
+        pending +=
+            Number(user.pending_habits || 0);
+
+    });
+
+    document.getElementById(
+        "totalUsers"
+    ).textContent =
+        users.length;
+
+    document.getElementById(
+        "totalHabits"
+    ).textContent =
+        totalHabits;
+
+    document.getElementById(
+        "completedHabits"
+    ).textContent =
+        completed;
+
+    document.getElementById(
+        "pendingHabits"
+    ).textContent =
+        pending;
+
+}
+
+
+function renderUsers(users){
 
     const container =
         document.getElementById(
@@ -221,31 +733,66 @@ function renderUsers(users) {
 
     container.innerHTML = "";
 
-    if (!users || users.length === 0) {
+    if(!users || users.length===0){
 
         container.innerHTML =
-            "<p>No users found.</p>";
+            `<div class="empty">
+                👤 No users found
+            </div>`;
 
         return;
     }
 
-    users.forEach(function(user) {
+
+    users.forEach(user=>{
 
         let rows = "";
 
-        user.habits.forEach(function(habit) {
+        (user.habits || []).forEach(habit=>{
+
+            const status =
+                habit.status || "Pending";
+
+            const statusClass =
+                status === "Completed"
+                ? "completed"
+                : "pending";
 
             rows += `
                 <tr>
-                    <td>${escapeHTML(habit.name || "")}</td>
-                    <td>${escapeHTML(habit.category || "")}</td>
-                    <td>${escapeHTML(habit.target || "")}</td>
-                    <td>${escapeHTML(habit.status || "")}</td>
+
+                    <td>
+                        ${escapeHTML(
+                            habit.name || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            habit.category || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            habit.target || ""
+                        )}
+                    </td>
+
+                    <td>
+                        <span class="status ${statusClass}">
+                            ${escapeHTML(status)}
+                        </span>
+                    </td>
+
                 </tr>
             `;
+
         });
 
-        if (!rows) {
+
+        if(!rows){
+
             rows = `
                 <tr>
                     <td colspan="4">
@@ -253,171 +800,225 @@ function renderUsers(users) {
                     </td>
                 </tr>
             `;
+
         }
+
 
         const card =
             document.createElement("div");
 
-        card.className = "user-card";
+        card.className =
+            "user-card";
 
         card.innerHTML = `
-            <h3>
-                User ID: ${user.user_id}
-            </h3>
 
-            <p>
-                <strong>Name:</strong>
-                ${escapeHTML(user.name || "")}
-            </p>
+            <div class="user-header">
 
-            <p>
-                <strong>Email:</strong>
-                ${escapeHTML(user.email || "")}
-            </p>
+                <div>
 
-            <p>
-                <strong>Total Habits:</strong>
-                ${user.total_habits}
-            </p>
+                    <div class="user-name">
+                        👤 ${escapeHTML(
+                            user.name || "User"
+                        )}
+                    </div>
 
-            <p>
-                <strong>Completed:</strong>
-                ${user.completed_habits}
-            </p>
+                    <div class="user-email">
+                        ${escapeHTML(
+                            user.email || ""
+                        )}
+                    </div>
 
-            <p>
-                <strong>Pending:</strong>
-                ${user.pending_habits}
-            </p>
+                </div>
+
+
+                <div class="user-stats">
+
+                    <span class="badge blue">
+                        ${user.total_habits || 0}
+                        Habits
+                    </span>
+
+                    <span class="badge green">
+                        ${user.completed_habits || 0}
+                        Completed
+                    </span>
+
+                    <span class="badge orange">
+                        ${user.pending_habits || 0}
+                        Pending
+                    </span>
+
+                </div>
+
+            </div>
+
 
             <table>
+
                 <tr>
+
                     <th>Habit</th>
                     <th>Category</th>
                     <th>Target</th>
                     <th>Status</th>
+
                 </tr>
 
                 ${rows}
 
             </table>
+
         `;
 
         container.appendChild(card);
 
     });
+
 }
 
 
-function escapeHTML(value) {
+function filterUsers(){
+
+    const search =
+        document.getElementById(
+            "searchUser"
+        ).value
+        .toLowerCase();
+
+    const filtered =
+        allUsers.filter(user=>
+
+            (user.name || "")
+            .toLowerCase()
+            .includes(search)
+
+            ||
+
+            (user.email || "")
+            .toLowerCase()
+            .includes(search)
+
+        );
+
+    renderUsers(filtered);
+
+}
+
+
+function escapeHTML(value){
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
 }
 
 
-function logoutAdmin() {
+function logoutAdmin(){
 
     localStorage.removeItem(
         "adminToken"
     );
 
     location.reload();
+
 }
 
 
 document
-    .getElementById("adminLoginForm")
-    .addEventListener(
-        "submit",
-        async function(e) {
+.getElementById("adminLoginForm")
+.addEventListener(
+    "submit",
+    async function(e){
 
-            e.preventDefault();
+        e.preventDefault();
 
-            const email =
-                document
-                    .getElementById(
-                        "adminEmail"
-                    )
-                    .value.trim();
+        const email =
+            document
+            .getElementById(
+                "adminEmail"
+            )
+            .value.trim();
 
-            const password =
-                document
-                    .getElementById(
-                        "adminPassword"
-                    )
-                    .value;
+        const password =
+            document
+            .getElementById(
+                "adminPassword"
+            )
+            .value;
 
-            try {
+        try{
 
-                await adminLogin(
-                    email,
-                    password
-                );
-
-                document
-                    .getElementById(
-                        "loginBox"
-                    )
-                    .style.display =
-                        "none";
-
-                document
-                    .getElementById(
-                        "adminDashboard"
-                    )
-                    .style.display =
-                        "block";
-
-                await loadUsers();
-
-            } catch(error) {
-
-                alert(
-                    error.message
-                );
-            }
-
-        }
-    );
-
-
-window.addEventListener(
-    "load",
-    async function() {
-
-        const token =
-            localStorage.getItem(
-                "adminToken"
+            await adminLogin(
+                email,
+                password
             );
 
-        if (!token) {
-            return;
-        }
-
-        document
+            document
             .getElementById(
                 "loginBox"
             )
             .style.display =
                 "none";
 
-        document
+            document
             .getElementById(
                 "adminDashboard"
             )
             .style.display =
                 "block";
 
-        try {
+            await loadUsers();
+
+        }
+        catch(error){
+
+            alert(
+                error.message
+            );
+
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "load",
+    async function(){
+
+        const token =
+            localStorage.getItem(
+                "adminToken"
+            );
+
+        if(!token){
+            return;
+        }
+
+        document
+        .getElementById(
+            "loginBox"
+        )
+        .style.display =
+            "none";
+
+        document
+        .getElementById(
+            "adminDashboard"
+        )
+        .style.display =
+            "block";
+
+        try{
 
             await loadUsers();
 
-        } catch(error) {
+        }
+        catch(error){
 
             logoutAdmin();
 
