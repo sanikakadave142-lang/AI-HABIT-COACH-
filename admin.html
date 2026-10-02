@@ -26,6 +26,7 @@ body{
 }
 
 /* LOGIN */
+
 .login-page{
     min-height:100vh;
     display:flex;
@@ -80,6 +81,7 @@ body{
 }
 
 /* DASHBOARD */
+
 .dashboard{
     display:none;
     min-height:100vh;
@@ -153,6 +155,7 @@ body{
 }
 
 /* STATS */
+
 .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -178,7 +181,8 @@ body{
     font-weight:bold;
 }
 
-/* SECTIONS */
+/* SECTION */
+
 .section{
     background:white;
     padding:25px;
@@ -195,6 +199,7 @@ body{
 }
 
 /* CHARTS */
+
 .analytics{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -213,6 +218,7 @@ body{
 }
 
 /* AI */
+
 .ai-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -236,6 +242,7 @@ body{
 }
 
 /* USERS */
+
 .search-box{
     width:100%;
     padding:13px;
@@ -326,6 +333,7 @@ body{
 }
 
 /* MODAL */
+
 .modal{
     display:none;
     position:fixed;
@@ -386,6 +394,10 @@ body{
     margin-bottom:5px;
 }
 
+.info-box strong{
+    font-size:17px;
+}
+
 .profile-stats{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -412,6 +424,7 @@ body{
 }
 
 /* MOBILE */
+
 @media(max-width:900px){
 
     .sidebar{
@@ -440,6 +453,15 @@ body{
     .sidebar{
         position:relative;
         width:100%;
+        height:auto;
+    }
+
+    .logout{
+        position:relative;
+        left:auto;
+        right:auto;
+        bottom:auto;
+        margin-top:15px;
     }
 
     .main{
@@ -507,6 +529,8 @@ body{
 
 <div class="dashboard" id="dashboard">
 
+    <!-- SIDEBAR -->
+
     <div class="sidebar">
 
         <div class="logo">
@@ -535,6 +559,8 @@ body{
 
     </div>
 
+
+    <!-- MAIN -->
 
     <div class="main">
 
@@ -595,18 +621,27 @@ body{
             <div class="analytics">
 
                 <div class="chart-card">
+
                     <h3>Habit Completion</h3>
+
                     <canvas id="completionChart"></canvas>
+
                 </div>
 
                 <div class="chart-card">
+
                     <h3>Category Distribution</h3>
+
                     <canvas id="categoryChart"></canvas>
+
                 </div>
 
                 <div class="chart-card">
+
                     <h3>User-wise Habits</h3>
+
                     <canvas id="userChart"></canvas>
+
                 </div>
 
             </div>
@@ -625,18 +660,27 @@ body{
             <div class="ai-grid">
 
                 <div class="ai-card">
+
                     <h3>Completion Rate</h3>
+
                     <p id="completionRate">0%</p>
+
                 </div>
 
                 <div class="ai-card">
+
                     <h3>Popular Category</h3>
+
                     <p id="popularCategory">-</p>
+
                 </div>
 
                 <div class="ai-card">
+
                     <h3>Most Active User</h3>
+
                     <p id="activeUser">-</p>
+
                 </div>
 
             </div>
@@ -686,45 +730,68 @@ body{
         <div class="profile-info">
 
             <div class="info-box">
+
                 <small>User ID</small>
+
                 <strong id="profileId">-</strong>
+
             </div>
 
             <div class="info-box">
+
                 <small>Name</small>
+
                 <strong id="profileUserName">-</strong>
+
             </div>
 
             <div class="info-box">
+
                 <small>Email</small>
+
                 <strong id="profileEmail">-</strong>
+
             </div>
 
             <div class="info-box">
+
                 <small>Account</small>
+
                 <strong>Active</strong>
+
             </div>
 
         </div>
+
 
         <div class="profile-stats">
 
             <div class="profile-stat">
+
                 <strong id="profileTotal">0</strong>
+
                 <span>Total Habits</span>
+
             </div>
 
             <div class="profile-stat">
+
                 <strong id="profileCompleted">0</strong>
+
                 <span>Completed</span>
+
             </div>
 
             <div class="profile-stat">
+
                 <strong id="profilePending">0</strong>
+
                 <span>Pending</span>
+
             </div>
 
         </div>
+
 
         <h3>📋 User Habits</h3>
 
@@ -784,8 +851,10 @@ document
 
             });
 
+
         const data =
             await response.json();
+
 
         if(!response.ok){
 
@@ -793,18 +862,22 @@ document
                 data.message || "Invalid login";
 
             return;
+
         }
+
 
         localStorage.setItem(
             "adminToken",
             data.token
         );
 
+
         document.getElementById("loginPage")
             .style.display = "none";
 
         document.getElementById("dashboard")
             .style.display = "block";
+
 
         loadUsers();
 
@@ -843,15 +916,19 @@ async function loadUsers(){
 
             });
 
+
         if(response.status === 401){
 
             logoutAdmin();
+
             return;
 
         }
 
+
         const data =
             await response.json();
+
 
         if(!response.ok){
 
@@ -864,11 +941,15 @@ async function loadUsers(){
 
         }
 
+
         allUsers = data || [];
 
         updateStats();
+
         renderUsers(allUsers);
+
         createCharts();
+
         createInsights();
 
     }
@@ -893,6 +974,7 @@ function updateStats(){
     let completed = 0;
     let pending = 0;
 
+
     allUsers.forEach(user => {
 
         totalHabits +=
@@ -905,6 +987,7 @@ function updateStats(){
             user.pending_habits || 0;
 
     });
+
 
     document.getElementById("totalUsers")
         .textContent = allUsers.length;
@@ -925,21 +1008,23 @@ function updateStats(){
 
 function createCharts(){
 
-    let completed = 0;
-    let pending = 0;
+    let totalCompleted = 0;
+    let totalPending = 0;
 
     let categories = {};
 
     let userNames = [];
     let userHabitCounts = [];
 
+
     allUsers.forEach(user => {
 
-        completed +=
+        totalCompleted +=
             user.completed_habits || 0;
 
-        pending +=
+        totalPending +=
             user.pending_habits || 0;
+
 
         userNames.push(
             user.name || "User"
@@ -948,6 +1033,7 @@ function createCharts(){
         userHabitCounts.push(
             user.total_habits || 0
         );
+
 
         (user.habits || []).forEach(habit => {
 
@@ -966,6 +1052,7 @@ function createCharts(){
         completionChart.destroy();
     }
 
+
     completionChart =
         new Chart(
             document.getElementById("completionChart"),
@@ -980,10 +1067,14 @@ function createCharts(){
 
                     datasets:[{
                         data:[
-                            completed,
-                            pending
+                            totalCompleted,
+                            totalPending
                         ]
                     }]
+                },
+
+                options:{
+                    responsive:true
                 }
             }
         );
@@ -993,6 +1084,7 @@ function createCharts(){
         categoryChart.destroy();
     }
 
+
     categoryChart =
         new Chart(
             document.getElementById("categoryChart"),
@@ -1000,18 +1092,18 @@ function createCharts(){
                 type:"bar",
 
                 data:{
-                    labels:
-                        Object.keys(categories),
+                    labels:Object.keys(categories),
 
                     datasets:[{
                         label:"Habits",
 
-                        data:
-                            Object.values(categories)
+                        data:Object.values(categories)
                     }]
                 },
 
                 options:{
+                    responsive:true,
+
                     scales:{
                         y:{
                             beginAtZero:true
@@ -1026,6 +1118,7 @@ function createCharts(){
         userChart.destroy();
     }
 
+
     userChart =
         new Chart(
             document.getElementById("userChart"),
@@ -1037,11 +1130,14 @@ function createCharts(){
 
                     datasets:[{
                         label:"Total Habits",
+
                         data:userHabitCounts
                     }]
                 },
 
                 options:{
+                    responsive:true,
+
                     scales:{
                         y:{
                             beginAtZero:true
@@ -1058,20 +1154,22 @@ function createCharts(){
 
 function createInsights(){
 
-    let total = 0;
+    let totalHabits = 0;
     let completed = 0;
 
     let categories = {};
 
     let activeUser = null;
 
+
     allUsers.forEach(user => {
 
-        total +=
+        totalHabits +=
             user.total_habits || 0;
 
         completed +=
             user.completed_habits || 0;
+
 
         if(
             !activeUser ||
@@ -1082,6 +1180,7 @@ function createInsights(){
             activeUser = user;
 
         }
+
 
         (user.habits || []).forEach(habit => {
 
@@ -1095,26 +1194,29 @@ function createInsights(){
 
     });
 
+
     let rate = 0;
 
-    if(total > 0){
+    if(totalHabits > 0){
 
         rate =
             Math.round(
-                completed / total * 100
+                completed / totalHabits * 100
             );
 
     }
 
+
     let popularCategory = "-";
 
-    const names =
+    const categoryNames =
         Object.keys(categories);
 
-    if(names.length > 0){
+
+    if(categoryNames.length > 0){
 
         popularCategory =
-            names.reduce(
+            categoryNames.reduce(
                 (a,b) =>
                     categories[a] >= categories[b]
                     ? a
@@ -1122,6 +1224,7 @@ function createInsights(){
             );
 
     }
+
 
     document.getElementById("completionRate")
         .textContent = rate + "%";
@@ -1145,6 +1248,7 @@ function renderUsers(users){
     const container =
         document.getElementById("usersContainer");
 
+
     if(!users.length){
 
         container.innerHTML =
@@ -1154,15 +1258,19 @@ function renderUsers(users){
 
     }
 
+
     container.innerHTML =
         users.map(user => {
 
             const habits =
                 user.habits || [];
 
-            const rows =
+
+            const habitRows =
                 habits.length
+
                 ?
+
                 habits.map(habit => `
 
                     <tr>
@@ -1228,6 +1336,7 @@ function renderUsers(users){
 
                         </div>
 
+
                         <button
                             class="view-btn"
                             onclick="openUserProfile(${user.user_id})"
@@ -1276,7 +1385,7 @@ function renderUsers(users){
                         </thead>
 
                         <tbody>
-                            ${rows}
+                            ${habitRows}
                         </tbody>
 
                     </table>
@@ -1299,20 +1408,22 @@ function filterUsers(){
         .value
         .toLowerCase();
 
+
     const filtered =
         allUsers.filter(user =>
 
             (user.name || "")
-            .toLowerCase()
-            .includes(search)
+                .toLowerCase()
+                .includes(search)
 
             ||
 
             (user.email || "")
-            .toLowerCase()
-            .includes(search)
+                .toLowerCase()
+                .includes(search)
 
         );
+
 
     renderUsers(filtered);
 
@@ -1326,37 +1437,44 @@ function openUserProfile(userId){
     const user =
         allUsers.find(
             u =>
-            Number(u.user_id) ===
-            Number(userId)
+            Number(u.user_id) === Number(userId)
         );
+
 
     if(!user){
         return;
     }
 
+
     document.getElementById("profileName")
         .textContent =
         "👤 " + (user.name || "User Profile");
+
 
     document.getElementById("profileId")
         .textContent =
         user.user_id;
 
+
     document.getElementById("profileUserName")
         .textContent =
         user.name || "-";
+
 
     document.getElementById("profileEmail")
         .textContent =
         user.email || "-";
 
+
     document.getElementById("profileTotal")
         .textContent =
         user.total_habits || 0;
 
+
     document.getElementById("profileCompleted")
         .textContent =
         user.completed_habits || 0;
+
 
     document.getElementById("profilePending")
         .textContent =
@@ -1366,19 +1484,24 @@ function openUserProfile(userId){
     const habits =
         user.habits || [];
 
-    const box =
+
+    const profileHabits =
         document.getElementById("profileHabits");
 
 
     if(!habits.length){
 
-        box.innerHTML =
-            "<p>No habits added yet.</p>";
+        profileHabits.innerHTML =
+            `
+            <p style="margin-top:15px;color:#6b7280;">
+                This user has not added any habits yet.
+            </p>
+            `;
 
     }
     else{
 
-        box.innerHTML = `
+        profileHabits.innerHTML = `
 
             <table class="habit-table">
 
@@ -1450,7 +1573,7 @@ function openUserProfile(userId){
 }
 
 
-/* CLOSE */
+/* CLOSE POPUP */
 
 function closeUserModal(){
 
@@ -1458,6 +1581,7 @@ function closeUserModal(){
         .style.display = "none";
 
 }
+
 
 function closeModalOutside(event){
 
@@ -1484,31 +1608,42 @@ function escapeHTML(value){
 
 /* NAVIGATION */
 
-document
-.querySelectorAll(".nav-item[data-target]")
-.forEach(item => {
+const navItems =
+    document.querySelectorAll(
+        ".nav-item[data-target]"
+    );
+
+
+navItems.forEach(item => {
 
     item.addEventListener("click",function(){
 
+        const targetId =
+            this.getAttribute("data-target");
+
+
         const target =
-            document.getElementById(
-                this.dataset.target
-            );
+            document.getElementById(targetId);
+
 
         if(!target){
             return;
         }
 
-        document
-        .querySelectorAll(".nav-item")
-        .forEach(nav =>
-            nav.classList.remove("active")
-        );
+
+        navItems.forEach(nav => {
+
+            nav.classList.remove("active");
+
+        });
+
 
         this.classList.add("active");
 
+
         target.scrollIntoView({
-            behavior:"smooth"
+            behavior:"smooth",
+            block:"start"
         });
 
     });
@@ -1534,13 +1669,16 @@ window.addEventListener("load",function(){
     const token =
         localStorage.getItem("adminToken");
 
+
     if(token){
 
         document.getElementById("loginPage")
             .style.display = "none";
 
+
         document.getElementById("dashboard")
             .style.display = "block";
+
 
         loadUsers();
 
