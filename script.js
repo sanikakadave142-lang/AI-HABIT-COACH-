@@ -246,54 +246,7 @@ if (loginForm) {
     });
 
 
-    // Default activities only first time
-    if (
-        habits.length === 0 &&
-        !localStorage.getItem("defaultActivitiesAdded")
-    ) {
-
-        habits = [
-
-            {
-                id: 1,
-                name: "Exercise",
-                goal: "30 minutes",
-                category: "Fitness",
-                reminder: "",
-                completed: false,
-                completedAt: ""
-            },
-
-            {
-                id: 2,
-                name: "Reading",
-                goal: "20 minutes",
-                category: "Study",
-                reminder: "",
-                completed: false,
-                completedAt: ""
-            },
-
-            {
-                id: 3,
-                name: "Drink Water",
-                goal: "2 Litres",
-                category: "Health",
-                reminder: "",
-                completed: false,
-                completedAt: ""
-            }
-
-        ];
-
-        localStorage.setItem(
-            "defaultActivitiesAdded",
-            "true"
-        );
-
-        saveHabits();
-    }
-
+    
 
     // ==================================================
     // 6. SAVE HABITS
