@@ -3324,17 +3324,24 @@ document.addEventListener(
                     })
                 }
             )
-                .then(function (data) {
+               .then(function (data) {
 
-                    saveBackendUser(
-                        data,
-                        email,
-                        data.name || ""
-                    );
+    saveBackendUser(
+        data,
+        email,
+        data.name || ""
+    );
 
-                    window.location.href =
-                        "dashboard.html";
-                })
+    // Clear previous user's local habit data
+    localStorage.removeItem("habits");
+    localStorage.removeItem("activities");
+
+    // Clear previous user's sync state
+    sessionStorage.clear();
+
+    window.location.href =
+        "dashboard.html";
+})
                 .catch(function (error) {
 
                     console.error(
