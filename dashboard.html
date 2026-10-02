@@ -14,7 +14,7 @@
 
 <div class="dashboard">
 
-    <!-- ================= SIDEBAR ================= -->
+    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
@@ -51,12 +51,12 @@
     </aside>
 
 
-    <!-- ================= MAIN CONTENT ================= -->
+    <!-- MAIN CONTENT -->
 
     <main class="main-content">
 
 
-        <!-- ================= HEADER ================= -->
+        <!-- HEADER -->
 
         <header class="top-header">
 
@@ -80,8 +80,7 @@
         </header>
 
 
-
-        <!-- ================= STATISTICS ================= -->
+        <!-- STATISTICS -->
 
         <section class="stats">
 
@@ -105,7 +104,6 @@
             </div>
 
 
-
             <div class="stat-card">
 
                 <span>✅</span>
@@ -123,7 +121,6 @@
                 </div>
 
             </div>
-
 
 
             <div class="stat-card">
@@ -148,8 +145,7 @@
         </section>
 
 
-
-        <!-- ================= TODAY'S HABITS ================= -->
+        <!-- TODAY'S HABITS -->
 
         <section class="habit-section">
 
@@ -182,8 +178,7 @@
         </section>
 
 
-
-        <!-- ================= AI COACH ================= -->
+        <!-- AI COACH -->
 
         <section class="ai-card">
 
@@ -225,93 +220,70 @@
 </div>
 
 
-
-<!-- ================= AUTOMATIC GREETING ================= -->
+<!-- AUTOMATIC TIME-BASED GREETING -->
 
 <script>
 
 function updateGreeting() {
 
-    const now = new Date();
+    const hour = new Date().getHours();
 
-    const hour = now.getHours();
+    const greeting = document.getElementById("greeting");
 
-    const greeting =
-        document.getElementById("greeting");
-
-    const message =
-        document.getElementById("greetingMessage");
-
-
-    // Get logged-in user's name
+    const message = document.getElementById("greetingMessage");
 
     const userName =
         localStorage.getItem("userName") || "User";
 
 
-    // ================= MORNING =================
-
     if (hour >= 5 && hour < 12) {
 
-        greeting.innerHTML =
-            `Good Morning, ${userName}! 🌅`;
+        greeting.textContent =
+            "Good Morning, " + userName + "! 🌅";
 
-        message.innerHTML =
+        message.textContent =
             "Let's build better habits today.";
 
     }
 
-
-    // ================= AFTERNOON =================
-
     else if (hour >= 12 && hour < 17) {
 
-        greeting.innerHTML =
-            `Good Afternoon, ${userName}! ☀️`;
+        greeting.textContent =
+            "Good Afternoon, " + userName + "! ☀️";
 
-        message.innerHTML =
+        message.textContent =
             "Keep going! You're doing great today.";
 
     }
 
-
-    // ================= EVENING =================
-
     else if (hour >= 17 && hour < 21) {
 
-        greeting.innerHTML =
-            `Good Evening, ${userName}! 🌆`;
+        greeting.textContent =
+            "Good Evening, " + userName + "! 🌆";
 
-        message.innerHTML =
+        message.textContent =
             "Take a moment to check your habits.";
 
     }
 
-
-    // ================= NIGHT =================
-
     else {
 
-        greeting.innerHTML =
-            `Good Night, ${userName}! 🌙`;
+        greeting.textContent =
+            "Good Night, " + userName + "! 🌙";
 
-        message.innerHTML =
+        message.textContent =
             "Review your progress and rest well.";
 
     }
 
 }
 
-
-// Run greeting when dashboard opens
-
 updateGreeting();
 
 </script>
 
 
-
-<!-- ================= MAIN JAVASCRIPT ================= -->
+<!-- MAIN JAVASCRIPT -->
 
 <script src="script.js"></script>
 
