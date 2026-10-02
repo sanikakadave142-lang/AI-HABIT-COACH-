@@ -21,6 +21,7 @@
         <h2>🤖 AI Habit Coach</h2>
 
         <nav>
+
             <a href="dashboard.html" class="active">
                 🏠 Dashboard
             </a>
@@ -36,6 +37,7 @@
             <a href="ai-coach.html">
                 🤖 AI Coach
             </a>
+
         </nav>
 
         <button
@@ -54,21 +56,19 @@
     <main class="main-content">
 
 
-        <!-- Header -->
+        <!-- ================= HEADER ================= -->
 
         <header class="top-header">
 
             <div>
 
-                <!-- Automatic Greeting -->
-
                 <h1 id="greeting">
-    Good Morning! 👋
-</h1>
+                    Good Morning! 👋
+                </h1>
 
-<p id="greetingMessage">
-    Let's build better habits today.
-</p>
+                <p id="greetingMessage">
+                    Let's build better habits today.
+                </p>
 
             </div>
 
@@ -172,9 +172,6 @@
             </div>
 
 
-
-            <!-- Habits will appear here automatically -->
-
             <div
                 class="habit-list"
                 id="dashboardHabitList">
@@ -228,6 +225,7 @@
 </div>
 
 
+
 <!-- ================= AUTOMATIC GREETING ================= -->
 
 <script>
@@ -235,13 +233,23 @@
 function updateGreeting() {
 
     const now = new Date();
+
     const hour = now.getHours();
 
-    const greeting = document.getElementById("greeting");
-    const message = document.getElementById("greetingMessage");
+    const greeting =
+        document.getElementById("greeting");
+
+    const message =
+        document.getElementById("greetingMessage");
+
+
+    // Get logged-in user's name
 
     const userName =
         localStorage.getItem("userName") || "User";
+
+
+    // ================= MORNING =================
 
     if (hour >= 5 && hour < 12) {
 
@@ -251,7 +259,12 @@ function updateGreeting() {
         message.innerHTML =
             "Let's build better habits today.";
 
-    } else if (hour >= 12 && hour < 17) {
+    }
+
+
+    // ================= AFTERNOON =================
+
+    else if (hour >= 12 && hour < 17) {
 
         greeting.innerHTML =
             `Good Afternoon, ${userName}! ☀️`;
@@ -259,7 +272,12 @@ function updateGreeting() {
         message.innerHTML =
             "Keep going! You're doing great today.";
 
-    } else if (hour >= 17 && hour < 21) {
+    }
+
+
+    // ================= EVENING =================
+
+    else if (hour >= 17 && hour < 21) {
 
         greeting.innerHTML =
             `Good Evening, ${userName}! 🌆`;
@@ -267,7 +285,12 @@ function updateGreeting() {
         message.innerHTML =
             "Take a moment to check your habits.";
 
-    } else {
+    }
+
+
+    // ================= NIGHT =================
+
+    else {
 
         greeting.innerHTML =
             `Good Night, ${userName}! 🌙`;
@@ -276,16 +299,23 @@ function updateGreeting() {
             "Review your progress and rest well.";
 
     }
+
 }
+
+
+// Run greeting when dashboard opens
 
 updateGreeting();
 
 </script>
 
+
+
+<!-- ================= MAIN JAVASCRIPT ================= -->
+
 <script src="script.js"></script>
 
-</body>
-</html>
 
 </body>
+
 </html>
