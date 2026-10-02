@@ -1337,16 +1337,205 @@ ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 ADMIN_SECRET = os.getenv("ADMIN_SECRET", "")
 
-# ... इथे पूर्ण admin code ...
+
+def create_admin_token():
+    payload = {
+        "email": ADMIN_EMAIL,
+        "exp": int(time.time()) + 7200
+    }
+
+    raw = base64.urlsafe_b64encode(
+        json.dumps(
+            payload,
+            separators=(",", ":")
+        ).encode()
+    ).decode().rstrip("=")
+
+    signature = hmac.new(
+        ADMIN_SECRET.encode(),
+        raw.encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    return raw + "." + signature
+
+
+def verify_admin_token(token):
+
+    try:
+        raw, signature = token.split(".", 1)
+
+        expected_signature = hmac.new(
+            ADMIN_SECRET.encode(),
+            raw.encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        if not hmac.compare_digest(
+            signature,
+            expected_signature
+        ):
+            return False
+
+        padding = "=" * (-len(raw) % 4)
+
+        payload = json.loads(
+            base64.urlsafe_b64decode(
+                (raw + padding).encode()
+            ).decode()
+        )
+
+        if payload.get("email") != ADMIN_EMAIL:
+            return False
+
+        if int(time.time()) > int(
+            payload.get("exp", 0)
+        ):
+            return False
+
+        return True
+
+    except Exception:
+        return False
+
+
+# ======================================================
+# ADMIN LOGIN
+# ======================================================
+
+@app.route("/admin/login", methods=["POST"])
+def admin_login():
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    email = data.get("email")
+    password = data.get("password")
+
+    if (
+        not ADMIN_EMAIL
+        or not ADMIN_PASSWORD
+        or not ADMIN_SECRET
+    ):
+        return jsonify({
+            "message":
+            "Admin configuration is missing"
+        }), 500
+
+    if (
+        email != ADMIN_EMAIL
+        or password != ADMIN_PASSWORD
+    ):
+        return jsonify({
+            "message":
+            "Invalid admin credentials"
+        }), 401
+
+    return jsonify({
+        "message":
+        "Admin login successful",
+        "token":
+        create_admin_token()
+    })
+
+
+# ======================================================
+# ADMIN - ALL USERS
+# ======================================================
 
 @app.route("/admin/users", methods=["GET"])
 def admin_users():
-    # ... पूर्ण admin users code ...
 
+    token = request.headers.get(
+        "X-Admin-Token",
+        ""
+    )
 
-if __name__ == "__main__":
-    init_db()
-    app.run(debug=False)
+    if not verify_admin_token(token):
+
+        return jsonify({
+            "message":
+            "Unauthorized"
+        }), 401
+
+    conn = get_db()
+
+    rows = conn.execute("""
+        SELECT
+            u.id AS user_id,
+            u.name AS user_name,
+            u.email AS user_email,
+            h.id AS habit_id,
+            h.name AS habit_name,
+            h.category AS category,
+            h.target AS target,
+            h.status AS status
+        FROM users u
+        LEFT JOIN habits h
+            ON h.user_id = u.id
+        ORDER BY
+            u.id ASC,
+            h.id DESC
+    """).fetchall()
+
+    conn.close()
+
+    users = {}
+
+    for row in rows:
+
+        user_id = row["user_id"]
+
+        if user_id not in users:
+
+            users[user_id] = {
+                "user_id": user_id,
+                "name": row["user_name"],
+                "email": row["user_email"],
+                "habits": []
+            }
+
+        if row["habit_id"] is not None:
+
+            users[user_id]["habits"].append({
+                "id": row["habit_id"],
+                "name": row["habit_name"],
+                "category":
+                    row["category"],
+                "target":
+                    row["target"],
+                "status":
+                    row["status"]
+            })
+
+    for user in users.values():
+
+        total = len(
+            user["habits"]
+        )
+
+        completed = sum(
+            1
+            for habit in user["habits"]
+            if habit["status"]
+            == "Completed"
+        )
+
+        user["total_habits"] = total
+
+        user["completed_habits"] = (
+            completed
+        )
+
+        user["pending_habits"] = (
+            total - completed
+        )
+
+    return jsonify(
+        list(users.values())
+    )
+
 
 # ==========================================
 # Run Application
@@ -1356,4 +1545,4 @@ if __name__ == "__main__":
 
     init_db()
 
-    app.run(debug=True)
+    app.run(debug=False)
