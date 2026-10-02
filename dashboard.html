@@ -240,10 +240,8 @@ function updateGreeting() {
     const greeting = document.getElementById("greeting");
     const message = document.getElementById("greetingMessage");
 
-    // Get user name from localStorage
     const userName =
         localStorage.getItem("userName") || "User";
-
 
     if (hour >= 5 && hour < 12) {
 
@@ -253,9 +251,7 @@ function updateGreeting() {
         message.innerHTML =
             "Let's build better habits today.";
 
-    }
-
-    else if (hour >= 12 && hour < 17) {
+    } else if (hour >= 12 && hour < 17) {
 
         greeting.innerHTML =
             `Good Afternoon, ${userName}! ☀️`;
@@ -263,9 +259,7 @@ function updateGreeting() {
         message.innerHTML =
             "Keep going! You're doing great today.";
 
-    }
-
-    else if (hour >= 17 && hour < 21) {
+    } else if (hour >= 17 && hour < 21) {
 
         greeting.innerHTML =
             `Good Evening, ${userName}! 🌆`;
@@ -273,9 +267,7 @@ function updateGreeting() {
         message.innerHTML =
             "Take a moment to check your habits.";
 
-    }
-
-    else {
+    } else {
 
         greeting.innerHTML =
             `Good Night, ${userName}! 🌙`;
@@ -284,90 +276,6 @@ function updateGreeting() {
             "Review your progress and rest well.";
 
     }
-
-}
-
-
-// Run when dashboard loads
-updateGreeting();
-
-</script>
-
-
-<!-- Automatic Greeting -->
-
-<script>
-
-function updateGreeting() {
-
-    const now = new Date();
-    const hour = now.getHours();
-
-    const greeting = document.getElementById("greeting");
-    const message = document.getElementById("greetingMessage");
-
-    if (hour >= 5 && hour < 12) {
-
-        greeting.innerHTML = "Good Morning! 🌅";
-        message.innerHTML = "Let's build better habits today.";
-
-    } else if (hour >= 12 && hour < 17) {
-
-        greeting.innerHTML = "Good Afternoon! ☀️";
-        message.innerHTML = "Keep going! You're doing great today.";
-
-    } else if (hour >= 17 && hour < 21) {
-
-        greeting.innerHTML = "Good Evening! 🌆";
-        message.innerHTML = "Take a moment to check your habits.";
-
-    } else {
-
-        greeting.innerHTML = "Good Night! 🌙";
-        message.innerHTML = "Review your progress and rest well.";
-
-    }
-}
-
-updateGreeting();
-
-</script>
-
-<!-- JavaScript -->
-
-<script src="script.js"></script>
-
-<script>
-
-function updateGreeting() {
-
-    const now = new Date();
-    const hour = now.getHours();
-
-    const greeting = document.getElementById("greeting");
-    const message = document.getElementById("greetingMessage");
-
-    if (hour >= 5 && hour < 12) {
-
-        greeting.innerHTML = "Good Morning! 🌅";
-        message.innerHTML = "Let's build better habits today.";
-
-    } else if (hour >= 12 && hour < 17) {
-
-        greeting.innerHTML = "Good Afternoon! ☀️";
-        message.innerHTML = "Keep going! You're doing great today.";
-
-    } else if (hour >= 17 && hour < 21) {
-
-        greeting.innerHTML = "Good Evening! 🌆";
-        message.innerHTML = "Take a moment to check your habits.";
-
-    } else {
-
-        greeting.innerHTML = "Good Night! 🌙";
-        message.innerHTML = "Review your progress and rest well.";
-
-    }
 }
 
 updateGreeting();
@@ -375,6 +283,9 @@ updateGreeting();
 </script>
 
 <script src="script.js"></script>
+
+</body>
+</html>
 
 </body>
 </html>
