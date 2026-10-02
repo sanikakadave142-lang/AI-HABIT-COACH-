@@ -26,7 +26,6 @@ body{
 }
 
 /* LOGIN */
-
 .login-page{
     min-height:100vh;
     display:flex;
@@ -81,7 +80,6 @@ body{
 }
 
 /* DASHBOARD */
-
 .dashboard{
     display:none;
     min-height:100vh;
@@ -155,7 +153,6 @@ body{
 }
 
 /* STATS */
-
 .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -181,8 +178,7 @@ body{
     font-weight:bold;
 }
 
-/* SECTION */
-
+/* SECTIONS */
 .section{
     background:white;
     padding:25px;
@@ -198,8 +194,7 @@ body{
     margin-bottom:20px;
 }
 
-/* CHART */
-
+/* CHARTS */
 .analytics{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -218,7 +213,6 @@ body{
 }
 
 /* AI */
-
 .ai-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -242,7 +236,6 @@ body{
 }
 
 /* USERS */
-
 .search-box{
     width:100%;
     padding:13px;
@@ -333,7 +326,6 @@ body{
 }
 
 /* MODAL */
-
 .modal{
     display:none;
     position:fixed;
@@ -420,8 +412,15 @@ body{
 }
 
 /* MOBILE */
-
 @media(max-width:900px){
+
+    .sidebar{
+        width:200px;
+    }
+
+    .main{
+        margin-left:200px;
+    }
 
     .stats{
         grid-template-columns:repeat(2,1fr);
@@ -441,15 +440,6 @@ body{
     .sidebar{
         position:relative;
         width:100%;
-        height:auto;
-    }
-
-    .logout{
-        position:relative;
-        left:auto;
-        right:auto;
-        bottom:auto;
-        margin-top:15px;
     }
 
     .main{
@@ -679,7 +669,7 @@ body{
 </div>
 
 
-<!-- USER PROFILE -->
+<!-- USER PROFILE POPUP -->
 
 <div class="modal" id="userModal" onclick="closeModalOutside(event)">
 
@@ -717,7 +707,6 @@ body{
 
         </div>
 
-
         <div class="profile-stats">
 
             <div class="profile-stat">
@@ -736,7 +725,6 @@ body{
             </div>
 
         </div>
-
 
         <h3>📋 User Habits</h3>
 
@@ -805,7 +793,6 @@ document
                 data.message || "Invalid login";
 
             return;
-
         }
 
         localStorage.setItem(
@@ -813,13 +800,11 @@ document
             data.token
         );
 
-        document
-        .getElementById("loginPage")
-        .style.display = "none";
+        document.getElementById("loginPage")
+            .style.display = "none";
 
-        document
-        .getElementById("dashboard")
-        .style.display = "block";
+        document.getElementById("dashboard")
+            .style.display = "block";
 
         loadUsers();
 
@@ -861,7 +846,6 @@ async function loadUsers(){
         if(response.status === 401){
 
             logoutAdmin();
-
             return;
 
         }
@@ -923,16 +907,16 @@ function updateStats(){
     });
 
     document.getElementById("totalUsers")
-    .textContent = allUsers.length;
+        .textContent = allUsers.length;
 
     document.getElementById("totalHabits")
-    .textContent = totalHabits;
+        .textContent = totalHabits;
 
     document.getElementById("completedHabits")
-    .textContent = completed;
+        .textContent = completed;
 
     document.getElementById("pendingHabits")
-    .textContent = pending;
+        .textContent = pending;
 
 }
 
@@ -941,8 +925,8 @@ function updateStats(){
 
 function createCharts(){
 
-    let totalCompleted = 0;
-    let totalPending = 0;
+    let completed = 0;
+    let pending = 0;
 
     let categories = {};
 
@@ -951,10 +935,10 @@ function createCharts(){
 
     allUsers.forEach(user => {
 
-        totalCompleted +=
+        completed +=
             user.completed_habits || 0;
 
-        totalPending +=
+        pending +=
             user.pending_habits || 0;
 
         userNames.push(
@@ -978,18 +962,13 @@ function createCharts(){
     });
 
 
-    const completionCanvas =
-        document.getElementById(
-            "completionChart"
-        );
-
     if(completionChart){
         completionChart.destroy();
     }
 
     completionChart =
         new Chart(
-            completionCanvas,
+            document.getElementById("completionChart"),
             {
                 type:"doughnut",
 
@@ -1001,8 +980,8 @@ function createCharts(){
 
                     datasets:[{
                         data:[
-                            totalCompleted,
-                            totalPending
+                            completed,
+                            pending
                         ]
                     }]
                 }
@@ -1010,18 +989,13 @@ function createCharts(){
         );
 
 
-    const categoryCanvas =
-        document.getElementById(
-            "categoryChart"
-        );
-
     if(categoryChart){
         categoryChart.destroy();
     }
 
     categoryChart =
         new Chart(
-            categoryCanvas,
+            document.getElementById("categoryChart"),
             {
                 type:"bar",
 
@@ -1048,18 +1022,13 @@ function createCharts(){
         );
 
 
-    const userCanvas =
-        document.getElementById(
-            "userChart"
-        );
-
     if(userChart){
         userChart.destroy();
     }
 
     userChart =
         new Chart(
-            userCanvas,
+            document.getElementById("userChart"),
             {
                 type:"bar",
 
@@ -1068,7 +1037,6 @@ function createCharts(){
 
                     datasets:[{
                         label:"Total Habits",
-
                         data:userHabitCounts
                     }]
                 },
@@ -1090,7 +1058,7 @@ function createCharts(){
 
 function createInsights(){
 
-    let totalHabits = 0;
+    let total = 0;
     let completed = 0;
 
     let categories = {};
@@ -1099,7 +1067,7 @@ function createInsights(){
 
     allUsers.forEach(user => {
 
-        totalHabits +=
+        total +=
             user.total_habits || 0;
 
         completed +=
@@ -1127,28 +1095,26 @@ function createInsights(){
 
     });
 
-
     let rate = 0;
 
-    if(totalHabits > 0){
+    if(total > 0){
 
         rate =
             Math.round(
-                (completed / totalHabits) * 100
+                completed / total * 100
             );
 
     }
 
-
     let popularCategory = "-";
 
-    const categoryNames =
+    const names =
         Object.keys(categories);
 
-    if(categoryNames.length > 0){
+    if(names.length > 0){
 
         popularCategory =
-            categoryNames.reduce(
+            names.reduce(
                 (a,b) =>
                     categories[a] >= categories[b]
                     ? a
@@ -1157,15 +1123,14 @@ function createInsights(){
 
     }
 
-
     document.getElementById("completionRate")
-    .textContent = rate + "%";
+        .textContent = rate + "%";
 
     document.getElementById("popularCategory")
-    .textContent = popularCategory;
+        .textContent = popularCategory;
 
     document.getElementById("activeUser")
-    .textContent =
+        .textContent =
         activeUser
         ? activeUser.name
         : "-";
@@ -1178,9 +1143,7 @@ function createInsights(){
 function renderUsers(users){
 
     const container =
-        document.getElementById(
-            "usersContainer"
-        );
+        document.getElementById("usersContainer");
 
     if(!users.length){
 
@@ -1197,11 +1160,9 @@ function renderUsers(users){
             const habits =
                 user.habits || [];
 
-            const habitRows =
+            const rows =
                 habits.length
-
                 ?
-
                 habits.map(habit => `
 
                     <tr>
@@ -1284,7 +1245,8 @@ function renderUsers(users){
                         </span>
 
                         <span class="badge">
-                            📋 Habits: ${user.total_habits || 0}
+                            📋 Habits:
+                            ${user.total_habits || 0}
                         </span>
 
                         <span class="badge completed">
@@ -1314,9 +1276,7 @@ function renderUsers(users){
                         </thead>
 
                         <tbody>
-
-                            ${habitRows}
-
+                            ${rows}
                         </tbody>
 
                     </table>
@@ -1335,8 +1295,7 @@ function renderUsers(users){
 function filterUsers(){
 
     const search =
-        document
-        .getElementById("searchBox")
+        document.getElementById("searchBox")
         .value
         .toLowerCase();
 
@@ -1367,7 +1326,8 @@ function openUserProfile(userId){
     const user =
         allUsers.find(
             u =>
-            Number(u.user_id) === Number(userId)
+            Number(u.user_id) ===
+            Number(userId)
         );
 
     if(!user){
@@ -1375,52 +1335,50 @@ function openUserProfile(userId){
     }
 
     document.getElementById("profileName")
-    .textContent =
+        .textContent =
         "👤 " + (user.name || "User Profile");
 
     document.getElementById("profileId")
-    .textContent =
+        .textContent =
         user.user_id;
 
     document.getElementById("profileUserName")
-    .textContent =
+        .textContent =
         user.name || "-";
 
     document.getElementById("profileEmail")
-    .textContent =
+        .textContent =
         user.email || "-";
 
     document.getElementById("profileTotal")
-    .textContent =
+        .textContent =
         user.total_habits || 0;
 
     document.getElementById("profileCompleted")
-    .textContent =
+        .textContent =
         user.completed_habits || 0;
 
     document.getElementById("profilePending")
-    .textContent =
+        .textContent =
         user.pending_habits || 0;
 
 
     const habits =
         user.habits || [];
 
-    const profileHabits =
-        document.getElementById(
-            "profileHabits"
-        );
+    const box =
+        document.getElementById("profileHabits");
 
 
     if(!habits.length){
 
-        profileHabits.innerHTML =
+        box.innerHTML =
             "<p>No habits added yet.</p>";
 
     }
     else{
 
-        profileHabits.innerHTML = `
+        box.innerHTML = `
 
             <table class="habit-table">
 
@@ -1487,26 +1445,24 @@ function openUserProfile(userId){
 
 
     document.getElementById("userModal")
-    .style.display = "flex";
+        .style.display = "flex";
 
 }
 
 
-/* CLOSE MODAL */
+/* CLOSE */
 
 function closeUserModal(){
 
     document.getElementById("userModal")
-    .style.display = "none";
+        .style.display = "none";
 
 }
 
 function closeModalOutside(event){
 
     if(event.target.id === "userModal"){
-
         closeUserModal();
-
     }
 
 }
@@ -1528,46 +1484,34 @@ function escapeHTML(value){
 
 /* NAVIGATION */
 
-const navItems =
-    document.querySelectorAll(
-        ".nav-item[data-target]"
-    );
+document
+.querySelectorAll(".nav-item[data-target]")
+.forEach(item => {
 
-navItems.forEach(item => {
+    item.addEventListener("click",function(){
 
-    item.addEventListener(
-        "click",
-        function(){
+        const target =
+            document.getElementById(
+                this.dataset.target
+            );
 
-            const targetId =
-                this.getAttribute(
-                    "data-target"
-                );
-
-            const target =
-                document.getElementById(
-                    targetId
-                );
-
-            if(!target){
-                return;
-            }
-
-            navItems.forEach(nav => {
-
-                nav.classList.remove("active");
-
-            });
-
-            this.classList.add("active");
-
-            target.scrollIntoView({
-                behavior:"smooth",
-                block:"start"
-            });
-
+        if(!target){
+            return;
         }
-    );
+
+        document
+        .querySelectorAll(".nav-item")
+        .forEach(nav =>
+            nav.classList.remove("active")
+        );
+
+        this.classList.add("active");
+
+        target.scrollIntoView({
+            behavior:"smooth"
+        });
+
+    });
 
 });
 
@@ -1576,9 +1520,7 @@ navItems.forEach(item => {
 
 function logoutAdmin(){
 
-    localStorage.removeItem(
-        "adminToken"
-    );
+    localStorage.removeItem("adminToken");
 
     location.reload();
 
@@ -1587,29 +1529,24 @@ function logoutAdmin(){
 
 /* AUTO LOGIN */
 
-window.addEventListener(
-    "load",
-    function(){
+window.addEventListener("load",function(){
 
-        const token =
-            localStorage.getItem(
-                "adminToken"
-            );
+    const token =
+        localStorage.getItem("adminToken");
 
-        if(token){
+    if(token){
 
-            document.getElementById("loginPage")
+        document.getElementById("loginPage")
             .style.display = "none";
 
-            document.getElementById("dashboard")
+        document.getElementById("dashboard")
             .style.display = "block";
 
-            loadUsers();
-
-        }
+        loadUsers();
 
     }
-);
+
+});
 
 </script>
 
