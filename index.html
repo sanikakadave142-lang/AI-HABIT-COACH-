@@ -348,6 +348,12 @@
                         "true"
                     );
 
+                    // Clear previous user's local habit data
+localStorage.removeItem("habits");
+localStorage.removeItem("activities");
+localStorage.setItem("defaultActivitiesAdded", "true");
+sessionStorage.clear();
+
                     /* Remember only the email.
                        Password is not stored in localStorage. */
                     if (rememberMe) {
