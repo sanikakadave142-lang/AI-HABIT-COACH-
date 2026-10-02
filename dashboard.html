@@ -60,11 +60,13 @@
 
             <div>
 
-                <h1>
+                <!-- Automatic Greeting -->
+
+                <h1 id="greeting">
                     Good Morning! 👋
                 </h1>
 
-                <p>
+                <p id="greetingMessage">
                     Let's build better habits today.
                 </p>
 
@@ -160,18 +162,18 @@
 
 
                 <button
-    class="add-btn"
-    onclick="window.location.href='habits.html'">
+                    class="add-btn"
+                    onclick="window.location.href='habits.html'">
 
-    + Add Activity
+                    + Add Activity
 
-</button>
+                </button>
+
             </div>
 
 
 
-            <!-- IMPORTANT:
-                 Habits will appear here automatically -->
+            <!-- Habits will appear here automatically -->
 
             <div
                 class="habit-list"
@@ -226,10 +228,114 @@
 </div>
 
 
+<!-- ================= AUTOMATIC GREETING ================= -->
+
+<script>
+
+function updateGreeting() {
+
+    const now = new Date();
+    const hour = now.getHours();
+
+    const greeting = document.getElementById("greeting");
+    const message = document.getElementById("greetingMessage");
+
+    // Get user name from localStorage
+    const userName =
+        localStorage.getItem("userName") || "User";
+
+
+    if (hour >= 5 && hour < 12) {
+
+        greeting.innerHTML =
+            `Good Morning, ${userName}! 🌅`;
+
+        message.innerHTML =
+            "Let's build better habits today.";
+
+    }
+
+    else if (hour >= 12 && hour < 17) {
+
+        greeting.innerHTML =
+            `Good Afternoon, ${userName}! ☀️`;
+
+        message.innerHTML =
+            "Keep going! You're doing great today.";
+
+    }
+
+    else if (hour >= 17 && hour < 21) {
+
+        greeting.innerHTML =
+            `Good Evening, ${userName}! 🌆`;
+
+        message.innerHTML =
+            "Take a moment to check your habits.";
+
+    }
+
+    else {
+
+        greeting.innerHTML =
+            `Good Night, ${userName}! 🌙`;
+
+        message.innerHTML =
+            "Review your progress and rest well.";
+
+    }
+
+}
+
+
+// Run when dashboard loads
+updateGreeting();
+
+</script>
+
+
+<!-- Automatic Greeting -->
+
+<script>
+
+function updateGreeting() {
+
+    const now = new Date();
+    const hour = now.getHours();
+
+    const greeting = document.getElementById("greeting");
+    const message = document.getElementById("greetingMessage");
+
+    if (hour >= 5 && hour < 12) {
+
+        greeting.innerHTML = "Good Morning! 🌅";
+        message.innerHTML = "Let's build better habits today.";
+
+    } else if (hour >= 12 && hour < 17) {
+
+        greeting.innerHTML = "Good Afternoon! ☀️";
+        message.innerHTML = "Keep going! You're doing great today.";
+
+    } else if (hour >= 17 && hour < 21) {
+
+        greeting.innerHTML = "Good Evening! 🌆";
+        message.innerHTML = "Take a moment to check your habits.";
+
+    } else {
+
+        greeting.innerHTML = "Good Night! 🌙";
+        message.innerHTML = "Review your progress and rest well.";
+
+    }
+}
+
+updateGreeting();
+
+</script>
+
 <!-- JavaScript -->
 
 <script src="script.js"></script>
 
 </body>
-
 </html>
