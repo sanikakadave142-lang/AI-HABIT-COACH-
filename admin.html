@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Habit Coach - Admin</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout {
+            background: #dc2626;
+        }
+
+        .user-card {
+            background: #f8fafc;
+            padding: 18px;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #e5e7eb;
+        }
+
+        #adminDashboard {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div id="loginBox" class="box">
+
+        <h1>🤖 AI Habit Coach</h1>
+        <h2>Admin Login</h2>
+
+        <form id="adminLoginForm">
+
+            <input
+                type="email"
+                id="adminEmail"
+                placeholder="Admin Email"
+                required
+            >
+
+            <input
+                type="password"
+                id="adminPassword"
+                placeholder="Admin Password"
+                required
+            >
+
+            <button type="submit">
+                Admin Login
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div id="adminDashboard">
+
+        <div class="box">
+
+            <h1>Admin Dashboard</h1>
+
+            <button
+                class="logout"
+                onclick="logoutAdmin()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+        <div class="box">
+
+            <h2>All Users</h2>
+
+            <div id="usersContainer">
+                Loading...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API =
+    "https://ai-habit-coach-xmfn.onrender.com";
+
+
+async function adminLogin(email, password) {
+
+    const response =
+        await fetch(
+            API + "/admin/login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            }
+        );
+
+    const data =
+        await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            "Admin login failed"
+        );
+    }
+
+    localStorage.setItem(
+        "adminToken",
+        data.token
+    );
+}
+
+
+async function loadUsers() {
+
+    const token =
+        localStorage.getItem(
+            "adminToken"
+        );
+
+    const response =
+        await fetch(
+            API + "/admin/users",
+            {
+                headers: {
+                    "X-Admin-Token":
+                        token
+                }
+            }
+        );
+
+    const data =
+        await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            "Unable to load users"
+        );
+    }
+
+    renderUsers(data);
+}
+
+
+function renderUsers(users) {
+
+    const container =
+        document.getElementById(
+            "usersContainer"
+        );
+
+    container.innerHTML = "";
+
+    if (!users || users.length === 0) {
+
+        container.innerHTML =
+            "<p>No users found.</p>";
+
+        return;
+    }
+
+    users.forEach(function(user) {
+
+        let rows = "";
+
+        user.habits.forEach(function(habit) {
+
+            rows += `
+                <tr>
+                    <td>${escapeHTML(habit.name || "")}</td>
+                    <td>${escapeHTML(habit.category || "")}</td>
+                    <td>${escapeHTML(habit.target || "")}</td>
+                    <td>${escapeHTML(habit.status || "")}</td>
+                </tr>
+            `;
+        });
+
+        if (!rows) {
+            rows = `
+                <tr>
+                    <td colspan="4">
+                        No habits added
+                    </td>
+                </tr>
+            `;
+        }
+
+        const card =
+            document.createElement("div");
+
+        card.className = "user-card";
+
+        card.innerHTML = `
+            <h3>
+                User ID: ${user.user_id}
+            </h3>
+
+            <p>
+                <strong>Name:</strong>
+                ${escapeHTML(user.name || "")}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                ${escapeHTML(user.email || "")}
+            </p>
+
+            <p>
+                <strong>Total Habits:</strong>
+                ${user.total_habits}
+            </p>
+
+            <p>
+                <strong>Completed:</strong>
+                ${user.completed_habits}
+            </p>
+
+            <p>
+                <strong>Pending:</strong>
+                ${user.pending_habits}
+            </p>
+
+            <table>
+                <tr>
+                    <th>Habit</th>
+                    <th>Category</th>
+                    <th>Target</th>
+                    <th>Status</th>
+                </tr>
+
+                ${rows}
+
+            </table>
+        `;
+
+        container.appendChild(card);
+
+    });
+}
+
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+function logoutAdmin() {
+
+    localStorage.removeItem(
+        "adminToken"
+    );
+
+    location.reload();
+}
+
+
+document
+    .getElementById("adminLoginForm")
+    .addEventListener(
+        "submit",
+        async function(e) {
+
+            e.preventDefault();
+
+            const email =
+                document
+                    .getElementById(
+                        "adminEmail"
+                    )
+                    .value.trim();
+
+            const password =
+                document
+                    .getElementById(
+                        "adminPassword"
+                    )
+                    .value;
+
+            try {
+
+                await adminLogin(
+                    email,
+                    password
+                );
+
+                document
+                    .getElementById(
+                        "loginBox"
+                    )
+                    .style.display =
+                        "none";
+
+                document
+                    .getElementById(
+                        "adminDashboard"
+                    )
+                    .style.display =
+                        "block";
+
+                await loadUsers();
+
+            } catch(error) {
+
+                alert(
+                    error.message
+                );
+            }
+
+        }
+    );
+
+
+window.addEventListener(
+    "load",
+    async function() {
+
+        const token =
+            localStorage.getItem(
+                "adminToken"
+            );
+
+        if (!token) {
+            return;
+        }
+
+        document
+            .getElementById(
+                "loginBox"
+            )
+            .style.display =
+                "none";
+
+        document
+            .getElementById(
+                "adminDashboard"
+            )
+            .style.display =
+                "block";
+
+        try {
+
+            await loadUsers();
+
+        } catch(error) {
+
+            logoutAdmin();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
