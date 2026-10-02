@@ -1,6 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
+import os
+import time
+import json
+import base64
+import hmac
+import hashlib
 
 from ai.prediction import predict_habit
 
@@ -1323,6 +1329,24 @@ def get_ai_recommendations():
         for item in recommendations
     ])
 
+# ======================================================
+# ADMIN AUTHENTICATION
+# ======================================================
+
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+ADMIN_SECRET = os.getenv("ADMIN_SECRET", "")
+
+# ... इथे पूर्ण admin code ...
+
+@app.route("/admin/users", methods=["GET"])
+def admin_users():
+    # ... पूर्ण admin users code ...
+
+
+if __name__ == "__main__":
+    init_db()
+    app.run(debug=False)
 
 # ==========================================
 # Run Application
