@@ -1,44 +1,136 @@
-"use strict";
+// ======================================================
+// AI HABIT COACH - FRONTEND SCRIPT
+// FastAPI Backend Connected Version
+// ======================================================
 
-/* =========================================================
-   AI HABIT COACH - FRONTEND SCRIPT
-   Backend: FastAPI + MySQL
-   ========================================================= */
-
-const API_BASE_URL = "https://ai-habit-coach-backend.onrender.com";
+const API_BASE_URL =
+    "https://ai-habit-coach-backend.onrender.com";
 
 
-/* =========================================================
-   COMMON HELPERS
-   ========================================================= */
+// ======================================================
+// COMMON BACKEND REQUEST
+// ======================================================
 
-function getStoredUser() {
-    try {
-        const user = localStorage.getItem("backendUser");
+async function backendRequest(endpoint, options = {}) {
 
-        if (user) {
-            return JSON.parse(user);
+    const config = {
+        method: options.method || "GET",
+
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
         }
-    } catch (error) {
-        console.error("User data error:", error);
+    };
+
+    if (options.body !== undefined) {
+
+        config.body =
+            typeof options.body === "string"
+                ? options.body
+                : JSON.stringify(options.body);
     }
 
-    return null;
+    const response = await fetch(
+        API_BASE_URL + endpoint,
+        config
+    );
+
+    let data = {};
+
+    try {
+
+        data = await response.json();
+
+    } catch (error) {
+
+        data = {};
+    }
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.detail ||
+            data.message ||
+            "Something went wrong."
+        );
+    }
+
+    return data;
 }
 
 
+// ======================================================
+// USER STORAGE
+// ======================================================
+
 function saveBackendUser(data) {
 
+    /*
+        FastAPI response:
+
+        {
+            "success": true,
+            "message": "Login successful",
+            "user": {
+                "id": 2,
+                "name": "Test User",
+                "email": "test123@gmail.com"
+            }
+        }
+
+        This function supports BOTH:
+
+        data.user.id
+
+        and older format:
+
+        data.user_id
+        data.id
+    */
+
+    const sourceUser =
+        data.user || data;
+
     const user = {
-        id: data.user_id || data.id,
-        name: data.name || "",
-        email: data.email || ""
+
+        id:
+            sourceUser.id ||
+            sourceUser.user_id,
+
+        name:
+            sourceUser.name ||
+            "",
+
+        email:
+            sourceUser.email ||
+            ""
     };
+
+
+    // Make sure User ID exists
+
+    if (!user.id) {
+
+        console.error(
+            "Backend response:",
+            data
+        );
+
+        throw new Error(
+            "User ID was not returned by the backend."
+        );
+    }
+
+
+    // Save complete user object
 
     localStorage.setItem(
         "backendUser",
         JSON.stringify(user)
     );
+
+
+    // Save user ID
 
     localStorage.setItem(
         "user_id",
@@ -50,6 +142,9 @@ function saveBackendUser(data) {
         String(user.id)
     );
 
+
+    // Save user details
+
     localStorage.setItem(
         "userName",
         user.name
@@ -60,118 +155,85 @@ function saveBackendUser(data) {
         user.email
     );
 
+
+    console.log(
+        "Backend user saved:",
+        user
+    );
+
+    console.log(
+        "User ID:",
+        user.id
+    );
+
+
     return user;
 }
 
 
-function getUserId() {
+// ======================================================
+// GET STORED USER
+// ======================================================
 
-    const user = getStoredUser();
-
-    if (user && user.id) {
-        return Number(user.id);
-    }
-
-    const id =
-        localStorage.getItem("user_id") ||
-        localStorage.getItem("userId");
-
-    return id ? Number(id) : null;
-}
-
-
-function showMessage(message) {
-    alert(message);
-}
-
-
-function redirect(page) {
-    window.location.href = page;
-}
-
-
-/* =========================================================
-   BACKEND REQUEST
-   ========================================================= */
-
-async function backendRequest(endpoint, options = {}) {
-
-    const config = {
-
-        method: options.method || "GET",
-
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
-        }
-    };
-
-
-    if (options.body !== undefined) {
-
-        config.body =
-            typeof options.body === "string"
-                ? options.body
-                : JSON.stringify(options.body);
-    }
-
-
-    const response = await fetch(
-        API_BASE_URL + endpoint,
-        config
-    );
-
-
-    let data = {};
-
+function getStoredUser() {
 
     try {
 
-        data = await response.json();
+        const savedUser =
+            localStorage.getItem("backendUser");
+
+        if (!savedUser) {
+            return null;
+        }
+
+        return JSON.parse(savedUser);
 
     } catch (error) {
 
-        data = {};
-    }
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            data.detail ||
-            data.message ||
-            "Something went wrong."
+        console.error(
+            "Error reading stored user:",
+            error
         );
+
+        return null;
+    }
+}
+
+
+// ======================================================
+// GET USER ID
+// ======================================================
+
+function getUserId() {
+
+    const user =
+        getStoredUser();
+
+
+    if (user && user.id) {
+
+        return Number(user.id);
     }
 
 
-    return data;
+    const storedId =
+        localStorage.getItem("user_id") ||
+        localStorage.getItem("userId");
+
+
+    if (storedId) {
+
+        return Number(storedId);
+    }
+
+
+    return null;
 }
 
 
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
-async function loginUser(email, password) {
-
-    return await backendRequest(
-        "/login",
-        {
-            method: "POST",
-
-            body: {
-                email: email,
-                password: password
-            }
-        }
-    );
-}
-
-
-/* =========================================================
-   REGISTER
-   ========================================================= */
+// ======================================================
+// REGISTER USER
+// ======================================================
 
 async function registerUser(
     name,
@@ -194,15 +256,157 @@ async function registerUser(
 }
 
 
-/* =========================================================
-   LOGIN FORM
-   ========================================================= */
+// ======================================================
+// LOGIN USER
+// ======================================================
+
+async function loginUser(
+    email,
+    password
+) {
+
+    return await backendRequest(
+        "/login",
+        {
+            method: "POST",
+
+            body: {
+                email: email,
+                password: password
+            }
+        }
+    );
+}
+
+
+// ======================================================
+// REGISTER FORM
+// ======================================================
+
+function setupRegisterForm() {
+
+    const form =
+        document.getElementById(
+            "registerForm"
+        );
+
+    if (!form) {
+        return;
+    }
+
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const nameInput =
+                document.getElementById("name");
+
+            const emailInput =
+                document.getElementById("email");
+
+            const passwordInput =
+                document.getElementById("password");
+
+
+            const name =
+                nameInput
+                    ? nameInput.value.trim()
+                    : "";
+
+            const email =
+                emailInput
+                    ? emailInput.value.trim()
+                    : "";
+
+            const password =
+                passwordInput
+                    ? passwordInput.value
+                    : "";
+
+
+            if (!name ||
+                !email ||
+                !password) {
+
+                showMessage(
+                    "Please fill all fields.",
+                    true
+                );
+
+                return;
+            }
+
+
+            try {
+
+                const data =
+                    await registerUser(
+                        name,
+                        email,
+                        password
+                    );
+
+
+                console.log(
+                    "Registration response:",
+                    data
+                );
+
+
+                showMessage(
+                    data.message ||
+                    "Registration successful!"
+                );
+
+
+                form.reset();
+
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "index.html";
+
+                    },
+                    1000
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Registration error:",
+                    error
+                );
+
+
+                showMessage(
+                    error.message ||
+                    "Registration failed.",
+                    true
+                );
+            }
+
+        }
+    );
+}
+
+
+// ======================================================
+// LOGIN FORM
+// ======================================================
 
 function setupLoginForm() {
 
     const form =
-        document.getElementById("loginForm");
-
+        document.getElementById(
+            "loginForm"
+        );
 
     if (!form) {
         return;
@@ -217,17 +421,10 @@ function setupLoginForm() {
 
 
             const emailInput =
-                document.getElementById("loginEmail") ||
-                form.querySelector(
-                    'input[type="email"]'
-                );
-
+                document.getElementById("email");
 
             const passwordInput =
-                document.getElementById("loginPassword") ||
-                form.querySelector(
-                    'input[type="password"]'
-                );
+                document.getElementById("password");
 
 
             const email =
@@ -235,17 +432,18 @@ function setupLoginForm() {
                     ? emailInput.value.trim()
                     : "";
 
-
             const password =
                 passwordInput
                     ? passwordInput.value
                     : "";
 
 
-            if (!email || !password) {
+            if (!email ||
+                !password) {
 
                 showMessage(
-                    "Please enter email and password."
+                    "Please enter email and password.",
+                    true
                 );
 
                 return;
@@ -261,7 +459,23 @@ function setupLoginForm() {
                     );
 
 
-                saveBackendUser(data);
+                console.log(
+                    "Login response:",
+                    data
+                );
+
+
+                // IMPORTANT:
+                // Saves FastAPI nested user.id
+
+                const user =
+                    saveBackendUser(data);
+
+
+                console.log(
+                    "Logged in user:",
+                    user
+                );
 
 
                 localStorage.setItem(
@@ -288,7 +502,7 @@ function setupLoginForm() {
                             "dashboard.html";
 
                     },
-                    300
+                    500
                 );
 
 
@@ -302,146 +516,72 @@ function setupLoginForm() {
 
                 showMessage(
                     error.message ||
-                    "Invalid email or password."
+                    "Invalid email or password.",
+                    true
                 );
             }
+
         }
     );
 }
 
 
-/* =========================================================
-   REGISTER FORM
-   ========================================================= */
+// ======================================================
+// MESSAGE
+// ======================================================
 
-function setupRegisterForm() {
+function showMessage(
+    message,
+    isError = false
+) {
 
-    const form =
+    let messageBox =
         document.getElementById(
-            "registerForm"
+            "message"
         );
 
 
-    if (!form) {
+    if (!messageBox) {
+
+        messageBox =
+            document.getElementById(
+                "messageBox"
+            );
+    }
+
+
+    if (!messageBox) {
+
+        alert(message);
+
         return;
     }
 
 
-    form.addEventListener(
-        "submit",
-        async function (event) {
-
-            event.preventDefault();
+    messageBox.textContent =
+        message;
 
 
-            const nameInput =
-                document.getElementById(
-                    "registerName"
-                ) ||
-                form.querySelector(
-                    'input[name="name"]'
-                ) ||
-                form.querySelector(
-                    'input[type="text"]'
-                );
+    messageBox.style.display =
+        "block";
 
 
-            const emailInput =
-                document.getElementById(
-                    "registerEmail"
-                ) ||
-                form.querySelector(
-                    'input[type="email"]'
-                );
+    if (isError) {
 
+        messageBox.style.color =
+            "red";
 
-            const passwordInput =
-                document.getElementById(
-                    "registerPassword"
-                ) ||
-                form.querySelector(
-                    'input[type="password"]'
-                );
+    } else {
 
-
-            const name =
-                nameInput
-                    ? nameInput.value.trim()
-                    : "";
-
-
-            const email =
-                emailInput
-                    ? emailInput.value.trim()
-                    : "";
-
-
-            const password =
-                passwordInput
-                    ? passwordInput.value
-                    : "";
-
-
-            if (
-                !name ||
-                !email ||
-                !password
-            ) {
-
-                showMessage(
-                    "Please fill all registration fields."
-                );
-
-                return;
-            }
-
-
-            try {
-
-                await registerUser(
-                    name,
-                    email,
-                    password
-                );
-
-
-                showMessage(
-                    "Registration successful! Please login."
-                );
-
-
-                setTimeout(
-                    function () {
-
-                        window.location.href =
-                            "index.html";
-
-                    },
-                    500
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Registration error:",
-                    error
-                );
-
-
-                showMessage(
-                    error.message ||
-                    "Registration failed."
-                );
-            }
-        }
-    );
+        messageBox.style.color =
+            "green";
+    }
 }
 
 
-/* =========================================================
-   GET HABITS
-   ========================================================= */
+// ======================================================
+// GET HABITS
+// ======================================================
 
 async function getHabits() {
 
@@ -451,20 +591,21 @@ async function getHabits() {
 
     if (!userId) {
 
-        return [];
+        throw new Error(
+            "User ID not found. Please login again."
+        );
     }
 
 
     return await backendRequest(
-        "/habits?user_id=" +
-        encodeURIComponent(userId)
+        `/habits?user_id=${userId}`
     );
 }
 
 
-/* =========================================================
-   CREATE HABIT
-   ========================================================= */
+// ======================================================
+// CREATE HABIT
+// ======================================================
 
 async function createHabit(
     name,
@@ -479,41 +620,33 @@ async function createHabit(
     if (!userId) {
 
         throw new Error(
-            "Please login first."
+            "User ID not found."
         );
     }
 
 
     return await backendRequest(
-
-        "/habits?user_id=" +
-        encodeURIComponent(userId),
-
+        `/habits?user_id=${userId}`,
         {
             method: "POST",
 
             body: {
-
                 name: name,
-
-                category:
-                    category || null,
-
-                target:
-                    target || null
+                category: category,
+                target: target
             }
         }
     );
 }
 
 
-/* =========================================================
-   UPDATE HABIT
-   ========================================================= */
+// ======================================================
+// UPDATE HABIT
+// ======================================================
 
 async function updateHabit(
     habitId,
-    updates
+    status
 ) {
 
     const userId =
@@ -523,30 +656,27 @@ async function updateHabit(
     if (!userId) {
 
         throw new Error(
-            "Please login first."
+            "User ID not found."
         );
     }
 
 
     return await backendRequest(
-
-        "/habits/" +
-        encodeURIComponent(habitId) +
-        "?user_id=" +
-        encodeURIComponent(userId),
-
+        `/habits/${habitId}?user_id=${userId}`,
         {
             method: "PUT",
 
-            body: updates
+            body: {
+                status: status
+            }
         }
     );
 }
 
 
-/* =========================================================
-   DELETE HABIT
-   ========================================================= */
+// ======================================================
+// DELETE HABIT
+// ======================================================
 
 async function deleteHabitFromBackend(
     habitId
@@ -559,18 +689,13 @@ async function deleteHabitFromBackend(
     if (!userId) {
 
         throw new Error(
-            "Please login first."
+            "User ID not found."
         );
     }
 
 
     return await backendRequest(
-
-        "/habits/" +
-        encodeURIComponent(habitId) +
-        "?user_id=" +
-        encodeURIComponent(userId),
-
+        `/habits/${habitId}?user_id=${userId}`,
         {
             method: "DELETE"
         }
@@ -578,14 +703,14 @@ async function deleteHabitFromBackend(
 }
 
 
-/* =========================================================
-   HABIT LOG
-   ========================================================= */
+// ======================================================
+// CREATE HABIT LOG
+// ======================================================
 
 async function createHabitLog(
     habitId,
-    status = "Completed",
-    duration = null,
+    status,
+    duration = 0,
     note = ""
 ) {
 
@@ -596,16 +721,13 @@ async function createHabitLog(
     if (!userId) {
 
         throw new Error(
-            "Please login first."
+            "User ID not found."
         );
     }
 
 
     return await backendRequest(
-
-        "/habit-log?user_id=" +
-        encodeURIComponent(userId),
-
+        `/habit-log?user_id=${userId}`,
         {
             method: "POST",
 
@@ -618,7 +740,7 @@ async function createHabitLog(
                     status,
 
                 duration:
-                    duration,
+                    Number(duration) || 0,
 
                 note:
                     note
@@ -628,9 +750,9 @@ async function createHabitLog(
 }
 
 
-/* =========================================================
-   GET HABIT LOG
-   ========================================================= */
+// ======================================================
+// GET HABIT LOGS
+// ======================================================
 
 async function getHabitLogs() {
 
@@ -640,21 +762,21 @@ async function getHabitLogs() {
 
     if (!userId) {
 
-        return [];
+        throw new Error(
+            "User ID not found."
+        );
     }
 
 
     return await backendRequest(
-
-        "/habit-log?user_id=" +
-        encodeURIComponent(userId)
+        `/habit-log?user_id=${userId}`
     );
 }
 
 
-/* =========================================================
-   GET PROGRESS
-   ========================================================= */
+// ======================================================
+// GET PROGRESS
+// ======================================================
 
 async function getProgress() {
 
@@ -664,30 +786,234 @@ async function getProgress() {
 
     if (!userId) {
 
-        return {
-
-            completed: 0,
-
-            missed: 0,
-
-            total_logs: 0,
-
-            completion_percentage: 0
-        };
+        throw new Error(
+            "User ID not found."
+        );
     }
 
 
     return await backendRequest(
-
-        "/progress?user_id=" +
-        encodeURIComponent(userId)
+        `/progress?user_id=${userId}`
     );
 }
 
 
-/* =========================================================
-   HABIT FORM
-   ========================================================= */
+// ======================================================
+// COMPLETE HABIT
+// ======================================================
+
+async function completeHabit(
+    habitId
+) {
+
+    try {
+
+        await updateHabit(
+            habitId,
+            "Completed"
+        );
+
+
+        await createHabitLog(
+            habitId,
+            "Completed",
+            0,
+            ""
+        );
+
+
+        await loadHabits();
+
+
+        alert(
+            "Habit completed successfully!"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Complete habit error:",
+            error
+        );
+
+
+        alert(
+            error.message
+        );
+    }
+}
+
+
+// ======================================================
+// LOAD HABITS
+// ======================================================
+
+async function loadHabits() {
+
+    const container =
+        document.getElementById(
+            "habitsContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    try {
+
+        const data =
+            await getHabits();
+
+
+        console.log(
+            "Habits response:",
+            data
+        );
+
+
+        const habits =
+            data.habits ||
+            data.data ||
+            data;
+
+
+        container.innerHTML =
+            "";
+
+
+        if (!Array.isArray(habits) ||
+            habits.length === 0) {
+
+            container.innerHTML =
+                "<p>No habits found.</p>";
+
+            return;
+        }
+
+
+        habits.forEach(
+            function (habit) {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "habit-card";
+
+
+                card.innerHTML = `
+
+                    <h3>
+                        ${habit.name || "Habit"}
+                    </h3>
+
+                    <p>
+                        Category:
+                        ${habit.category || "-"}
+                    </p>
+
+                    <p>
+                        Target:
+                        ${habit.target || "-"}
+                    </p>
+
+                    <p>
+                        Status:
+                        ${habit.status || "Pending"}
+                    </p>
+
+                    <button
+                        onclick="completeHabit(${habit.id})"
+                    >
+                        Complete
+                    </button>
+
+                    <button
+                        onclick="deleteHabit(${habit.id})"
+                    >
+                        Delete
+                    </button>
+
+                `;
+
+
+                container.appendChild(
+                    card
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Load habits error:",
+            error
+        );
+
+
+        container.innerHTML =
+            `<p>${error.message}</p>`;
+    }
+}
+
+
+// ======================================================
+// DELETE HABIT
+// ======================================================
+
+async function deleteHabit(
+    habitId
+) {
+
+    if (!confirm(
+        "Are you sure you want to delete this habit?"
+    )) {
+
+        return;
+    }
+
+
+    try {
+
+        await deleteHabitFromBackend(
+            habitId
+        );
+
+
+        await loadHabits();
+
+
+        alert(
+            "Habit deleted successfully!"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Delete habit error:",
+            error
+        );
+
+
+        alert(
+            error.message
+        );
+    }
+}
+
+
+// ======================================================
+// HABIT FORM
+// ======================================================
 
 function setupHabitForm() {
 
@@ -709,13 +1035,19 @@ function setupHabitForm() {
             event.preventDefault();
 
 
-            /* -----------------------------
-               HABIT NAME
-               ----------------------------- */
-
             const nameInput =
                 document.getElementById(
                     "habitName"
+                );
+
+            const categoryInput =
+                document.getElementById(
+                    "habitCategory"
+                );
+
+            const targetInput =
+                document.getElementById(
+                    "habitTarget"
                 );
 
 
@@ -724,97 +1056,20 @@ function setupHabitForm() {
                     ? nameInput.value.trim()
                     : "";
 
+            const category =
+                categoryInput
+                    ? categoryInput.value.trim()
+                    : "";
 
-            /* -----------------------------
-               CATEGORY
-               ----------------------------- */
+            const target =
+                targetInput
+                    ? targetInput.value.trim()
+                    : "";
 
-            const categoryInput =
-                document.getElementById(
-                    "habitCategory"
-                );
-
-
-            const otherCategoryInput =
-                document.getElementById(
-                    "otherCategory"
-                );
-
-
-            let category = "";
-
-
-            if (categoryInput) {
-
-                category =
-                    categoryInput.value.trim();
-            }
-
-
-            if (
-                category === "Other" &&
-                otherCategoryInput
-            ) {
-
-                category =
-                    otherCategoryInput.value.trim();
-            }
-
-
-            /* -----------------------------
-               TARGET / GOAL
-               ----------------------------- */
-
-            const goalSelect =
-                document.getElementById(
-                    "habitGoalSelect"
-                );
-
-
-            const goalInput =
-                document.getElementById(
-                    "habitGoal"
-                );
-
-
-            let target = "";
-
-
-            if (goalSelect) {
-
-                target =
-                    goalSelect.value.trim();
-            }
-
-
-            if (
-                goalSelect &&
-                goalSelect.value === "Other" &&
-                goalInput
-            ) {
-
-                target =
-                    goalInput.value.trim();
-            }
-
-
-            if (
-                !target &&
-                goalInput
-            ) {
-
-                target =
-                    goalInput.value.trim();
-            }
-
-
-            /* -----------------------------
-               VALIDATION
-               ----------------------------- */
 
             if (!name) {
 
-                showMessage(
+                alert(
                     "Please enter habit name."
                 );
 
@@ -831,7 +1086,7 @@ function setupHabitForm() {
                 );
 
 
-                showMessage(
+                alert(
                     "Habit added successfully!"
                 );
 
@@ -839,24 +1094,7 @@ function setupHabitForm() {
                 form.reset();
 
 
-                if (otherCategoryInput) {
-
-                    otherCategoryInput.style.display =
-                        "none";
-                }
-
-
-                if (goalInput) {
-
-                    goalInput.style.display =
-                        "none";
-                }
-
-
                 await loadHabits();
-
-
-                await loadProgress();
 
 
             } catch (error) {
@@ -867,471 +1105,89 @@ function setupHabitForm() {
                 );
 
 
-                showMessage(
-                    error.message ||
-                    "Unable to add habit."
+                alert(
+                    error.message
                 );
             }
+
         }
     );
-
-
-    /* =====================================================
-       CATEGORY - OTHER
-       ===================================================== */
-
-    const categorySelect =
-        document.getElementById(
-            "habitCategory"
-        );
-
-
-    const otherCategory =
-        document.getElementById(
-            "otherCategory"
-        );
-
-
-    if (
-        categorySelect &&
-        otherCategory
-    ) {
-
-        categorySelect.addEventListener(
-            "change",
-            function () {
-
-                if (
-                    categorySelect.value ===
-                    "Other"
-                ) {
-
-                    otherCategory.style.display =
-                        "block";
-
-                } else {
-
-                    otherCategory.style.display =
-                        "none";
-
-                    otherCategory.value =
-                        "";
-                }
-            }
-        );
-    }
-
-
-    /* =====================================================
-       GOAL - OTHER
-       ===================================================== */
-
-    const goalSelect =
-        document.getElementById(
-            "habitGoalSelect"
-        );
-
-
-    const goalInput =
-        document.getElementById(
-            "habitGoal"
-        );
-
-
-    if (
-        goalSelect &&
-        goalInput
-    ) {
-
-        goalInput.style.display =
-            "none";
-
-
-        goalSelect.addEventListener(
-            "change",
-            function () {
-
-                if (
-                    goalSelect.value ===
-                    "Other"
-                ) {
-
-                    goalInput.style.display =
-                        "block";
-
-                } else {
-
-                    goalInput.style.display =
-                        "none";
-
-                    goalInput.value =
-                        "";
-                }
-            }
-        );
-    }
 }
 
 
-/* =========================================================
-   DISPLAY HABITS
-   ========================================================= */
-
-async function loadHabits() {
-
-    /* IMPORTANT:
-       habits.html uses habitsList
-    */
-
-    const container =
-        document.getElementById(
-            "habitsList"
-        ) ||
-        document.getElementById(
-            "habitsContainer"
-        ) ||
-        document.getElementById(
-            "habitList"
-        ) ||
-        document.querySelector(
-            ".habit-list"
-        );
-
-
-    if (!container) {
-
-        console.log(
-            "Habit list container not found."
-        );
-
-        return;
-    }
-
-
-    try {
-
-        const habits =
-            await getHabits();
-
-
-        container.innerHTML = "";
-
-
-        if (
-            !habits ||
-            habits.length === 0
-        ) {
-
-            container.innerHTML = `
-                <div class="no-habits">
-                    <h3>No habits found</h3>
-                    <p>Add your first habit to start tracking.</p>
-                </div>
-            `;
-
-            return;
-        }
-
-
-        habits.forEach(
-            function (habit) {
-
-                const card =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                card.className =
-                    "habit-card";
-
-
-                const status =
-                    habit.status ||
-                    "Pending";
-
-
-                const statusClass =
-                    status
-                        .toLowerCase()
-                        .replace(
-                            /\s+/g,
-                            "-"
-                        );
-
-
-                card.innerHTML = `
-
-                    <div class="habit-card-content">
-
-                        <h3>
-                            ${escapeHtml(
-                                habit.name
-                            )}
-                        </h3>
-
-
-                        <p>
-                            <strong>Category:</strong>
-                            ${escapeHtml(
-                                habit.category ||
-                                "Not set"
-                            )}
-                        </p>
-
-
-                        <p>
-                            <strong>Target:</strong>
-                            ${escapeHtml(
-                                habit.target ||
-                                "Not set"
-                            )}
-                        </p>
-
-
-                        <p>
-                            <strong>Status:</strong>
-
-                            <span class="habit-status ${statusClass}">
-                                ${escapeHtml(
-                                    status
-                                )}
-                            </span>
-
-                        </p>
-
-
-                        <div class="habit-actions">
-
-                            <button
-                                type="button"
-                                onclick="completeHabit(${habit.id})"
-                            >
-                                Complete
-                            </button>
-
-
-                            <button
-                                type="button"
-                                onclick="removeHabit(${habit.id})"
-                            >
-                                Delete
-                            </button>
-
-                        </div>
-
-                    </div>
-                `;
-
-
-                container.appendChild(
-                    card
-                );
-            }
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Load habits error:",
-            error
-        );
-
-
-        container.innerHTML = `
-
-            <div class="error-message">
-
-                <p>
-                    Unable to load habits.
-                </p>
-
-                <small>
-                    ${escapeHtml(
-                        error.message
-                    )}
-                </small>
-
-            </div>
-        `;
-    }
-}
-
-
-/* =========================================================
-   COMPLETE HABIT
-   ========================================================= */
-
-async function completeHabit(
-    habitId
-) {
-
-    try {
-
-        await updateHabit(
-
-            habitId,
-
-            {
-                status:
-                    "Completed"
-            }
-        );
-
-
-        await createHabitLog(
-
-            habitId,
-
-            "Completed"
-        );
-
-
-        showMessage(
-            "Habit marked as completed!"
-        );
-
-
-        await loadHabits();
-
-
-        await loadProgress();
-
-
-    } catch (error) {
-
-        console.error(
-            "Complete habit error:",
-            error
-        );
-
-
-        showMessage(
-            error.message ||
-            "Unable to complete habit."
-        );
-    }
-}
-
-
-/* =========================================================
-   DELETE HABIT
-   ========================================================= */
-
-async function removeHabit(
-    habitId
-) {
-
-    const confirmed =
-        window.confirm(
-            "Are you sure you want to delete this habit?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    try {
-
-        await deleteHabitFromBackend(
-            habitId
-        );
-
-
-        showMessage(
-            "Habit deleted successfully."
-        );
-
-
-        await loadHabits();
-
-
-        await loadProgress();
-
-
-    } catch (error) {
-
-        console.error(
-            "Delete habit error:",
-            error
-        );
-
-
-        showMessage(
-            error.message ||
-            "Unable to delete habit."
-        );
-    }
-}
-
-
-/* =========================================================
-   PROGRESS DISPLAY
-   ========================================================= */
+// ======================================================
+// LOAD PROGRESS
+// ======================================================
 
 async function loadProgress() {
 
+    const completedElement =
+        document.getElementById(
+            "completedCount"
+        );
+
+    const missedElement =
+        document.getElementById(
+            "missedCount"
+        );
+
+    const totalElement =
+        document.getElementById(
+            "totalCount"
+        );
+
+    const percentageElement =
+        document.getElementById(
+            "completionPercentage"
+        );
+
+
+    if (!completedElement &&
+        !missedElement &&
+        !totalElement &&
+        !percentageElement) {
+
+        return;
+    }
+
+
     try {
 
-        const progress =
+        const data =
             await getProgress();
 
 
-        const completedElement =
-            document.getElementById(
-                "completedCount"
-            );
-
-
-        const missedElement =
-            document.getElementById(
-                "missedCount"
-            );
-
-
-        const totalElement =
-            document.getElementById(
-                "totalLogs"
-            );
-
-
-        const percentageElement =
-            document.getElementById(
-                "completionPercentage"
-            );
+        console.log(
+            "Progress response:",
+            data
+        );
 
 
         if (completedElement) {
 
             completedElement.textContent =
-                progress.completed || 0;
+                data.completed || 0;
         }
 
 
         if (missedElement) {
 
             missedElement.textContent =
-                progress.missed || 0;
+                data.missed || 0;
         }
 
 
         if (totalElement) {
 
             totalElement.textContent =
-                progress.total_logs || 0;
+                data.total_logs || 0;
         }
 
 
         if (percentageElement) {
 
             percentageElement.textContent =
-                (
-                    progress.completion_percentage ||
-                    0
-                ) + "%";
+                `${data.completion_percentage || 0}%`;
         }
 
 
@@ -1345,9 +1201,9 @@ async function loadProgress() {
 }
 
 
-/* =========================================================
-   USER INFORMATION
-   ========================================================= */
+// ======================================================
+// DISPLAY USER INFORMATION
+// ======================================================
 
 function displayUserInformation() {
 
@@ -1355,36 +1211,14 @@ function displayUserInformation() {
         getStoredUser();
 
 
-    const savedName =
-        localStorage.getItem(
-            "userName"
-        );
-
-
-    const savedEmail =
-        localStorage.getItem(
-            "userEmail"
-        ) ||
-        localStorage.getItem(
-            "loginEmail"
-        );
-
-
-    const name =
-        user?.name ||
-        savedName ||
-        "User";
-
-
-    const email =
-        user?.email ||
-        savedEmail ||
-        "";
+    if (!user) {
+        return;
+    }
 
 
     const nameElements =
         document.querySelectorAll(
-            ".user-name, #userName, #welcomeName"
+            ".user-name"
         );
 
 
@@ -1392,14 +1226,14 @@ function displayUserInformation() {
         function (element) {
 
             element.textContent =
-                name;
+                user.name || "";
         }
     );
 
 
     const emailElements =
         document.querySelectorAll(
-            ".user-email, #userEmail"
+            ".user-email"
         );
 
 
@@ -1407,15 +1241,41 @@ function displayUserInformation() {
         function (element) {
 
             element.textContent =
-                email;
+                user.email || "";
         }
     );
+
+
+    const nameElement =
+        document.getElementById(
+            "userName"
+        );
+
+
+    if (nameElement) {
+
+        nameElement.textContent =
+            user.name || "";
+    }
+
+
+    const emailElement =
+        document.getElementById(
+            "userEmail"
+        );
+
+
+    if (emailElement) {
+
+        emailElement.textContent =
+            user.email || "";
+    }
 }
 
 
-/* =========================================================
-   LOGOUT
-   ========================================================= */
+// ======================================================
+// LOGOUT
+// ======================================================
 
 function logoutUser() {
 
@@ -1423,31 +1283,25 @@ function logoutUser() {
         "backendUser"
     );
 
-
     localStorage.removeItem(
         "user_id"
     );
-
 
     localStorage.removeItem(
         "userId"
     );
 
-
     localStorage.removeItem(
         "userName"
     );
-
 
     localStorage.removeItem(
         "userEmail"
     );
 
-
     localStorage.removeItem(
         "loginEmail"
     );
-
 
     localStorage.removeItem(
         "loggedIn"
@@ -1459,66 +1313,17 @@ function logoutUser() {
 }
 
 
-/* =========================================================
-   LOGOUT BUTTON
-   ========================================================= */
-
-function setupLogout() {
-
-    const buttons =
-        document.querySelectorAll(
-            "#logoutBtn, .logout-btn, [data-action='logout']"
-        );
-
-
-    buttons.forEach(
-        function (button) {
-
-            button.addEventListener(
-                "click",
-                function (event) {
-
-                    event.preventDefault();
-
-                    logoutUser();
-                }
-            );
-        }
-    );
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-   ========================================================= */
-
-function escapeHtml(value) {
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-
-    div.textContent =
-        value === null ||
-        value === undefined
-            ? ""
-            : String(value);
-
-
-    return div.innerHTML;
-}
-
-
-/* =========================================================
-   CHECK LOGIN
-   ========================================================= */
+// ======================================================
+// LOGIN CHECK
+// ======================================================
 
 function checkLogin() {
 
-    const userId =
-        getUserId();
+    const publicPages = [
+        "index.html",
+        "register.html",
+        ""
+    ];
 
 
     const currentPage =
@@ -1527,23 +1332,22 @@ function checkLogin() {
             .pop();
 
 
-    const publicPages = [
-        "",
-        "index.html",
-        "register.html"
-    ];
+    if (publicPages.includes(
+        currentPage
+    )) {
+
+        return true;
+    }
 
 
-    if (
-        !userId &&
-        !publicPages.includes(
-            currentPage
-        )
-    ) {
+    const userId =
+        getUserId();
 
-        console.log(
-            "User not logged in."
-        );
+
+    if (!userId) {
+
+        window.location.href =
+            "index.html";
 
         return false;
     }
@@ -1553,60 +1357,220 @@ function checkLogin() {
 }
 
 
-/* =========================================================
-   PAGE INITIALIZATION
-   ========================================================= */
+// ======================================================
+// AI ADVICE
+// ======================================================
+
+async function quickQuestion(
+    question
+) {
+
+    const userId =
+        getUserId();
+
+
+    if (!userId) {
+
+        throw new Error(
+            "Please login first."
+        );
+    }
+
+
+    return await backendRequest(
+        "/ai/advice",
+        {
+            method: "POST",
+
+            body: {
+
+                question:
+                    question,
+
+                user_id:
+                    userId
+            }
+        }
+    );
+}
+
+
+// ======================================================
+// ASK AI QUESTION
+// ======================================================
+
+async function askAIQuestion() {
+
+    const input =
+        document.getElementById(
+            "aiQuestion"
+        );
+
+
+    const result =
+        document.getElementById(
+            "aiResponse"
+        );
+
+
+    if (!input) {
+        return;
+    }
+
+
+    const question =
+        input.value.trim();
+
+
+    if (!question) {
+
+        if (result) {
+
+            result.textContent =
+                "Please enter your question.";
+        }
+
+        return;
+    }
+
+
+    try {
+
+        if (result) {
+
+            result.textContent =
+                "AI is thinking...";
+        }
+
+
+        const response =
+            await quickQuestion(
+                question
+            );
+
+
+        console.log(
+            "AI response:",
+            response
+        );
+
+
+        const answer =
+            response.advice ||
+            response.message ||
+            response.response ||
+            response.answer ||
+            "No response received.";
+
+
+        if (result) {
+
+            result.textContent =
+                answer;
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "AI error:",
+            error
+        );
+
+
+        if (result) {
+
+            result.textContent =
+                error.message;
+        }
+    }
+}
+
+
+// ======================================================
+// GLOBAL FUNCTIONS
+// ======================================================
+
+window.logoutUser =
+    logoutUser;
+
+window.completeHabit =
+    completeHabit;
+
+window.deleteHabit =
+    deleteHabit;
+
+window.askAIQuestion =
+    askAIQuestion;
+
+window.quickQuestion =
+    quickQuestion;
+
+
+// ======================================================
+// PAGE LOAD
+// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
         console.log(
-            "AI Habit Coach frontend loaded."
+            "AI Habit Coach loaded."
         );
 
-
         console.log(
-            "Backend:",
+            "API:",
             API_BASE_URL
-        );
-
-
-        console.log(
-            "User ID:",
-            getUserId()
         );
 
 
         setupLoginForm();
 
-
         setupRegisterForm();
 
-
         setupHabitForm();
-
-
-        setupLogout();
 
 
         displayUserInformation();
 
 
-        /*
-           Load habits only when
-           habit list exists.
-        */
+        // Only check login on
+        // protected pages
+
+        const currentPage =
+            window.location.pathname
+                .split("/")
+                .pop();
+
+
+        const protectedPages = [
+            "dashboard.html",
+            "habits.html",
+            "progress.html",
+            "ai-coach.html",
+            "admin.html"
+        ];
+
+
+        if (
+            protectedPages.includes(
+                currentPage
+            )
+        ) {
+
+            if (!checkLogin()) {
+                return;
+            }
+        }
+
+
+        // Load habits if page has
+        // habits container
 
         if (
             document.getElementById(
-                "habitsList"
-            ) ||
-            document.getElementById(
                 "habitsContainer"
-            ) ||
-            document.getElementById(
-                "habitList"
             )
         ) {
 
@@ -1614,10 +1578,8 @@ document.addEventListener(
         }
 
 
-        /*
-           Load progress when
-           progress elements exist.
-        */
+        // Load progress if page
+        // contains progress elements
 
         if (
             document.getElementById(
@@ -1630,287 +1592,6 @@ document.addEventListener(
 
             loadProgress();
         }
+
     }
 );
-
-
-/* =========================================================
-   GLOBAL FUNCTIONS
-   ========================================================= */
-
-window.loginUser =
-    loginUser;
-
-
-window.registerUser =
-    registerUser;
-
-
-window.getHabits =
-    getHabits;
-
-
-window.createHabit =
-    createHabit;
-
-
-window.updateHabit =
-    updateHabit;
-
-
-window.deleteHabitFromBackend =
-    deleteHabitFromBackend;
-
-
-window.createHabitLog =
-    createHabitLog;
-
-
-window.getHabitLogs =
-    getHabitLogs;
-
-
-window.getProgress =
-    getProgress;
-
-
-window.completeHabit =
-    completeHabit;
-
-
-window.removeHabit =
-    removeHabit;
-
-
-window.logoutUser =
-    logoutUser;
-
-
-window.loadHabits =
-    loadHabits;
-
-
-window.loadProgress =
-    loadProgress;
-
-
-window.getUserId =
-    getUserId;
-
-/* =========================================================
-   AI COACH
-   ========================================================= */
-
-async function quickQuestion(question) {
-
-    console.log("Quick Question:", question);
-
-    const userId = getUserId();
-
-    if (!userId) {
-
-        const responseBox =
-            document.getElementById("aiResponse");
-
-        if (responseBox) {
-
-            responseBox.innerHTML = `
-                <div class="response-title">
-                    ⚠️ Login Required
-                </div>
-
-                <div class="response-text error">
-                    Please login first.
-                </div>
-            `;
-        }
-
-        return;
-    }
-
-
-    const responseBox =
-        document.getElementById("aiResponse");
-
-
-    /* Show loading */
-
-    if (responseBox) {
-
-        responseBox.innerHTML = `
-            <div class="response-title">
-                🤖 AI Coach
-            </div>
-
-            <div class="response-text loading">
-                Thinking... ⏳
-            </div>
-        `;
-    }
-
-
-    try {
-
-        const response =
-            await backendRequest(
-                "/ai/advice",
-                {
-                    method: "POST",
-
-                    body: {
-                        question: question,
-                        user_id: Number(userId)
-                    }
-                }
-            );
-
-
-        console.log(
-            "AI Response:",
-            response
-        );
-
-
-        const advice =
-            response.advice ||
-            response.message ||
-            response.response ||
-            response.answer ||
-            "AI advice received.";
-
-
-        if (responseBox) {
-
-            responseBox.innerHTML = `
-                <div class="response-title">
-                    🤖 AI Coach Response
-                </div>
-
-                <div class="response-text">
-                    ${escapeHtml(advice)}
-                </div>
-            `;
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "Quick question error:",
-            error
-        );
-
-
-        if (responseBox) {
-
-            responseBox.innerHTML = `
-                <div class="response-title">
-                    ❌ Error
-                </div>
-
-                <div class="response-text error">
-                    ${escapeHtml(
-                        error.message ||
-                        "Unable to get AI advice."
-                    )}
-                </div>
-            `;
-        }
-    }
-}
-
-
-/* =========================================================
-   CUSTOM AI QUESTION
-   ========================================================= */
-
-async function askAIQuestion() {
-
-    const input =
-        document.getElementById("aiQuestion");
-
-
-    if (!input) {
-
-        console.error(
-            "AI question input not found."
-        );
-
-        return;
-    }
-
-
-    const question =
-        input.value.trim();
-
-
-    if (!question) {
-
-        const responseBox =
-            document.getElementById("aiResponse");
-
-
-        if (responseBox) {
-
-            responseBox.innerHTML = `
-                <div class="response-title">
-                    ⚠️ Question Required
-                </div>
-
-                <div class="response-text error">
-                    Please enter a question.
-                </div>
-            `;
-        }
-
-        return;
-    }
-
-
-    await quickQuestion(question);
-}
-
-
-/* =========================================================
-   ENTER KEY
-   ========================================================= */
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        const input =
-            document.getElementById(
-                "aiQuestion"
-            );
-
-
-        if (
-            input &&
-            document.activeElement === input &&
-            event.key === "Enter"
-        ) {
-
-            event.preventDefault();
-
-            askAIQuestion();
-        }
-    }
-);
-
-
-/* =========================================================
-   GLOBAL AI FUNCTIONS
-   ========================================================= */
-
-window.quickQuestion =
-    quickQuestion;
-
-
-window.askAIQuestion =
-    askAIQuestion;
-
-
-/* =========================================================
-   END
-   ========================================================= */
