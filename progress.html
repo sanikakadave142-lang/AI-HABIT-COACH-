@@ -1,281 +1,817 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AI Habit Coach - Progress</title>
+    <title>Progress - AI Habit Coach</title>
 
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
+        body {
+            background: #f4f7fb;
+            min-height: 100vh;
+            color: #222;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .nav-links a,
+        .logout-btn {
+            text-decoration: none;
+            border: none;
+            background: transparent;
+            padding: 9px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            background: #eaf1ff;
+            color: #2563eb;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* MAIN */
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #666;
+        }
+
+        /* CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        /* PROGRESS */
+        .progress-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .progress-card h2 {
+            margin-bottom: 20px;
+            color: #1e3a8a;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 25px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #2563eb;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        .percentage-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        /* MESSAGE */
+        .message-box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .message-box h2 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .message-box p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+        .error {
+            text-align: center;
+            color: #dc2626;
+            padding: 20px;
+            display: none;
+        }
+
+        /* MOBILE */
+        @media (max-width: 800px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .navbar {
+                padding: 12px 15px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title h1 {
+                font-size: 26px;
+            }
+
+            .progress-card {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
-
 
 <body>
 
-<div class="dashboard">
+    <!-- NAVBAR -->
+    <nav class="navbar">
 
+        <div class="logo">
+            AI Habit Coach
+        </div>
 
-    <!-- ================= SIDEBAR ================= -->
-
-    <aside class="sidebar">
-
-        <h2>🤖 AI Habit Coach</h2>
-
-        <nav>
+        <div class="nav-links">
 
             <a href="dashboard.html">
-                🏠 Dashboard
+                Dashboard
             </a>
 
             <a href="habits.html">
-                📋 My Activities
+                Habits
             </a>
 
-            <a href="progress.html" class="active">
-                📊 Progress
+            <a href="progress.html">
+                Progress
             </a>
 
             <a href="ai-coach.html">
-                🤖 AI Coach
+                AI Coach
             </a>
 
-        </nav>
+            <button class="logout-btn" onclick="logout()">
+                Logout
+            </button>
 
+        </div>
 
-        <button
-            class="logout-btn"
-            onclick="logout()">
+    </nav>
 
-            Logout
 
-        </button>
+    <!-- MAIN -->
+    <div class="container">
 
-    </aside>
+        <div class="page-title">
 
+            <h1>My Progress</h1>
 
+            <p>
+                Track your habit completion and daily performance
+            </p>
 
-    <!-- ================= MAIN CONTENT ================= -->
+        </div>
 
-    <main class="main-content">
 
+        <!-- LOADING -->
+        <div id="loadingMessage" class="loading">
+            Loading your progress...
+        </div>
 
-        <!-- ================= HEADER ================= -->
+        <!-- ERROR -->
+        <div id="errorMessage" class="error"></div>
 
-        <header class="top-header">
 
-            <div>
+        <!-- STAT CARDS -->
+        <div class="stats-grid">
 
-                <h1>
-                    My Progress 📊
-                </h1>
+            <div class="stat-card">
 
-                <p>
-                    Track your activity performance and consistency.
-                </p>
-
-            </div>
-
-
-            <div class="profile">
-                👤
-            </div>
-
-        </header>
-
-
-
-        <!-- ================= PROGRESS STATISTICS ================= -->
-
-        <section class="progress-stats">
-
-
-            <!-- TOTAL ACTIVITIES -->
-
-            <div class="progress-stat-card">
-
-                <div class="progress-icon purple">
-                    📋
-                </div>
-
-                <div>
-
-                    <h2 id="progressTotal">
-                        0
-                    </h2>
-
-                    <p>
-                        Total Activities
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- COMPLETED ACTIVITIES -->
-
-            <div class="progress-stat-card">
-
-                <div class="progress-icon green">
-                    ✅
-                </div>
-
-                <div>
-
-                    <h2 id="progressCompleted">
-                        0
-                    </h2>
-
-                    <p>
-                        Completed Activities
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- COMPLETION RATE -->
-
-            <div class="progress-stat-card">
-
-                <div class="progress-icon blue">
-                    🎯
-                </div>
-
-                <div>
-
-                    <h2 id="progressRate">
-                        0%
-                    </h2>
-
-                    <p>
-                        Completion Rate
-                    </p>
-
-                </div>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ================= OVERALL PROGRESS ================= -->
-
-        <section class="progress-box">
-
-
-            <div class="section-title">
-
-                <div>
-
-                    <h2>
-                        Overall Progress
-                    </h2>
-
-                    <p>
-                        Your current activity completion
-                    </p>
-
-                </div>
-
-
-                <span
-                    class="week-label"
-                    id="overallPercentage">
-
-                    0%
-
-                </span>
-
-            </div>
-
-
-
-            <!-- PROGRESS BAR -->
-
-            <div class="progress-line">
+                <h3>
+                    Completed
+                </h3>
 
                 <div
-                    class="progress-line-fill"
-                    id="overallProgressBar">
-
+                    class="stat-number"
+                    id="completedCount">
+                    0
                 </div>
 
             </div>
 
 
-        </section>
+            <div class="stat-card">
 
+                <h3>
+                    Total Logs
+                </h3>
 
-
-        <!-- ================= COMPLETED ACTIVITIES ================= -->
-
-        <section class="progress-box">
-
-            <div class="section-title">
-
-                <div>
-
-                    <h2>
-                        Completed Activities ✅
-                    </h2>
-
-                    <p>
-                        Activities that you have completed
-                    </p>
-
+                <div
+                    class="stat-number"
+                    id="totalCount">
+                    0
                 </div>
 
             </div>
 
+
+            <div class="stat-card">
+
+                <h3>
+                    Completion
+                </h3>
+
+                <div
+                    class="stat-number"
+                    id="completionPercentage">
+                    0%
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    Missed
+                </h3>
+
+                <div
+                    class="stat-number"
+                    id="missedCount">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROGRESS BAR -->
+        <div class="progress-card">
+
+            <h2>
+                Overall Progress
+            </h2>
+
+            <div class="progress-bar-bg">
+
+                <div
+                    id="progressBar"
+                    class="progress-bar">
+                </div>
+
+            </div>
 
             <div
-                id="completedActivitiesList"
-                style="margin-top:20px;">
-
-                <p>
-                    No activities completed yet.
-                </p>
-
+                id="percentageText"
+                class="percentage-text">
+                0%
             </div>
 
-        </section>
+        </div>
 
 
+        <!-- MESSAGE -->
+        <div class="message-box">
 
-    </main>
+            <h2>
+                Keep Going! 💪
+            </h2>
 
-</div>
+            <p id="progressMessage">
+                Complete your habits regularly to improve your progress.
+            </p>
+
+        </div>
+
+    </div>
 
 
+    <script>
 
-<!-- ================= JAVASCRIPT ================= -->
+        /* ================================
+           BACKEND URL
+        ================================= */
 
-<script src="script.js"></script>
+        const API_BASE_URL =
+            "https://ai-habit-coach-backend.onrender.com";
 
 
-<script>
+        /* ================================
+           GET USER ID
+        ================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+        function getUserId() {
 
-        displayProgress();
+            const backendUser =
+                localStorage.getItem("backendUser");
 
-    }
-);
+            if (backendUser) {
 
-</script>
+                try {
 
+                    const user =
+                        JSON.parse(backendUser);
+
+                    if (user.id) {
+                        return user.id;
+                    }
+
+                    if (user.user_id) {
+                        return user.user_id;
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "backendUser parse error:",
+                        error
+                    );
+
+                }
+
+            }
+
+
+            const userId =
+                localStorage.getItem("user_id");
+
+            if (userId) {
+                return userId;
+            }
+
+
+            const oldUserId =
+                localStorage.getItem("userId");
+
+            if (oldUserId) {
+                return oldUserId;
+            }
+
+
+            return null;
+        }
+
+
+        /* ================================
+           DISPLAY PROGRESS
+        ================================= */
+
+        async function displayProgress() {
+
+            const loading =
+                document.getElementById(
+                    "loadingMessage"
+                );
+
+            const errorBox =
+                document.getElementById(
+                    "errorMessage"
+                );
+
+
+            try {
+
+                const userId =
+                    getUserId();
+
+
+                console.log(
+                    "Progress User ID:",
+                    userId
+                );
+
+
+                if (!userId) {
+
+                    throw new Error(
+                        "User ID not found. Please login again."
+                    );
+
+                }
+
+
+                const response =
+                    await fetch(
+                        API_BASE_URL +
+                        "/progress?user_id=" +
+                        encodeURIComponent(userId)
+                    );
+
+
+                console.log(
+                    "Progress API Status:",
+                    response.status
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "Progress API Response:",
+                    data
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        data.message ||
+                        "Unable to load progress."
+                    );
+
+                }
+
+
+                /*
+                   Backend response can be:
+
+                   {
+                     success: true,
+                     completed: 1,
+                     total_logs: 2,
+                     completion_percentage: 50,
+                     missed: 1
+                   }
+
+                   OR data may be inside data.
+                */
+
+
+                let progressData = data;
+
+
+                if (
+                    data.data &&
+                    typeof data.data === "object"
+                ) {
+
+                    progressData =
+                        data.data;
+
+                }
+
+
+                const completed =
+                    Number(
+                        progressData.completed ??
+                        progressData.completed_habits ??
+                        0
+                    );
+
+
+                const total =
+                    Number(
+                        progressData.total_logs ??
+                        progressData.total ??
+                        progressData.total_habits ??
+                        0
+                    );
+
+
+                let percentage =
+                    Number(
+                        progressData.completion_percentage ??
+                        progressData.percentage ??
+                        0
+                    );
+
+
+                const missed =
+                    Number(
+                        progressData.missed ??
+                        progressData.missed_days ??
+                        0
+                    );
+
+
+                /* Calculate percentage if backend
+                   does not send it */
+
+                if (
+                    !Number.isFinite(percentage) ||
+                    percentage === 0
+                ) {
+
+                    if (total > 0) {
+
+                        percentage =
+                            (completed / total) * 100;
+
+                    } else {
+
+                        percentage = 0;
+
+                    }
+
+                }
+
+
+                percentage =
+                    Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            percentage
+                        )
+                    );
+
+
+                percentage =
+                    Math.round(
+                        percentage * 100
+                    ) / 100;
+
+
+                /* ================================
+                   UPDATE HTML
+                ================================= */
+
+
+                document.getElementById(
+                    "completedCount"
+                ).textContent = completed;
+
+
+                document.getElementById(
+                    "totalCount"
+                ).textContent = total;
+
+
+                document.getElementById(
+                    "completionPercentage"
+                ).textContent =
+                    percentage + "%";
+
+
+                document.getElementById(
+                    "missedCount"
+                ).textContent = missed;
+
+
+                document.getElementById(
+                    "progressBar"
+                ).style.width =
+                    percentage + "%";
+
+
+                document.getElementById(
+                    "percentageText"
+                ).textContent =
+                    percentage + "%";
+
+
+                /* Progress message */
+
+                const message =
+                    document.getElementById(
+                        "progressMessage"
+                    );
+
+
+                if (percentage >= 80) {
+
+                    message.textContent =
+                        "Excellent work! 🎉 You are maintaining your habits very well. Keep going!";
+
+                }
+
+                else if (percentage >= 50) {
+
+                    message.textContent =
+                        "Good progress! 👍 Keep completing your habits regularly.";
+
+                }
+
+                else if (percentage > 0) {
+
+                    message.textContent =
+                        "You have started well. 💪 Stay consistent and improve your progress every day.";
+
+                }
+
+                else {
+
+                    message.textContent =
+                        "No completed habits yet. Start completing your habits to see your progress here.";
+
+                }
+
+
+                if (loading) {
+                    loading.style.display = "none";
+                }
+
+
+                console.log(
+                    "Progress displayed successfully."
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Progress loading error:",
+                    error
+                );
+
+
+                if (loading) {
+                    loading.style.display = "none";
+                }
+
+
+                if (errorBox) {
+
+                    errorBox.style.display =
+                        "block";
+
+                    errorBox.textContent =
+                        error.message ||
+                        "Unable to load progress.";
+
+                }
+
+            }
+
+        }
+
+
+        /* ================================
+           LOGOUT
+        ================================= */
+
+        function logout() {
+
+            localStorage.removeItem(
+                "backendUser"
+            );
+
+            localStorage.removeItem(
+                "user_id"
+            );
+
+            localStorage.removeItem(
+                "userId"
+            );
+
+            localStorage.removeItem(
+                "userName"
+            );
+
+            localStorage.removeItem(
+                "userEmail"
+            );
+
+            localStorage.removeItem(
+                "loginEmail"
+            );
+
+            localStorage.removeItem(
+                "loggedIn"
+            );
+
+
+            window.location.href =
+                "index.html";
+
+        }
+
+
+        /* Make functions available globally */
+
+        window.displayProgress =
+            displayProgress;
+
+        window.logout =
+            logout;
+
+
+        /* ================================
+           PAGE LOAD
+        ================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                console.log(
+                    "Progress page loaded."
+                );
+
+                displayProgress();
+
+            }
+        );
+
+    </script>
 
 </body>
-
 </html>
