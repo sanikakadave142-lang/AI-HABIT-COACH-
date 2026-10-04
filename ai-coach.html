@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Coach - AI Habit Coach</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        .topbar {
+            background: #ffffff;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            margin-bottom: 8px;
+            color: #1e3a8a;
+        }
+
+        .hero p {
+            color: #666;
+        }
+
+        .coach-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .coach-card h2 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .quick-btn {
+            border: none;
+            background: #eef4ff;
+            color: #1d4ed8;
+            padding: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: #dbeafe;
+            transform: translateY(-2px);
+        }
+
+        .question-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #aiQuestion {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        #aiQuestion:focus {
+            border-color: #2563eb;
+        }
+
+        .ask-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 0 22px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .ask-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .response-box {
+            background: #f8fafc;
+            border-left: 5px solid #2563eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            min-height: 100px;
+        }
+
+        .response-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .response-text {
+            line-height: 1.7;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #dc2626;
+        }
+
+        @media (max-width: 700px) {
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .question-box {
+                flex-direction: column;
+            }
+
+            .ask-btn {
+                padding: 13px;
+            }
+
+            .topbar {
+                padding: 15px;
+            }
+
+            .container {
+                margin: 20px auto;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- TOP BAR -->
+
+    <div class="topbar">
+
+        <div class="logo">
+            🤖 AI Habit Coach
+        </div>
+
+        <a
+            href="dashboard.html"
+            class="back-btn"
+        >
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="container">
+
+
+        <!-- HERO -->
+
+        <div class="hero">
+
+            <h1>
+                🤖 AI Coach
+            </h1>
+
+            <p>
+                Ask questions and get personalized habit guidance.
+            </p>
+
+        </div>
+
+
+        <!-- QUICK QUESTIONS -->
+
+        <div class="coach-card">
+
+            <h2>
+                Quick Questions
+            </h2>
+
+            <div class="quick-grid">
+
+
+                <button
+                    class="quick-btn"
+                    type="button"
+                    onclick="quickQuestion('How can I build a new habit?')"
+                >
+                    🌱 How can I build a new habit?
+                </button>
+
+
+                <button
+                    class="quick-btn"
+                    type="button"
+                    onclick="quickQuestion('How can I stay motivated?')"
+                >
+                    💪 How can I stay motivated?
+                </button>
+
+
+                <button
+                    class="quick-btn"
+                    type="button"
+                    onclick="quickQuestion('How can I improve my study habits?')"
+                >
+                    📚 How can I improve my study habits?
+                </button>
+
+
+                <button
+                    class="quick-btn"
+                    type="button"
+                    onclick="quickQuestion('How can I improve my sleep routine?')"
+                >
+                    😴 How can I improve my sleep routine?
+                </button>
+
+
+                <button
+                    class="quick-btn"
+                    type="button"
+                    onclick="quickQuestion('How can I start exercising regularly?')"
+                >
+                    🏃 How can I start exercising regularly?
+                </button>
+
+
+                <button
+                    class="quick-btn"
+                    type="button"
+                    onclick="quickQuestion('How can I stay consistent with my habits?')"
+                >
+                    🔥 How can I stay consistent?
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ASK QUESTION -->
+
+        <div class="coach-card">
+
+            <h2>
+                Ask Your Own Question
+            </h2>
+
+
+            <div class="question-box">
+
+                <input
+                    type="text"
+                    id="aiQuestion"
+                    placeholder="Example: How can I stop procrastinating?"
+                    autocomplete="off"
+                >
+
+
+                <button
+                    class="ask-btn"
+                    type="button"
+                    onclick="askAIQuestion()"
+                >
+                    Ask AI
+                </button>
+
+            </div>
+
+
+            <!-- AI RESPONSE -->
+
+            <div
+                id="aiResponse"
+                class="response-box"
+            >
+
+                <div class="response-title">
+                    🤖 AI Coach Response
+                </div>
+
+                <div class="response-text">
+                    Ask me a question to get started.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SCRIPT -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
