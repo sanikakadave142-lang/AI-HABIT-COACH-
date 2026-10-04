@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Habit Coach - Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <h2>🤖 AI Habit Coach</h2>
+
+        <nav>
+
+            <a href="dashboard.html" class="active">
+                🏠 Dashboard
+            </a>
+
+            <a href="habits.html">
+                📋 My Habits
+            </a>
+
+            <a href="progress.html">
+                📊 Progress
+            </a>
+
+            <a href="ai-coach.html">
+                🤖 AI Coach
+            </a>
+
+        </nav>
+
+        <button
+            class="logout-btn"
+            onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+
+        <!-- HEADER -->
+
+        <header class="top-header">
+
+            <div>
+
+                <h1 id="greeting">
+                    Good Morning! 👋
+                </h1>
+
+                <p id="greetingMessage">
+                    Let's build better habits today.
+                </p>
+
+            </div>
+
+
+            <div class="profile">
+                👤
+            </div>
+
+        </header>
+
+
+        <!-- STATISTICS -->
+
+        <section class="stats">
+
+
+            <div class="stat-card">
+
+                <span>🔥</span>
+
+                <div>
+
+                    <h3 id="streakCount">
+                        0 Days
+                    </h3>
+
+                    <p>
+                        Current Streak
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>✅</span>
+
+                <div>
+
+                    <h3 id="completedCount">
+                        0
+                    </h3>
+
+                    <p>
+                        Completed Today
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>🎯</span>
+
+                <div>
+
+                    <h3 id="successRate">
+                        0%
+                    </h3>
+
+                    <p>
+                        Success Rate
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- TODAY'S HABITS -->
+
+        <section class="habit-section">
+
+
+            <div class="section-title">
+
+                <h2>
+                    Today's Habits
+                </h2>
+
+
+                <button
+                    class="add-btn"
+                    onclick="window.location.href='habits.html'">
+
+                    + Add Activity
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="habit-list"
+                id="dashboardHabitList">
+
+            </div>
+
+
+        </section>
+
+
+        <!-- AI COACH -->
+
+        <section class="ai-card">
+
+
+            <div class="ai-icon">
+                🤖
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Your AI Coach
+                </h2>
+
+
+                <p>
+                    Keep working on your habits every day.
+                    Small steps create big changes! 🌱
+                </p>
+
+
+                <button
+                    class="coach-btn"
+                    onclick="window.location.href='ai-coach.html'">
+
+                    Talk to AI Coach
+
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- AUTOMATIC TIME-BASED GREETING -->
+
+<script>
+
+function updateGreeting() {
+
+    const hour = new Date().getHours();
+
+    const greeting = document.getElementById("greeting");
+
+    const message = document.getElementById("greetingMessage");
+
+    const userName =
+        localStorage.getItem("userName") || "User";
+
+
+    if (hour >= 5 && hour < 12) {
+
+        greeting.textContent =
+            "Good Morning, " + userName + "! 🌅";
+
+        message.textContent =
+            "Let's build better habits today.";
+
+    }
+
+    else if (hour >= 12 && hour < 17) {
+
+        greeting.textContent =
+            "Good Afternoon, " + userName + "! ☀️";
+
+        message.textContent =
+            "Keep going! You're doing great today.";
+
+    }
+
+    else if (hour >= 17 && hour < 21) {
+
+        greeting.textContent =
+            "Good Evening, " + userName + "! 🌆";
+
+        message.textContent =
+            "Take a moment to check your habits.";
+
+    }
+
+    else {
+
+        greeting.textContent =
+            "Good Night, " + userName + "! 🌙";
+
+        message.textContent =
+            "Review your progress and rest well.";
+
+    }
+
+}
+
+updateGreeting();
+
+</script>
+
+
+<!-- MAIN JAVASCRIPT -->
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>

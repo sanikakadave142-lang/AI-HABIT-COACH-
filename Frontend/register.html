@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>AI Habit Coach - Register</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
+</head>
+
+
+<body>
+
+    <div class="auth-container">
+
+        <div class="auth-card">
+
+            <div class="auth-icon">
+                🤖
+            </div>
+
+            <h1>
+                Create Account
+            </h1>
+
+            <p>
+                Start building better habits today.
+            </p>
+
+
+            <!-- ==========================
+                 REGISTER FORM
+                 ========================== -->
+
+            <form id="registerForm">
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label for="registerName">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="registerName"
+                        placeholder="Enter your name"
+                        required>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="registerEmail">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        placeholder="Enter your email"
+                        required>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        placeholder="Create a password"
+                        required>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Confirm your password"
+                        required>
+
+                </div>
+
+
+                <!-- REGISTER BUTTON -->
+
+                <button
+                    type="submit"
+                    class="auth-btn"
+                    id="registerButton">
+
+                    Create Account
+
+                </button>
+
+            </form>
+
+
+            <!-- LOGIN LINK -->
+
+            <p class="auth-footer">
+
+                Already have an account?
+
+                <a href="index.html">
+                    Login
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================
+         REGISTER JAVASCRIPT
+         ========================== -->
+
+    <script>
+
+        /* ==========================================
+           LOCAL FASTAPI BACKEND
+           ========================================== */
+
+        const API_URL =
+            "http://127.0.0.1:8000";
+
+
+        /* ==========================================
+           REGISTER FORM
+           ========================================== */
+
+        document
+            .getElementById("registerForm")
+            .addEventListener(
+                "submit",
+                async function (e) {
+
+                    e.preventDefault();
+
+
+                    /* ==========================
+                       GET FORM VALUES
+                       ========================== */
+
+                    const name =
+                        document
+                            .getElementById(
+                                "registerName"
+                            )
+                            .value
+                            .trim();
+
+
+                    const email =
+                        document
+                            .getElementById(
+                                "registerEmail"
+                            )
+                            .value
+                            .trim();
+
+
+                    const password =
+                        document
+                            .getElementById(
+                                "registerPassword"
+                            )
+                            .value
+                            .trim();
+
+
+                    const confirmPassword =
+                        document
+                            .getElementById(
+                                "confirmPassword"
+                            )
+                            .value
+                            .trim();
+
+
+                    const button =
+                        document
+                            .getElementById(
+                                "registerButton"
+                            );
+
+
+                    /* ==========================
+                       VALIDATION
+                       ========================== */
+
+                    if (
+                        !name ||
+                        !email ||
+                        !password ||
+                        !confirmPassword
+                    ) {
+
+                        alert(
+                            "Please fill all fields."
+                        );
+
+                        return;
+                    }
+
+
+                    if (
+                        password !==
+                        confirmPassword
+                    ) {
+
+                        alert(
+                            "Passwords do not match."
+                        );
+
+                        return;
+                    }
+
+
+                    if (
+                        password.length < 6
+                    ) {
+
+                        alert(
+                            "Password must be at least 6 characters."
+                        );
+
+                        return;
+                    }
+
+
+                    /* ==========================
+                       BUTTON LOADING
+                       ========================== */
+
+                    button.disabled = true;
+
+                    button.textContent =
+                        "Creating Account...";
+
+
+                    try {
+
+                        console.log(
+                            "Register API:",
+                            API_URL + "/register"
+                        );
+
+
+                        /* ==========================
+                           SEND REQUEST TO FASTAPI
+                           ========================== */
+
+                        const response =
+                            await fetch(
+                                API_URL + "/register",
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            name: name,
+                                            email: email,
+                                            password: password
+                                        })
+                                }
+                            );
+
+
+                        /* ==========================
+                           READ RESPONSE
+                           ========================== */
+
+                        const data =
+                            await response.json();
+
+
+                        console.log(
+                            "Register response:",
+                            data
+                        );
+
+
+                        /* ==========================
+                           BACKEND ERROR
+                           ========================== */
+
+                        if (!response.ok) {
+
+                            alert(
+                                data.detail ||
+                                data.message ||
+                                "Registration failed."
+                            );
+
+                            return;
+                        }
+
+
+                        /* ==========================
+                           SUCCESS
+                           ========================== */
+
+                        alert(
+                            "Account created successfully! Please login."
+                        );
+
+
+                        /* ==========================
+                           SAVE EMAIL
+                           ========================== */
+
+                        localStorage.setItem(
+                            "savedEmail",
+                            email
+                        );
+
+
+                        /* ==========================
+                           GO TO LOGIN
+                           ========================== */
+
+                        window.location.href =
+                            "index.html";
+
+                    }
+
+
+                    catch (error) {
+
+                        console.error(
+                            "Registration error:",
+                            error
+                        );
+
+
+                        alert(
+                            "Cannot connect to FastAPI backend. Make sure the backend is running on http://127.0.0.1:8000"
+                        );
+
+                    }
+
+
+                    finally {
+
+                        button.disabled = false;
+
+                        button.textContent =
+                            "Create Account";
+
+                    }
+
+                }
+            );
+
+    </script>
+
+</body>
+
+</html>
