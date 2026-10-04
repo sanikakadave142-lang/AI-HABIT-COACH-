@@ -5,7 +5,7 @@
    Backend: FastAPI + MySQL
    ========================================================= */
 
-const API_BASE_URL = "https://ai-habit-coach-xmfn.onrender.com";
+const API_BASE_URL = "https://ai-habit-coach-backend.onrender.com";
 
 
 /* =========================================================

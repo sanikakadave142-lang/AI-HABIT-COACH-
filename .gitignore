@@ -1,0 +1,4 @@
+Backend/.env
+Backend/__pycache__/
+Backend/ai/__pycache__/
+Backend/*.db
