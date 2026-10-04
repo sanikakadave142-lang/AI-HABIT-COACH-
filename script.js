@@ -15,15 +15,12 @@ async function backendRequest(endpoint, options = {}) {
 
     const config = {
         method: options.method || "GET",
-
         headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
+            "Content-Type": "application/json"
         }
     };
 
     if (options.body !== undefined) {
-
         config.body =
             typeof options.body === "string"
                 ? options.body
@@ -38,16 +35,12 @@ async function backendRequest(endpoint, options = {}) {
     let data = {};
 
     try {
-
         data = await response.json();
-
     } catch (error) {
-
         data = {};
     }
 
     if (!response.ok) {
-
         throw new Error(
             data.detail ||
             data.message ||
@@ -65,72 +58,35 @@ async function backendRequest(endpoint, options = {}) {
 
 function saveBackendUser(data) {
 
-    /*
-        FastAPI response:
-
-        {
-            "success": true,
-            "message": "Login successful",
-            "user": {
-                "id": 2,
-                "name": "Test User",
-                "email": "test123@gmail.com"
-            }
-        }
-
-        This function supports BOTH:
-
-        data.user.id
-
-        and older format:
-
-        data.user_id
-        data.id
-    */
-
     const sourceUser =
-        data.user || data;
+        data && data.user
+            ? data.user
+            : data;
 
-    const user = {
+    const userId =
+        sourceUser.id !== undefined
+            ? sourceUser.id
+            : sourceUser.user_id;
 
-        id:
-            sourceUser.id ||
-            sourceUser.user_id,
-
-        name:
-            sourceUser.name ||
-            "",
-
-        email:
-            sourceUser.email ||
-            ""
-    };
-
-
-    // Make sure User ID exists
-
-    if (!user.id) {
-
-        console.error(
-            "Backend response:",
-            data
-        );
-
+    if (
+        userId === undefined ||
+        userId === null
+    ) {
         throw new Error(
             "User ID was not returned by the backend."
         );
     }
 
-
-    // Save complete user object
+    const user = {
+        id: Number(userId),
+        name: sourceUser.name || "",
+        email: sourceUser.email || ""
+    };
 
     localStorage.setItem(
         "backendUser",
         JSON.stringify(user)
     );
-
-
-    // Save user ID
 
     localStorage.setItem(
         "user_id",
@@ -142,9 +98,6 @@ function saveBackendUser(data) {
         String(user.id)
     );
 
-
-    // Save user details
-
     localStorage.setItem(
         "userName",
         user.name
@@ -154,18 +107,6 @@ function saveBackendUser(data) {
         "userEmail",
         user.email
     );
-
-
-    console.log(
-        "Backend user saved:",
-        user
-    );
-
-    console.log(
-        "User ID:",
-        user.id
-    );
-
 
     return user;
 }
@@ -182,21 +123,19 @@ function getStoredUser() {
         const savedUser =
             localStorage.getItem("backendUser");
 
-        if (!savedUser) {
-            return null;
+        if (savedUser) {
+            return JSON.parse(savedUser);
         }
-
-        return JSON.parse(savedUser);
 
     } catch (error) {
 
         console.error(
-            "Error reading stored user:",
+            "User storage error:",
             error
         );
-
-        return null;
     }
+
+    return null;
 }
 
 
@@ -209,30 +148,28 @@ function getUserId() {
     const user =
         getStoredUser();
 
-
-    if (user && user.id) {
-
+    if (
+        user &&
+        user.id !== undefined &&
+        user.id !== null
+    ) {
         return Number(user.id);
     }
-
 
     const storedId =
         localStorage.getItem("user_id") ||
         localStorage.getItem("userId");
 
-
     if (storedId) {
-
         return Number(storedId);
     }
-
 
     return null;
 }
 
 
 // ======================================================
-// REGISTER USER
+// REGISTER
 // ======================================================
 
 async function registerUser(
@@ -245,7 +182,6 @@ async function registerUser(
         "/register",
         {
             method: "POST",
-
             body: {
                 name: name,
                 email: email,
@@ -257,7 +193,7 @@ async function registerUser(
 
 
 // ======================================================
-// LOGIN USER
+// LOGIN
 // ======================================================
 
 async function loginUser(
@@ -269,258 +205,10 @@ async function loginUser(
         "/login",
         {
             method: "POST",
-
             body: {
                 email: email,
                 password: password
             }
-        }
-    );
-}
-
-
-// ======================================================
-// REGISTER FORM
-// ======================================================
-
-function setupRegisterForm() {
-
-    const form =
-        document.getElementById(
-            "registerForm"
-        );
-
-    if (!form) {
-        return;
-    }
-
-
-    form.addEventListener(
-        "submit",
-        async function (event) {
-
-            event.preventDefault();
-
-
-            const nameInput =
-                document.getElementById("name");
-
-            const emailInput =
-                document.getElementById("email");
-
-            const passwordInput =
-                document.getElementById("password");
-
-
-            const name =
-                nameInput
-                    ? nameInput.value.trim()
-                    : "";
-
-            const email =
-                emailInput
-                    ? emailInput.value.trim()
-                    : "";
-
-            const password =
-                passwordInput
-                    ? passwordInput.value
-                    : "";
-
-
-            if (!name ||
-                !email ||
-                !password) {
-
-                showMessage(
-                    "Please fill all fields.",
-                    true
-                );
-
-                return;
-            }
-
-
-            try {
-
-                const data =
-                    await registerUser(
-                        name,
-                        email,
-                        password
-                    );
-
-
-                console.log(
-                    "Registration response:",
-                    data
-                );
-
-
-                showMessage(
-                    data.message ||
-                    "Registration successful!"
-                );
-
-
-                form.reset();
-
-
-                setTimeout(
-                    function () {
-
-                        window.location.href =
-                            "index.html";
-
-                    },
-                    1000
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Registration error:",
-                    error
-                );
-
-
-                showMessage(
-                    error.message ||
-                    "Registration failed.",
-                    true
-                );
-            }
-
-        }
-    );
-}
-
-
-// ======================================================
-// LOGIN FORM
-// ======================================================
-
-function setupLoginForm() {
-
-    const form =
-        document.getElementById(
-            "loginForm"
-        );
-
-    if (!form) {
-        return;
-    }
-
-
-    form.addEventListener(
-        "submit",
-        async function (event) {
-
-            event.preventDefault();
-
-
-            const emailInput =
-                document.getElementById("email");
-
-            const passwordInput =
-                document.getElementById("password");
-
-
-            const email =
-                emailInput
-                    ? emailInput.value.trim()
-                    : "";
-
-            const password =
-                passwordInput
-                    ? passwordInput.value
-                    : "";
-
-
-            if (!email ||
-                !password) {
-
-                showMessage(
-                    "Please enter email and password.",
-                    true
-                );
-
-                return;
-            }
-
-
-            try {
-
-                const data =
-                    await loginUser(
-                        email,
-                        password
-                    );
-
-
-                console.log(
-                    "Login response:",
-                    data
-                );
-
-
-                // IMPORTANT:
-                // Saves FastAPI nested user.id
-
-                const user =
-                    saveBackendUser(data);
-
-
-                console.log(
-                    "Logged in user:",
-                    user
-                );
-
-
-                localStorage.setItem(
-                    "loggedIn",
-                    "true"
-                );
-
-
-                localStorage.setItem(
-                    "loginEmail",
-                    email
-                );
-
-
-                showMessage(
-                    "Login successful!"
-                );
-
-
-                setTimeout(
-                    function () {
-
-                        window.location.href =
-                            "dashboard.html";
-
-                    },
-                    500
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Login error:",
-                    error
-                );
-
-
-                showMessage(
-                    error.message ||
-                    "Invalid email or password.",
-                    true
-                );
-            }
-
         }
     );
 }
@@ -535,47 +223,225 @@ function showMessage(
     isError = false
 ) {
 
-    let messageBox =
-        document.getElementById(
-            "message"
-        );
+    let box =
+        document.getElementById("message");
 
-
-    if (!messageBox) {
-
-        messageBox =
-            document.getElementById(
-                "messageBox"
-            );
+    if (!box) {
+        box =
+            document.getElementById("messageBox");
     }
 
-
-    if (!messageBox) {
-
+    if (!box) {
         alert(message);
-
         return;
     }
 
-
-    messageBox.textContent =
-        message;
-
-
-    messageBox.style.display =
-        "block";
+    box.textContent = message;
+    box.style.display = "block";
+    box.style.color =
+        isError ? "red" : "green";
+}
 
 
-    if (isError) {
+// ======================================================
+// REGISTER FORM
+// ======================================================
 
-        messageBox.style.color =
-            "red";
+function setupRegisterForm() {
 
-    } else {
+    const form =
+        document.getElementById("registerForm");
 
-        messageBox.style.color =
-            "green";
+    if (!form) {
+        return;
     }
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            const name =
+                document.getElementById("name")
+                    ?.value.trim() || "";
+
+            const email =
+                document.getElementById("email")
+                    ?.value.trim() || "";
+
+            const password =
+                document.getElementById("password")
+                    ?.value || "";
+
+            if (
+                !name ||
+                !email ||
+                !password
+            ) {
+
+                showMessage(
+                    "Please fill all fields.",
+                    true
+                );
+
+                return;
+            }
+
+            try {
+
+                const data =
+                    await registerUser(
+                        name,
+                        email,
+                        password
+                    );
+
+                console.log(
+                    "Registration:",
+                    data
+                );
+
+                showMessage(
+                    data.message ||
+                    "Registration successful!"
+                );
+
+                form.reset();
+
+                setTimeout(
+                    function () {
+                        window.location.href =
+                            "index.html";
+                    },
+                    1000
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Registration error:",
+                    error
+                );
+
+                showMessage(
+                    error.message ||
+                    "Registration failed.",
+                    true
+                );
+            }
+        }
+    );
+}
+
+
+// ======================================================
+// LOGIN FORM
+// ======================================================
+
+function setupLoginForm() {
+
+    const form =
+        document.getElementById("loginForm");
+
+    if (!form) {
+        return;
+    }
+
+    // Prevent duplicate listeners
+    if (
+        form.dataset.loginReady === "true"
+    ) {
+        return;
+    }
+
+    form.dataset.loginReady = "true";
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            const email =
+                document.getElementById("email")
+                    ?.value.trim() || "";
+
+            const password =
+                document.getElementById("password")
+                    ?.value || "";
+
+            if (
+                !email ||
+                !password
+            ) {
+
+                showMessage(
+                    "Please enter email and password.",
+                    true
+                );
+
+                return;
+            }
+
+            try {
+
+                const data =
+                    await loginUser(
+                        email,
+                        password
+                    );
+
+                console.log(
+                    "Login response:",
+                    data
+                );
+
+                const user =
+                    saveBackendUser(data);
+
+                console.log(
+                    "Logged in user:",
+                    user
+                );
+
+                localStorage.setItem(
+                    "loggedIn",
+                    "true"
+                );
+
+                localStorage.setItem(
+                    "loginEmail",
+                    email
+                );
+
+                showMessage(
+                    "Login successful!"
+                );
+
+                setTimeout(
+                    function () {
+                        window.location.href =
+                            "dashboard.html";
+                    },
+                    500
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Login error:",
+                    error
+                );
+
+                showMessage(
+                    error.message ||
+                    "Invalid email or password.",
+                    true
+                );
+            }
+        }
+    );
 }
 
 
@@ -588,7 +454,6 @@ async function getHabits() {
     const userId =
         getUserId();
 
-
     if (!userId) {
 
         throw new Error(
@@ -596,9 +461,8 @@ async function getHabits() {
         );
     }
 
-
     return await backendRequest(
-        `/habits?user_id=${userId}`
+        "/habits?user_id=" + userId
     );
 }
 
@@ -616,17 +480,15 @@ async function createHabit(
     const userId =
         getUserId();
 
-
     if (!userId) {
 
         throw new Error(
-            "User ID not found."
+            "User ID not found. Please login again."
         );
     }
 
-
     return await backendRequest(
-        `/habits?user_id=${userId}`,
+        "/habits?user_id=" + userId,
         {
             method: "POST",
 
@@ -652,17 +514,17 @@ async function updateHabit(
     const userId =
         getUserId();
 
-
     if (!userId) {
-
         throw new Error(
             "User ID not found."
         );
     }
 
-
     return await backendRequest(
-        `/habits/${habitId}?user_id=${userId}`,
+        "/habits/" +
+        habitId +
+        "?user_id=" +
+        userId,
         {
             method: "PUT",
 
@@ -685,17 +547,17 @@ async function deleteHabitFromBackend(
     const userId =
         getUserId();
 
-
     if (!userId) {
-
         throw new Error(
             "User ID not found."
         );
     }
 
-
     return await backendRequest(
-        `/habits/${habitId}?user_id=${userId}`,
+        "/habits/" +
+        habitId +
+        "?user_id=" +
+        userId,
         {
             method: "DELETE"
         }
@@ -704,7 +566,7 @@ async function deleteHabitFromBackend(
 
 
 // ======================================================
-// CREATE HABIT LOG
+// HABIT LOG
 // ======================================================
 
 async function createHabitLog(
@@ -717,33 +579,22 @@ async function createHabitLog(
     const userId =
         getUserId();
 
-
     if (!userId) {
-
         throw new Error(
             "User ID not found."
         );
     }
 
-
     return await backendRequest(
-        `/habit-log?user_id=${userId}`,
+        "/habit-log?user_id=" + userId,
         {
             method: "POST",
 
             body: {
-
-                habit_id:
-                    Number(habitId),
-
-                status:
-                    status,
-
-                duration:
-                    Number(duration) || 0,
-
-                note:
-                    note
+                habit_id: Number(habitId),
+                status: status,
+                duration: Number(duration) || 0,
+                note: note
             }
         }
     );
@@ -759,41 +610,14 @@ async function getHabitLogs() {
     const userId =
         getUserId();
 
-
     if (!userId) {
-
         throw new Error(
             "User ID not found."
         );
     }
 
-
     return await backendRequest(
-        `/habit-log?user_id=${userId}`
-    );
-}
-
-
-// ======================================================
-// GET PROGRESS
-// ======================================================
-
-async function getProgress() {
-
-    const userId =
-        getUserId();
-
-
-    if (!userId) {
-
-        throw new Error(
-            "User ID not found."
-        );
-    }
-
-
-    return await backendRequest(
-        `/progress?user_id=${userId}`
+        "/habit-log?user_id=" + userId
     );
 }
 
@@ -813,7 +637,6 @@ async function completeHabit(
             "Completed"
         );
 
-
         await createHabitLog(
             habitId,
             "Completed",
@@ -821,14 +644,11 @@ async function completeHabit(
             ""
         );
 
-
         await loadHabits();
-
 
         alert(
             "Habit completed successfully!"
         );
-
 
     } catch (error) {
 
@@ -836,7 +656,6 @@ async function completeHabit(
             "Complete habit error:",
             error
         );
-
 
         alert(
             error.message
@@ -852,104 +671,140 @@ async function completeHabit(
 async function loadHabits() {
 
     const container =
-        document.getElementById(
-            "habitsContainer"
-        );
-
+        document.getElementById("habitsList");
 
     if (!container) {
         return;
     }
-
 
     try {
 
         const data =
             await getHabits();
 
-
         console.log(
             "Habits response:",
             data
         );
 
+        let habits = [];
 
-        const habits =
-            data.habits ||
-            data.data ||
-            data;
+        if (Array.isArray(data)) {
 
+            habits = data;
 
-        container.innerHTML =
-            "";
+        } else if (
+            Array.isArray(data.habits)
+        ) {
 
+            habits = data.habits;
 
-        if (!Array.isArray(habits) ||
-            habits.length === 0) {
+        } else if (
+            Array.isArray(data.data)
+        ) {
 
-            container.innerHTML =
-                "<p>No habits found.</p>";
+            habits = data.data;
+        }
+
+        container.innerHTML = "";
+
+        if (habits.length === 0) {
+
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h3>No activities found</h3>
+                    <p>
+                        Add your first activity above.
+                    </p>
+                </div>
+            `;
 
             return;
         }
-
 
         habits.forEach(
             function (habit) {
 
                 const card =
-                    document.createElement(
-                        "div"
-                    );
-
+                    document.createElement("div");
 
                 card.className =
-                    "habit-card";
+                    "activity-card";
 
+                const status =
+                    habit.status ||
+                    "Pending";
+
+                const isCompleted =
+                    status.toLowerCase() ===
+                    "completed";
 
                 card.innerHTML = `
 
-                    <h3>
-                        ${habit.name || "Habit"}
-                    </h3>
+                    <div class="activity-top">
 
-                    <p>
-                        Category:
-                        ${habit.category || "-"}
-                    </p>
+                        <div>
 
-                    <p>
-                        Target:
-                        ${habit.target || "-"}
-                    </p>
+                            <h3>
+                                ${habit.name || "Activity"}
+                            </h3>
 
-                    <p>
-                        Status:
-                        ${habit.status || "Pending"}
-                    </p>
+                            <span class="category-badge">
+                                ${habit.category || "-"}
+                            </span>
 
-                    <button
-                        onclick="completeHabit(${habit.id})"
-                    >
-                        Complete
-                    </button>
+                        </div>
 
-                    <button
-                        onclick="deleteHabit(${habit.id})"
-                    >
-                        Delete
-                    </button>
+                        <span
+                            class="status-badge ${
+                                isCompleted
+                                    ? "completed"
+                                    : "pending"
+                            }"
+                        >
+                            ${status}
+                        </span>
 
+                    </div>
+
+                    <div class="activity-info">
+
+                        <p>
+                            🎯
+                            <strong>Goal:</strong>
+                            ${habit.target || "-"}
+                        </p>
+
+                    </div>
+
+                    <div class="activity-buttons">
+
+                        ${
+                            !isCompleted
+                                ? `
+                                    <button
+                                        class="complete-btn"
+                                        onclick="completeHabit(${Number(habit.id)})"
+                                    >
+                                        ✓ Complete
+                                    </button>
+                                  `
+                                : ""
+                        }
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteHabit(${Number(habit.id)})"
+                        >
+                            🗑 Delete
+                        </button>
+
+                    </div>
                 `;
 
-
-                container.appendChild(
-                    card
-                );
-
+                container.appendChild(card);
             }
         );
-
 
     } catch (error) {
 
@@ -958,9 +813,13 @@ async function loadHabits() {
             error
         );
 
-
-        container.innerHTML =
-            `<p>${error.message}</p>`;
+        container.innerHTML = `
+            <div class="empty-state">
+                <p style="color:red;">
+                    ${error.message}
+                </p>
+            </div>
+        `;
     }
 }
 
@@ -973,13 +832,14 @@ async function deleteHabit(
     habitId
 ) {
 
-    if (!confirm(
-        "Are you sure you want to delete this habit?"
-    )) {
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this habit?"
+        );
 
+    if (!confirmDelete) {
         return;
     }
-
 
     try {
 
@@ -987,22 +847,18 @@ async function deleteHabit(
             habitId
         );
 
-
         await loadHabits();
-
 
         alert(
             "Habit deleted successfully!"
         );
 
-
     } catch (error) {
 
         console.error(
-            "Delete habit error:",
+            "Delete error:",
             error
         );
-
 
         alert(
             error.message
@@ -1018,14 +874,19 @@ async function deleteHabit(
 function setupHabitForm() {
 
     const form =
-        document.getElementById(
-            "habitForm"
-        );
-
+        document.getElementById("habitForm");
 
     if (!form) {
         return;
     }
+
+    if (
+        form.dataset.habitReady === "true"
+    ) {
+        return;
+    }
+
+    form.dataset.habitReady = "true";
 
 
     form.addEventListener(
@@ -1034,43 +895,92 @@ function setupHabitForm() {
 
             event.preventDefault();
 
-
-            const nameInput =
+            const name =
                 document.getElementById(
                     "habitName"
-                );
+                )?.value.trim() || "";
 
-            const categoryInput =
+            const categorySelect =
                 document.getElementById(
                     "habitCategory"
                 );
 
-            const targetInput =
+            const goalSelect =
                 document.getElementById(
-                    "habitTarget"
+                    "habitGoalSelect"
+                );
+
+            const customGoal =
+                document.getElementById(
+                    "habitGoal"
+                );
+
+            const otherCategory =
+                document.getElementById(
+                    "otherCategory"
                 );
 
 
-            const name =
-                nameInput
-                    ? nameInput.value.trim()
+            let category =
+                categorySelect
+                    ? categorySelect.value
                     : "";
 
-            const category =
-                categoryInput
-                    ? categoryInput.value.trim()
+
+            let target =
+                goalSelect
+                    ? goalSelect.value
                     : "";
 
-            const target =
-                targetInput
-                    ? targetInput.value.trim()
-                    : "";
+
+            // Other category
+            if (
+                category === "Other"
+            ) {
+
+                category =
+                    otherCategory
+                        ? otherCategory.value.trim()
+                        : "";
+            }
+
+
+            // Other goal
+            if (
+                target === "Other"
+            ) {
+
+                target =
+                    customGoal
+                        ? customGoal.value.trim()
+                        : "";
+            }
 
 
             if (!name) {
 
                 alert(
-                    "Please enter habit name."
+                    "Please enter activity name."
+                );
+
+                return;
+            }
+
+
+            if (!category) {
+
+                alert(
+                    "Please select category."
+                );
+
+                return;
+            }
+
+
+            if (!target) {
+
+                alert(
+                    "Please select goal / time."
                 );
 
                 return;
@@ -1079,38 +989,194 @@ function setupHabitForm() {
 
             try {
 
-                await createHabit(
-                    name,
-                    category,
-                    target
+                console.log(
+                    "Creating activity:",
+                    {
+                        name: name,
+                        category: category,
+                        target: target
+                    }
+                );
+
+
+                const response =
+                    await createHabit(
+                        name,
+                        category,
+                        target
+                    );
+
+
+                console.log(
+                    "Create response:",
+                    response
                 );
 
 
                 alert(
-                    "Habit added successfully!"
+                    "Activity added successfully!"
                 );
 
 
                 form.reset();
 
 
-                await loadHabits();
+                if (customGoal) {
 
+                    customGoal.style.display =
+                        "none";
+
+                    customGoal.required =
+                        false;
+                }
+
+
+                if (otherCategory) {
+
+                    otherCategory.style.display =
+                        "none";
+
+                    otherCategory.required =
+                        false;
+                }
+
+
+                await loadHabits();
 
             } catch (error) {
 
                 console.error(
-                    "Create habit error:",
+                    "Create activity error:",
                     error
                 );
 
-
                 alert(
-                    error.message
+                    error.message ||
+                    "Failed to add activity."
                 );
             }
-
         }
+    );
+
+
+    // ==================================================
+    // GOAL SELECT
+    // ==================================================
+
+    const goalSelect =
+        document.getElementById(
+            "habitGoalSelect"
+        );
+
+    const customGoal =
+        document.getElementById(
+            "habitGoal"
+        );
+
+
+    if (
+        goalSelect &&
+        customGoal
+    ) {
+
+        goalSelect.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    this.value === "Other"
+                ) {
+
+                    customGoal.style.display =
+                        "block";
+
+                    customGoal.required =
+                        true;
+
+                } else {
+
+                    customGoal.style.display =
+                        "none";
+
+                    customGoal.required =
+                        false;
+
+                    customGoal.value =
+                        "";
+                }
+            }
+        );
+    }
+
+
+    // ==================================================
+    // CATEGORY SELECT
+    // ==================================================
+
+    const categorySelect =
+        document.getElementById(
+            "habitCategory"
+        );
+
+    const otherCategory =
+        document.getElementById(
+            "otherCategory"
+        );
+
+
+    if (
+        categorySelect &&
+        otherCategory
+    ) {
+
+        categorySelect.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    this.value === "Other"
+                ) {
+
+                    otherCategory.style.display =
+                        "block";
+
+                    otherCategory.required =
+                        true;
+
+                } else {
+
+                    otherCategory.style.display =
+                        "none";
+
+                    otherCategory.required =
+                        false;
+
+                    otherCategory.value =
+                        "";
+                }
+            }
+        );
+    }
+}
+
+
+// ======================================================
+// GET PROGRESS
+// ======================================================
+
+async function getProgress() {
+
+    const userId =
+        getUserId();
+
+    if (!userId) {
+        throw new Error(
+            "User ID not found."
+        );
+    }
+
+    return await backendRequest(
+        "/progress?user_id=" + userId
     );
 }
 
@@ -1121,32 +1187,33 @@ function setupHabitForm() {
 
 async function loadProgress() {
 
-    const completedElement =
+    const completed =
         document.getElementById(
             "completedCount"
         );
 
-    const missedElement =
+    const missed =
         document.getElementById(
             "missedCount"
         );
 
-    const totalElement =
+    const total =
         document.getElementById(
             "totalCount"
         );
 
-    const percentageElement =
+    const percentage =
         document.getElementById(
             "completionPercentage"
         );
 
 
-    if (!completedElement &&
-        !missedElement &&
-        !totalElement &&
-        !percentageElement) {
-
+    if (
+        !completed &&
+        !missed &&
+        !total &&
+        !percentage
+    ) {
         return;
     }
 
@@ -1156,40 +1223,32 @@ async function loadProgress() {
         const data =
             await getProgress();
 
-
         console.log(
-            "Progress response:",
+            "Progress:",
             data
         );
 
 
-        if (completedElement) {
-
-            completedElement.textContent =
+        if (completed) {
+            completed.textContent =
                 data.completed || 0;
         }
 
-
-        if (missedElement) {
-
-            missedElement.textContent =
+        if (missed) {
+            missed.textContent =
                 data.missed || 0;
         }
 
-
-        if (totalElement) {
-
-            totalElement.textContent =
+        if (total) {
+            total.textContent =
                 data.total_logs || 0;
         }
 
-
-        if (percentageElement) {
-
-            percentageElement.textContent =
-                `${data.completion_percentage || 0}%`;
+        if (percentage) {
+            percentage.textContent =
+                (data.completion_percentage || 0) +
+                "%";
         }
-
 
     } catch (error) {
 
@@ -1202,7 +1261,7 @@ async function loadProgress() {
 
 
 // ======================================================
-// DISPLAY USER INFORMATION
+// USER INFORMATION
 // ======================================================
 
 function displayUserInformation() {
@@ -1210,40 +1269,29 @@ function displayUserInformation() {
     const user =
         getStoredUser();
 
-
     if (!user) {
         return;
     }
 
 
-    const nameElements =
-        document.querySelectorAll(
-            ".user-name"
+    document
+        .querySelectorAll(".user-name")
+        .forEach(
+            function (element) {
+                element.textContent =
+                    user.name || "";
+            }
         );
 
 
-    nameElements.forEach(
-        function (element) {
-
-            element.textContent =
-                user.name || "";
-        }
-    );
-
-
-    const emailElements =
-        document.querySelectorAll(
-            ".user-email"
+    document
+        .querySelectorAll(".user-email")
+        .forEach(
+            function (element) {
+                element.textContent =
+                    user.email || "";
+            }
         );
-
-
-    emailElements.forEach(
-        function (element) {
-
-            element.textContent =
-                user.email || "";
-        }
-    );
 
 
     const nameElement =
@@ -1251,9 +1299,7 @@ function displayUserInformation() {
             "userName"
         );
 
-
     if (nameElement) {
-
         nameElement.textContent =
             user.name || "";
     }
@@ -1264,9 +1310,7 @@ function displayUserInformation() {
             "userEmail"
         );
 
-
     if (emailElement) {
-
         emailElement.textContent =
             user.email || "";
     }
@@ -1307,9 +1351,14 @@ function logoutUser() {
         "loggedIn"
     );
 
-
     window.location.href =
         "index.html";
+}
+
+
+// Support existing onclick="logout()"
+function logout() {
+    logoutUser();
 }
 
 
@@ -1319,30 +1368,25 @@ function logoutUser() {
 
 function checkLogin() {
 
-    const publicPages = [
-        "index.html",
-        "register.html",
-        ""
-    ];
-
-
-    const currentPage =
+    const page =
         window.location.pathname
             .split("/")
             .pop();
 
+    const publicPages = [
+        "",
+        "index.html",
+        "register.html"
+    ];
 
-    if (publicPages.includes(
-        currentPage
-    )) {
-
+    if (
+        publicPages.includes(page)
+    ) {
         return true;
     }
 
-
     const userId =
         getUserId();
-
 
     if (!userId) {
 
@@ -1352,13 +1396,12 @@ function checkLogin() {
         return false;
     }
 
-
     return true;
 }
 
 
 // ======================================================
-// AI ADVICE
+// AI
 // ======================================================
 
 async function quickQuestion(
@@ -1368,14 +1411,11 @@ async function quickQuestion(
     const userId =
         getUserId();
 
-
     if (!userId) {
-
         throw new Error(
             "Please login first."
         );
     }
-
 
     return await backendRequest(
         "/ai/advice",
@@ -1383,21 +1423,13 @@ async function quickQuestion(
             method: "POST",
 
             body: {
-
-                question:
-                    question,
-
-                user_id:
-                    userId
+                question: question,
+                user_id: userId
             }
         }
     );
 }
 
-
-// ======================================================
-// ASK AI QUESTION
-// ======================================================
 
 async function askAIQuestion() {
 
@@ -1406,26 +1438,21 @@ async function askAIQuestion() {
             "aiQuestion"
         );
 
-
     const result =
         document.getElementById(
             "aiResponse"
         );
 
-
     if (!input) {
         return;
     }
 
-
     const question =
         input.value.trim();
-
 
     if (!question) {
 
         if (result) {
-
             result.textContent =
                 "Please enter your question.";
         }
@@ -1433,27 +1460,17 @@ async function askAIQuestion() {
         return;
     }
 
-
     try {
 
         if (result) {
-
             result.textContent =
                 "AI is thinking...";
         }
-
 
         const response =
             await quickQuestion(
                 question
             );
-
-
-        console.log(
-            "AI response:",
-            response
-        );
-
 
         const answer =
             response.advice ||
@@ -1462,13 +1479,10 @@ async function askAIQuestion() {
             response.answer ||
             "No response received.";
 
-
         if (result) {
-
             result.textContent =
                 answer;
         }
-
 
     } catch (error) {
 
@@ -1477,9 +1491,7 @@ async function askAIQuestion() {
             error
         );
 
-
         if (result) {
-
             result.textContent =
                 error.message;
         }
@@ -1490,6 +1502,9 @@ async function askAIQuestion() {
 // ======================================================
 // GLOBAL FUNCTIONS
 // ======================================================
+
+window.logout =
+    logout;
 
 window.logoutUser =
     logoutUser;
@@ -1516,11 +1531,11 @@ document.addEventListener(
     function () {
 
         console.log(
-            "AI Habit Coach loaded."
+            "AI Habit Coach loaded"
         );
 
         console.log(
-            "API:",
+            "Backend:",
             API_BASE_URL
         );
 
@@ -1531,12 +1546,8 @@ document.addEventListener(
 
         setupHabitForm();
 
-
         displayUserInformation();
 
-
-        // Only check login on
-        // protected pages
 
         const currentPage =
             window.location.pathname
@@ -1565,12 +1576,12 @@ document.addEventListener(
         }
 
 
-        // Load habits if page has
-        // habits container
+        // IMPORTANT:
+        // habits.html uses habitsList
 
         if (
             document.getElementById(
-                "habitsContainer"
+                "habitsList"
             )
         ) {
 
@@ -1578,8 +1589,7 @@ document.addEventListener(
         }
 
 
-        // Load progress if page
-        // contains progress elements
+        // Progress page
 
         if (
             document.getElementById(
