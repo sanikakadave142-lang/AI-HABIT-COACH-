@@ -13,142 +13,547 @@
 
     <style>
 
-        .activity-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 18px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        /* =====================================================
+           MY ACTIVITIES PAGE
+           ===================================================== */
+
+        .activities-section {
+            width: 100%;
+            margin-top: 30px;
         }
+
+        .activities-section h2 {
+            color: #ffffff !important;
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+
+        /* =====================================================
+           ACTIVITY CARD
+           ===================================================== */
+
+        .activity-card {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(14, 12, 45, 0.98),
+                    rgba(31, 20, 75, 0.98)
+                ) !important;
+
+            padding: 22px !important;
+
+            margin-bottom: 18px !important;
+
+            border-radius: 20px !important;
+
+            border: 1px solid rgba(124, 92, 255, 0.65) !important;
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.40),
+                0 0 25px rgba(124, 92, 255, 0.12) !important;
+
+            color: #ffffff !important;
+
+            opacity: 1 !important;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
+        }
+
+
+        .activity-card:hover {
+            transform: translateY(-3px);
+
+            border-color: #8b5cf6 !important;
+
+            box-shadow:
+                0 12px 35px rgba(0, 0, 0, 0.50),
+                0 0 30px rgba(139, 92, 246, 0.25) !important;
+        }
+
+
+        /* =====================================================
+           ACTIVITY TOP
+           ===================================================== */
 
         .activity-top {
             display: flex;
+
             justify-content: space-between;
+
             align-items: flex-start;
+
+            gap: 15px;
+
             margin-bottom: 15px;
         }
 
+
+        /* =====================================================
+           ACTIVITY NAME
+           ===================================================== */
+
         .activity-top h3 {
-            margin: 0 0 8px 0;
-            font-size: 20px;
+            margin: 0 0 10px 0;
+
+            font-size: 22px;
+
+            font-weight: 800;
+
+            color: #ffffff !important;
+
+            opacity: 1 !important;
         }
+
+
+        /* =====================================================
+           CATEGORY BADGE
+           ===================================================== */
 
         .category-badge {
             display: inline-block;
-            padding: 5px 10px;
+
+            padding: 6px 13px;
+
             border-radius: 20px;
-            background: #ede9fe;
-            color: #6d28d9;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #a855f7
+                ) !important;
+
+            color: #ffffff !important;
+
             font-size: 13px;
-            font-weight: 600;
+
+            font-weight: 700;
+
+            border: none !important;
+
+            opacity: 1 !important;
+
+            box-shadow:
+                0 0 12px rgba(139, 92, 246, 0.25);
         }
+
+
+        /* =====================================================
+           STATUS BADGE
+           ===================================================== */
 
         .status-badge {
-            padding: 6px 12px;
+            padding: 6px 13px;
+
             border-radius: 20px;
+
             font-size: 13px;
-            font-weight: 600;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            opacity: 1 !important;
         }
+
 
         .status-badge.completed {
-            background: #dcfce7;
-            color: #166534;
+            background:
+                rgba(34, 197, 94, 0.18) !important;
+
+            color: #4ade80 !important;
+
+            border: 1px solid rgba(74, 222, 128, 0.40);
         }
+
 
         .status-badge.pending {
-            background: #fef3c7;
-            color: #92400e;
+            background:
+                rgba(250, 204, 21, 0.15) !important;
+
+            color: #facc15 !important;
+
+            border: 1px solid rgba(250, 204, 21, 0.35);
         }
+
+
+        /* =====================================================
+           COMPLETED ACTIVITY
+           ===================================================== */
 
         .activity-completed {
-            opacity: 0.75;
+            opacity: 1 !important;
         }
 
-        .activity-info {
-            margin-top: 10px;
-            font-size: 15px;
+
+        .activity-completed h3 {
+            color: #ffffff !important;
         }
+
+
+        /* =====================================================
+           ACTIVITY INFO
+           ===================================================== */
+
+        .activity-info {
+            margin-top: 12px;
+
+            font-size: 16px;
+
+            color: #dbe4ff !important;
+
+            font-weight: 500;
+
+            opacity: 1 !important;
+        }
+
+
+        .activity-info strong {
+            color: #ffffff !important;
+        }
+
+
+        /* =====================================================
+           KEEP ALL CARD TEXT CLEAR
+           ===================================================== */
+
+        .activity-card h1,
+        .activity-card h2,
+        .activity-card h3,
+        .activity-card h4,
+        .activity-card p,
+        .activity-card span,
+        .activity-card label,
+        .activity-card div {
+            opacity: 1 !important;
+        }
+
+
+        /* =====================================================
+           ACTIVITY BUTTONS
+           ===================================================== */
 
         .activity-buttons {
             display: flex;
-            gap: 8px;
+
+            gap: 10px;
+
             flex-wrap: wrap;
-            margin-top: 18px;
+
+            margin-top: 20px;
         }
+
 
         .activity-buttons button {
             border: none;
-            padding: 9px 14px;
-            border-radius: 8px;
+
+            padding: 10px 17px;
+
+            border-radius: 10px;
+
             cursor: pointer;
-            font-weight: 600;
+
+            font-weight: 700;
+
+            font-size: 14px;
+
+            color: #ffffff !important;
+
+            opacity: 1 !important;
+
+            transition:
+                transform 0.2s ease,
+                filter 0.2s ease;
         }
+
+
+        .activity-buttons button:hover {
+            transform: translateY(-2px);
+
+            filter: brightness(1.12);
+        }
+
+
+        /* =====================================================
+           COMPLETE BUTTON
+           ===================================================== */
 
         .complete-btn {
-            background: #22c55e;
-            color: white;
+            background:
+                linear-gradient(
+                    135deg,
+                    #16a34a,
+                    #22c55e
+                ) !important;
+
+            color: #ffffff !important;
+
+            box-shadow:
+                0 5px 15px rgba(34, 197, 94, 0.20);
         }
+
+
+        /* =====================================================
+           EDIT BUTTON
+           ===================================================== */
 
         .edit-btn {
-            background: #3b82f6;
-            color: white;
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #3b82f6
+                ) !important;
+
+            color: #ffffff !important;
         }
+
+
+        /* =====================================================
+           DELETE BUTTON
+           ===================================================== */
 
         .delete-btn {
-            background: #ef4444;
-            color: white;
+            background:
+                linear-gradient(
+                    135deg,
+                    #dc2626,
+                    #ef4444
+                ) !important;
+
+            color: #ffffff !important;
+
+            box-shadow:
+                0 5px 15px rgba(239, 68, 68, 0.15);
         }
 
-        /* TIMER */
+
+        /* =====================================================
+           TIMER BOX
+           ===================================================== */
 
         .timer-box {
-            margin-top: 15px;
-            padding: 14px;
-            background: #f5f3ff;
-            border-radius: 10px;
+            margin-top: 18px;
+
+            padding: 16px;
+
+            background:
+                rgba(124, 58, 237, 0.12) !important;
+
+            border:
+                1px solid rgba(139, 92, 246, 0.35);
+
+            border-radius: 12px;
+
+            color: #ffffff !important;
         }
+
 
         .timer-display {
             display: inline-block;
-            font-size: 24px;
-            font-weight: 700;
-            color: #6d28d9;
+
+            font-size: 26px;
+
+            font-weight: 800;
+
+            color: #c4b5fd !important;
+
             margin-right: 10px;
+
             margin-bottom: 8px;
         }
 
+
         .timer-btn {
             border: none;
-            padding: 9px 13px;
-            border-radius: 8px;
+
+            padding: 9px 14px;
+
+            border-radius: 9px;
+
             cursor: pointer;
-            font-weight: 600;
-            background: #7c3aed;
-            color: white;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #8b5cf6
+                ) !important;
+
+            color: #ffffff !important;
         }
 
+
         .stop-timer-btn {
-            background: #ef4444;
+            background:
+                linear-gradient(
+                    135deg,
+                    #dc2626,
+                    #ef4444
+                ) !important;
+
             margin-left: 5px;
         }
 
+
+        /* =====================================================
+           EMPTY STATE
+           ===================================================== */
+
         .empty-state {
             text-align: center;
-            padding: 40px;
-            background: white;
-            border-radius: 15px;
+
+            padding: 45px 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(14, 12, 45, 0.98),
+                    rgba(31, 20, 75, 0.98)
+                ) !important;
+
+            border:
+                1px solid rgba(124, 92, 255, 0.55);
+
+            border-radius: 20px;
+
+            color: #ffffff !important;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.30);
         }
 
-        /* CUSTOM INPUTS */
+
+        .empty-state h3,
+        .empty-state p {
+            color: #ffffff !important;
+        }
+
+
+        /* =====================================================
+           CUSTOM INPUTS
+           ===================================================== */
 
         #customGoal {
             display: none;
+
             margin-top: 10px;
         }
 
+
         #otherCategory {
             display: none;
+
             margin-top: 10px;
+        }
+
+
+        /* =====================================================
+           FORM
+           ===================================================== */
+
+        .form-card {
+            color: #ffffff;
+        }
+
+
+        .form-card h2 {
+            color: #ffffff !important;
+        }
+
+
+        .form-card label {
+            color: #e5e7eb !important;
+        }
+
+
+        .form-card input,
+        .form-card select {
+            color: #ffffff !important;
+
+            background:
+                rgba(15, 12, 45, 0.90) !important;
+
+            border:
+                1px solid rgba(139, 92, 246, 0.40) !important;
+        }
+
+
+        .form-card input::placeholder {
+            color: #9ca3af !important;
+        }
+
+
+        .form-card option {
+            background: #15102f;
+
+            color: #ffffff;
+        }
+
+
+        /* =====================================================
+           AI SUGGESTION
+           ===================================================== */
+
+        .ai-suggestion {
+            color: #ffffff !important;
+        }
+
+
+        .ai-suggestion h3 {
+            color: #ffffff !important;
+        }
+
+
+        .ai-suggestion p {
+            color: #dbe4ff !important;
+        }
+
+
+        /* =====================================================
+           MOBILE RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 768px) {
+
+            .activities-section h2 {
+                font-size: 25px;
+            }
+
+
+            .activity-card {
+                padding: 18px !important;
+            }
+
+
+            .activity-top {
+                flex-direction: column;
+            }
+
+
+            .activity-top h3 {
+                font-size: 20px;
+            }
+
+
+            .activity-buttons {
+                width: 100%;
+            }
+
+
+            .activity-buttons button {
+                flex: 1;
+
+                min-width: 100px;
+            }
+
         }
 
     </style>
@@ -162,7 +567,9 @@
 <div class="dashboard">
 
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
     <aside class="sidebar">
 
@@ -190,6 +597,7 @@
 
 
         <button
+            type="button"
             onclick="logout()"
             class="logout-btn"
         >
@@ -200,7 +608,9 @@
 
 
 
-    <!-- MAIN -->
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
     <main class="main-content">
 
@@ -213,7 +623,9 @@
 
 
 
-        <!-- ADD ACTIVITY FORM -->
+        <!-- =================================================
+             ADD ACTIVITY FORM
+             ================================================= -->
 
         <div class="form-card">
 
@@ -250,7 +662,10 @@
                         Goal / Time
                     </label>
 
-                    <select id="habitGoalSelect" required>
+                    <select
+                        id="habitGoalSelect"
+                        required
+                    >
 
                         <option value="">
                             Select Goal / Time
@@ -319,7 +734,9 @@
 
 
 
-                <!-- CATEGORY -->
+                <!-- =================================================
+                     CATEGORY
+                     ================================================= -->
 
                 <div class="form-group">
 
@@ -327,7 +744,10 @@
                         Category
                     </label>
 
-                    <select id="habitCategory" required>
+                    <select
+                        id="habitCategory"
+                        required
+                    >
 
                         <option value="">
                             Select Category
@@ -372,7 +792,9 @@
 
 
 
-                <!-- REMINDER -->
+                <!-- =================================================
+                     REMINDER
+                     ================================================= -->
 
                 <div class="form-group">
 
@@ -389,7 +811,9 @@
 
 
 
-                <!-- BUTTONS -->
+                <!-- =================================================
+                     FORM BUTTONS
+                     ================================================= -->
 
                 <div class="form-buttons">
 
@@ -404,7 +828,7 @@
                     <button
                         type="button"
                         id="cancelEditBtn"
-                        style="display:none;"
+                        style="display: none;"
                     >
                         Cancel
                     </button>
@@ -418,7 +842,9 @@
 
 
 
-        <!-- AI SUGGESTION -->
+        <!-- =====================================================
+             AI SUGGESTION
+             ===================================================== -->
 
         <div class="ai-suggestion">
 
@@ -432,7 +858,9 @@
 
 
 
-        <!-- ACTIVITIES -->
+        <!-- =====================================================
+             ACTIVITIES
+             ===================================================== -->
 
         <div class="activities-section">
 
@@ -452,7 +880,9 @@
 
 
 
-<!-- JAVASCRIPT -->
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
 
 <script src="script.js"></script>
 
