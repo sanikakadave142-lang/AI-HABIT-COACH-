@@ -2077,3 +2077,182 @@ button:active {
 /* =========================================================
    END
    ========================================================= */
+   /* =========================================================
+   CLEAR & VISIBLE HABIT / ACTIVITY CARDS
+   ========================================================= */
+
+/* Main activity section */
+.habits-section,
+.activity-section,
+.habits-container {
+    color: #ffffff !important;
+}
+
+/* Habit cards */
+.habit-card,
+.activity-card,
+.habit-item,
+.habit-list-item {
+    background: linear-gradient(
+        135deg,
+        rgba(18, 15, 55, 0.98),
+        rgba(27, 20, 75, 0.98)
+    ) !important;
+
+    border: 1px solid rgba(124, 92, 255, 0.65) !important;
+    border-radius: 20px !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.35),
+        0 0 20px rgba(124, 92, 255, 0.12) !important;
+}
+
+/* Habit name - MOST IMPORTANT */
+.habit-card h3,
+.habit-card h4,
+.activity-card h3,
+.activity-card h4,
+.habit-item h3,
+.habit-item h4,
+.habit-list-item h3,
+.habit-list-item h4 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    opacity: 1 !important;
+}
+
+/* Normal text inside cards */
+.habit-card p,
+.activity-card p,
+.habit-item p,
+.habit-list-item p {
+    color: #dbe4ff !important;
+    opacity: 1 !important;
+}
+
+/* Goal text */
+.habit-card .goal,
+.activity-card .goal,
+.habit-item .goal {
+    color: #e8ecff !important;
+    font-weight: 600 !important;
+}
+
+/* Category badge */
+.habit-card .category,
+.activity-card .category,
+.habit-item .category,
+.habit-list-item .category {
+    color: #ffffff !important;
+    background: linear-gradient(
+        135deg,
+        #7c3aed,
+        #a855f7
+    ) !important;
+
+    border: none !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+}
+
+/* Target / goal row */
+.habit-card span,
+.activity-card span,
+.habit-item span {
+    opacity: 1 !important;
+}
+
+/* Buttons */
+.habit-card button,
+.activity-card button,
+.habit-item button,
+.habit-list-item button {
+    opacity: 1 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* Complete button */
+.habit-card .complete-btn,
+.activity-card .complete-btn,
+.habit-item .complete-btn {
+    background: linear-gradient(
+        135deg,
+        #00c853,
+        #00e676
+    ) !important;
+
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Delete button */
+.habit-card .delete-btn,
+.activity-card .delete-btn,
+.habit-item .delete-btn {
+    background: linear-gradient(
+        135deg,
+        #ef4444,
+        #ff5252
+    ) !important;
+
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Button hover */
+.habit-card button:hover,
+.activity-card button:hover,
+.habit-item button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.12);
+}
+
+/* Main heading */
+.habits-section h2,
+.activity-section h2,
+.habits-container h2 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+}
+
+/* Prevent faded / invisible text */
+.habit-card *,
+.activity-card *,
+.habit-item *,
+.habit-list-item * {
+    opacity: 1 !important;
+}
+
+/* Remove white background if old CSS is overriding */
+.habit-card::before,
+.activity-card::before,
+.habit-item::before {
+    background: transparent !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .habit-card,
+    .activity-card,
+    .habit-item,
+    .habit-list-item {
+        padding: 18px !important;
+        border-radius: 16px !important;
+    }
+
+    .habit-card h3,
+    .habit-card h4,
+    .activity-card h3,
+    .activity-card h4 {
+        font-size: 20px !important;
+    }
+
+    .habit-card button,
+    .activity-card button {
+        font-size: 14px !important;
+        padding: 10px 16px !important;
+    }
+}
