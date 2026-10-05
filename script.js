@@ -2126,3 +2126,33 @@ document.addEventListener(
 
     }
 );
+
+// ===============================
+// QUICK QUESTION FUNCTION
+// ===============================
+
+function quickQuestion(question) {
+
+    const input = document.getElementById("aiQuestion");
+
+    if (!input) {
+        console.error("AI question input not found");
+        return;
+    }
+
+    // Put selected question into input box
+    input.value = question;
+
+    // Focus the input
+    input.focus();
+
+    // Highlight the selected question box
+    input.style.borderColor = "#8b5cf6";
+    input.style.boxShadow = "0 0 20px rgba(139, 92, 246, 0.45)";
+
+    // Remove highlight after 1.5 seconds
+    setTimeout(() => {
+        input.style.borderColor = "";
+        input.style.boxShadow = "";
+    }, 1500);
+}
