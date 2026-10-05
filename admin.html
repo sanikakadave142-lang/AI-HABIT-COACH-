@@ -1,1207 +1,681 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<title>AI Habit Coach - Admin Dashboard</title>
 
-<title>AI Habit Coach | Admin Dashboard</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="icon" href="data:,">
 
 <style>
 
-/* =====================================================
-   GLOBAL
-===================================================== */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-html{
-    scroll-behavior:smooth;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #080b14;
+    color: #ffffff;
+    min-height: 100vh;
 }
 
-body{
-    font-family:
-        Inter,
-        Arial,
-        sans-serif;
-
-    background:#f4f7fb;
-
-    color:#172033;
-}
-
-
-/* =====================================================
+/* =========================
    LOGIN PAGE
-===================================================== */
+========================= */
 
-.login-page{
-
-    min-height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:20px;
-
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
     background:
-        radial-gradient(
-            circle at top left,
-            #60a5fa,
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at bottom right,
-            #a78bfa,
-            transparent 35%
-        ),
-        linear-gradient(
-            135deg,
-            #111827,
-            #1e3a8a,
-            #4c1d95
-        );
-
+        radial-gradient(circle at top left, #24104f 0%, transparent 35%),
+        radial-gradient(circle at bottom right, #0d3d45 0%, transparent 35%),
+        #080b14;
 }
 
-.login-card{
-
-    width:410px;
-
-    max-width:100%;
-
-    padding:40px;
-
-    border-radius:24px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    box-shadow:
-        0 30px 80px
-        rgba(0,0,0,.35);
-
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(20, 24, 39, 0.96);
+    border: 1px solid #343b5a;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
-.login-icon{
-
-    width:75px;
-
-    height:75px;
-
-    margin:0 auto 18px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border-radius:20px;
-
-    font-size:38px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
-
-    box-shadow:
-        0 12px 30px
-        rgba(37,99,235,.35);
-
+.login-box h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 10px;
 }
 
-.login-card h1{
-
-    text-align:center;
-
-    font-size:28px;
-
-    margin-bottom:8px;
-
+.login-box p {
+    text-align: center;
+    color: #9ca3b8;
+    margin-bottom: 30px;
 }
 
-.login-card .subtitle{
-
-    text-align:center;
-
-    color:#6b7280;
-
-    margin-bottom:28px;
-
+.input-group {
+    margin-bottom: 18px;
 }
 
-.login-card input{
-
-    width:100%;
-
-    padding:14px 15px;
-
-    margin-bottom:15px;
-
-    border:1px solid #dbe1ea;
-
-    border-radius:11px;
-
-    outline:none;
-
-    font-size:15px;
-
-    transition:.2s;
-
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cbd0e0;
+    font-size: 14px;
 }
 
-.login-card input:focus{
-
-    border-color:#2563eb;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(37,99,235,.1);
-
+.input-group input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #3b4260;
+    background: #0e1220;
+    color: white;
+    outline: none;
+    font-size: 15px;
 }
 
-.login-card button{
-
-    width:100%;
-
-    padding:14px;
-
-    border:none;
-
-    border-radius:11px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
-
-    color:white;
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    transition:.2s;
-
+.input-group input:focus {
+    border-color: #8b5cf6;
 }
 
-.login-card button:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:
-        0 10px 25px
-        rgba(37,99,235,.3);
-
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
 }
 
-#error{
-
-    min-height:22px;
-
-    margin-top:15px;
-
-    color:#dc2626;
-
-    text-align:center;
-
-    font-size:14px;
-
+.login-btn:hover {
+    opacity: 0.9;
 }
 
-
-/* =====================================================
-   DASHBOARD
-===================================================== */
-
-.dashboard{
-
-    display:none;
-
-    min-height:100vh;
-
+.login-message {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+    min-height: 20px;
 }
 
+/* =========================
+   ADMIN APP
+========================= */
 
-/* =====================================================
+.admin-app {
+    display: none;
+    min-height: 100vh;
+}
+
+/* =========================
    SIDEBAR
-===================================================== */
+========================= */
 
-.sidebar{
-
-    position:fixed;
-
-    left:0;
-
-    top:0;
-
-    bottom:0;
-
-    width:245px;
-
-    padding:25px 15px;
-
-    color:white;
-
-    background:
-        linear-gradient(
-            180deg,
-            #111827,
-            #172554,
-            #312e81
-        );
-
-    box-shadow:
-        8px 0 30px
-        rgba(0,0,0,.12);
-
-    z-index:100;
-
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 245px;
+    background: #0d111d;
+    border-right: 1px solid #252b40;
+    padding: 25px 15px;
+    z-index: 100;
 }
 
-.logo{
-
-    text-align:center;
-
-    font-size:21px;
-
-    font-weight:bold;
-
-    margin-bottom:35px;
-
+.logo {
+    text-align: center;
+    margin-bottom: 35px;
 }
 
-.logo span{
-
-    display:block;
-
-    margin-top:5px;
-
-    font-size:11px;
-
-    font-weight:normal;
-
-    color:#c7d2fe;
-
+.logo h2 {
+    font-size: 21px;
 }
 
-.nav-item{
-
-    padding:14px 16px;
-
-    margin-bottom:8px;
-
-    border-radius:11px;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-    color:#dbeafe;
-
+.logo span {
+    color: #8b5cf6;
 }
 
-.nav-item:hover{
-
-    background:
-        rgba(255,255,255,.1);
-
-    transform:translateX(3px);
-
+.nav-item {
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    color: #aeb5c9;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 14px;
 }
 
-.nav-item.active{
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
-
-    color:white;
-
-    box-shadow:
-        0 8px 20px
-        rgba(37,99,235,.25);
-
+.nav-item:hover {
+    background: #171c2d;
+    color: white;
 }
 
-.logout{
-
-    position:absolute;
-
-    bottom:25px;
-
-    left:15px;
-
-    right:15px;
-
-    background:
-        rgba(220,38,38,.9);
-
+.nav-item.active {
+    background: linear-gradient(135deg, #6d28d9, #4338ca);
+    color: white;
 }
 
-.logout:hover{
-
-    background:#b91c1c;
-
+.nav-item.logout {
+    margin-top: 25px;
+    color: #f87171;
 }
 
+.nav-item.logout:hover {
+    background: rgba(239,68,68,0.12);
+}
 
-/* =====================================================
+/* =========================
    MAIN
-===================================================== */
+========================= */
 
-.main{
-
-    margin-left:245px;
-
-    padding:28px;
-
+.main-content {
+    margin-left: 245px;
+    padding: 30px;
+    min-height: 100vh;
 }
 
-.topbar{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:15px;
-
-    margin-bottom:28px;
-
+.section {
+    display: none;
 }
 
-.topbar h2{
-
-    font-size:28px;
-
+.section.active {
+    display: block;
 }
 
-.topbar p{
-
-    margin-top:5px;
-
-    color:#6b7280;
-
+.page-title {
+    font-size: 28px;
+    margin-bottom: 7px;
 }
 
-.refresh{
-
-    border:none;
-
-    padding:11px 18px;
-
-    border-radius:10px;
-
-    background:#2563eb;
-
-    color:white;
-
-    cursor:pointer;
-
-    font-weight:bold;
-
+.page-subtitle {
+    color: #8f97ad;
+    margin-bottom: 28px;
 }
 
-.refresh:hover{
+/* =========================
+   STAT CARDS
+========================= */
 
-    background:#1d4ed8;
-
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 28px;
 }
 
-
-/* =====================================================
-   STATS
-===================================================== */
-
-.stats{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(4,1fr);
-
-    gap:18px;
-
-    margin-bottom:25px;
-
+.stat-card {
+    background: #111625;
+    border: 1px solid #272e45;
+    border-radius: 16px;
+    padding: 22px;
 }
 
-.stat-card{
-
-    position:relative;
-
-    overflow:hidden;
-
-    background:white;
-
-    padding:23px;
-
-    border-radius:16px;
-
-    box-shadow:
-        0 5px 20px
-        rgba(15,23,42,.06);
-
-    border:1px solid #edf0f5;
-
+.stat-icon {
+    font-size: 25px;
+    margin-bottom: 12px;
 }
 
-.stat-card::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:80px;
-
-    height:80px;
-
-    border-radius:50%;
-
-    right:-30px;
-
-    top:-30px;
-
-    background:
-        rgba(37,99,235,.08);
-
+.stat-card h3 {
+    font-size: 28px;
+    margin-bottom: 5px;
 }
 
-.stat-icon{
-
-    font-size:25px;
-
-    margin-bottom:12px;
-
+.stat-card p {
+    color: #8e96aa;
+    font-size: 13px;
 }
 
-.stat-card h3{
+/* =========================
+   CARDS
+========================= */
 
-    color:#6b7280;
-
-    font-size:14px;
-
-    margin-bottom:8px;
-
+.card {
+    background: #111625;
+    border: 1px solid #272e45;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
 }
 
-.number{
-
-    font-size:32px;
-
-    font-weight:bold;
-
+.card-title {
+    font-size: 18px;
+    margin-bottom: 18px;
 }
 
+/* =========================
+   DASHBOARD
+========================= */
 
-/* =====================================================
-   SECTIONS
-===================================================== */
-
-.section{
-
-    background:white;
-
-    padding:25px;
-
-    border-radius:17px;
-
-    margin-bottom:25px;
-
-    box-shadow:
-        0 5px 20px
-        rgba(15,23,42,.05);
-
-    border:1px solid #edf0f5;
-
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
-.section-title{
-
-    font-size:21px;
-
-    font-weight:bold;
-
-    margin-bottom:20px;
-
+.info-box {
+    padding: 20px;
+    background: #0c101c;
+    border-radius: 12px;
+    border: 1px solid #252c42;
 }
 
-
-/* =====================================================
-   CHARTS
-===================================================== */
-
-.analytics{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
-    gap:20px;
-
+.info-box h3 {
+    margin-bottom: 10px;
 }
 
-.chart-card{
-
-    padding:20px;
-
-    border-radius:14px;
-
-    background:#f8fafc;
-
-    border:1px solid #edf0f5;
-
+.info-box p {
+    color: #949cb1;
+    line-height: 1.6;
 }
 
-.chart-card h3{
+/* =========================
+   USER ANALYSIS
+========================= */
 
-    margin-bottom:15px;
-
+.search-box {
+    width: 100%;
+    padding: 14px 16px;
+    background: #0d1220;
+    border: 1px solid #323951;
+    border-radius: 10px;
+    color: white;
+    outline: none;
+    margin-bottom: 20px;
 }
 
+.search-box:focus {
+    border-color: #8b5cf6;
+}
 
-/* =====================================================
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.user-card {
+    background: #111625;
+    border: 1px solid #292f47;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.user-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.user-email {
+    color: #8991a6;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.user-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.user-stat {
+    background: #0b101c;
+    padding: 12px 6px;
+    border-radius: 9px;
+    text-align: center;
+}
+
+.user-stat strong {
+    display: block;
+    font-size: 18px;
+}
+
+.user-stat span {
+    color: #838ba0;
+    font-size: 11px;
+}
+
+.progress-wrapper {
+    margin-top: 10px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+    font-size: 12px;
+    color: #9ba2b5;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #252b3d;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7c3aed, #22c55e);
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.habit-list {
+    margin-top: 15px;
+}
+
+.habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #242a3c;
+}
+
+.habit-item:last-child {
+    border-bottom: none;
+}
+
+.habit-name {
+    color: white;
+    font-size: 13px;
+}
+
+.habit-category {
+    color: #a78bfa;
+    font-size: 11px;
+    margin-top: 3px;
+}
+
+.status {
+    font-size: 11px;
+    padding: 5px 9px;
+    border-radius: 20px;
+}
+
+.status.completed {
+    background: rgba(34,197,94,0.15);
+    color: #4ade80;
+}
+
+.status.pending {
+    background: rgba(234,179,8,0.15);
+    color: #facc15;
+}
+
+/* =========================
    AI INSIGHTS
-===================================================== */
+========================= */
 
-.ai-grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:18px;
-
+.insights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
 }
 
-.ai-card{
-
-    padding:22px;
-
-    border-radius:14px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #eff6ff,
-            #f5f3ff
-        );
-
-    border:1px solid #dbeafe;
-
+.insight-card {
+    background: #111625;
+    border: 1px solid #292f47;
+    border-radius: 16px;
+    padding: 22px;
 }
 
-.ai-card h3{
-
-    margin-bottom:12px;
-
-    color:#2563eb;
-
+.insight-icon {
+    font-size: 28px;
+    margin-bottom: 15px;
 }
 
-.ai-card p{
-
-    font-size:22px;
-
-    font-weight:bold;
-
+.insight-card h3 {
+    color: #8f97ac;
+    font-size: 13px;
+    font-weight: normal;
+    margin-bottom: 8px;
 }
 
-
-/* =====================================================
-   USERS
-===================================================== */
-
-.search-box{
-
-    width:100%;
-
-    padding:14px;
-
-    border:1px solid #d1d5db;
-
-    border-radius:10px;
-
-    margin-bottom:20px;
-
-    font-size:15px;
-
-    outline:none;
-
+.insight-value {
+    font-size: 22px;
+    font-weight: bold;
 }
 
-.search-box:focus{
-
-    border-color:#2563eb;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(37,99,235,.08);
-
+.insight-description {
+    color: #858da2;
+    font-size: 12px;
+    margin-top: 8px;
+    line-height: 1.5;
 }
 
-.user-card{
-
-    border:1px solid #e5e7eb;
-
-    border-radius:14px;
-
-    padding:20px;
-
-    margin-bottom:15px;
-
-    background:#fff;
-
-    transition:.2s;
-
+.recommendation {
+    background: linear-gradient(
+        135deg,
+        rgba(124,58,237,0.14),
+        rgba(37,99,235,0.08)
+    );
+    border: 1px solid #49377d;
+    border-radius: 16px;
+    padding: 25px;
 }
 
-.user-card:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:
-        0 10px 25px
-        rgba(0,0,0,.06);
-
+.recommendation h2 {
+    margin-bottom: 10px;
 }
 
-.user-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:15px;
-
-    margin-bottom:15px;
-
+.recommendation p {
+    color: #a7aec0;
+    line-height: 1.7;
 }
 
-.user-name{
+/* =========================
+   EMPTY / LOADING
+========================= */
 
-    font-size:20px;
-
-    font-weight:bold;
-
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #929aaf;
 }
 
-.user-email{
-
-    color:#6b7280;
-
-    margin-top:5px;
-
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #8e96aa;
 }
 
-.user-stats{
+/* =========================
+   TOAST
+========================= */
 
-    display:flex;
-
-    gap:8px;
-
-    flex-wrap:wrap;
-
-    margin:15px 0;
-
+.toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    padding: 14px 18px;
+    background: #171d2c;
+    border: 1px solid #343c56;
+    border-radius: 10px;
+    display: none;
+    z-index: 9999;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-.badge{
-
-    padding:7px 12px;
-
-    border-radius:20px;
-
-    font-size:13px;
-
-    background:#eef2ff;
-
+.toast.success {
+    border-color: #22c55e;
 }
 
-.completed{
-
-    color:#15803d;
-
-    background:#dcfce7;
-
+.toast.error {
+    border-color: #ef4444;
 }
 
-.pending{
-
-    color:#b45309;
-
-    background:#fef3c7;
-
-}
-
-.view-btn{
-
-    border:none;
-
-    background:#2563eb;
-
-    color:white;
-
-    padding:9px 15px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-}
-
-.view-btn:hover{
-
-    background:#1d4ed8;
-
-}
-
-
-/* =====================================================
-   TABLE
-===================================================== */
-
-.habit-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-
-    margin-top:15px;
-
-}
-
-.habit-table th,
-.habit-table td{
-
-    padding:11px;
-
-    border-bottom:
-        1px solid #e5e7eb;
-
-    text-align:left;
-
-}
-
-.habit-table th{
-
-    background:#f8fafc;
-
-    color:#475569;
-
-}
-
-.status-completed{
-
-    color:#15803d;
-
-    font-weight:bold;
-
-}
-
-.status-pending{
-
-    color:#b45309;
-
-    font-weight:bold;
-
-}
-
-
-/* =====================================================
-   MODAL
-===================================================== */
-
-.modal{
-
-    display:none;
-
-    position:fixed;
-
-    inset:0;
-
-    background:
-        rgba(15,23,42,.65);
-
-    z-index:1000;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:20px;
-
-}
-
-.modal-box{
-
-    background:white;
-
-    width:700px;
-
-    max-width:100%;
-
-    max-height:90vh;
-
-    overflow-y:auto;
-
-    border-radius:20px;
-
-    padding:28px;
-
-    position:relative;
-
-}
-
-.close-btn{
-
-    position:absolute;
-
-    right:18px;
-
-    top:15px;
-
-    width:36px;
-
-    height:36px;
-
-    border:none;
-
-    border-radius:50%;
-
-    background:#f3f4f6;
-
-    font-size:21px;
-
-    cursor:pointer;
-
-}
-
-.profile-title{
-
-    font-size:25px;
-
-    font-weight:bold;
-
-    margin-bottom:20px;
-
-}
-
-.profile-info{
-
-    display:grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap:15px;
-
-    margin-bottom:25px;
-
-}
-
-.info-box{
-
-    background:#f8fafc;
-
-    padding:15px;
-
-    border-radius:10px;
-
-}
-
-.info-box small{
-
-    display:block;
-
-    color:#6b7280;
-
-    margin-bottom:5px;
-
-}
-
-.info-box strong{
-
-    font-size:17px;
-
-}
-
-.profile-stats{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:12px;
-
-    margin-bottom:25px;
-
-}
-
-.profile-stat{
-
-    text-align:center;
-
-    background:#eff6ff;
-
-    padding:18px 10px;
-
-    border-radius:10px;
-
-}
-
-.profile-stat strong{
-
-    display:block;
-
-    font-size:25px;
-
-    color:#2563eb;
-
-}
-
-.profile-stat span{
-
-    color:#6b7280;
-
-    font-size:13px;
-
-}
-
-
-/* =====================================================
-   EMPTY / ERROR
-===================================================== */
-
-.empty-state{
-
-    padding:35px;
-
-    text-align:center;
-
-    color:#6b7280;
-
-    background:#f8fafc;
-
-    border-radius:12px;
-
-}
-
-.api-status{
-
-    position:fixed;
-
-    right:20px;
-
-    bottom:20px;
-
-    padding:9px 14px;
-
-    border-radius:20px;
-
-    background:#dcfce7;
-
-    color:#166534;
-
-    font-size:12px;
-
-    font-weight:bold;
-
-    box-shadow:
-        0 5px 15px
-        rgba(0,0,0,.08);
-
-}
-
-
-/* =====================================================
+/* =========================
    MOBILE
-===================================================== */
+========================= */
 
-@media(max-width:1000px){
+@media (max-width: 1000px) {
 
-    .stats{
-
-        grid-template-columns:
-            repeat(2,1fr);
-
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .ai-grid{
-
-        grid-template-columns:1fr;
-
+    .insights-grid {
+        grid-template-columns: 1fr 1fr;
     }
 
-}
-
-@media(max-width:800px){
-
-    .sidebar{
-
-        position:relative;
-
-        width:100%;
-
-        height:auto;
-
-    }
-
-    .logout{
-
-        position:relative;
-
-        left:auto;
-
-        right:auto;
-
-        bottom:auto;
-
-        margin-top:15px;
-
-    }
-
-    .main{
-
-        margin-left:0;
-
-        padding:15px;
-
-    }
-
-    .analytics{
-
-        grid-template-columns:1fr;
-
+    .users-grid {
+        grid-template-columns: 1fr;
     }
 
 }
 
-@media(max-width:600px){
+@media (max-width: 750px) {
 
-    .stats{
-
-        grid-template-columns:1fr;
-
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #252b40;
     }
 
-    .topbar{
-
-        align-items:flex-start;
-
-        flex-direction:column;
-
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
     }
 
-    .profile-info{
-
-        grid-template-columns:1fr;
-
+    .logo {
+        margin-bottom: 18px;
     }
 
-    .profile-stats{
-
-        grid-template-columns:1fr;
-
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .user-header{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
 
-    .habit-table{
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
 
-        font-size:12px;
+}
 
+@media (max-width: 480px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .user-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .page-title {
+        font-size: 23px;
+    }
+
+    .login-box {
+        padding: 25px;
     }
 
 }
 
 </style>
-
 </head>
-
 
 <body>
 
-
 <!-- =====================================================
-     LOGIN
+     ADMIN LOGIN
 ===================================================== -->
 
-<div class="login-page" id="loginPage">
+<div id="loginPage" class="login-page">
 
-    <div class="login-card">
+    <div class="login-box">
 
-        <div class="login-icon">
-            🤖
-        </div>
+        <h1>🤖 AI Habit Coach</h1>
 
-        <h1>AI Habit Coach</h1>
+        <p>Admin Login</p>
 
-        <p class="subtitle">
-            Administrator Control Center
-        </p>
+        <form id="adminLoginForm">
 
-        <form id="loginForm">
+            <div class="input-group">
 
-            <input
-                type="email"
-                id="adminEmail"
-                placeholder="Admin Email"
-                autocomplete="username"
-                required
+                <label for="adminEmail">
+                    Admin Email
+                </label>
+
+                <input
+                    type="email"
+                    id="adminEmail"
+                    placeholder="Enter admin email"
+                    required
+                >
+
+            </div>
+
+            <div class="input-group">
+
+                <label for="adminPassword">
+                    Admin Password
+                </label>
+
+                <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Enter admin password"
+                    required
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="login-btn"
+                id="loginButton"
             >
-
-            <input
-                type="password"
-                id="adminPassword"
-                placeholder="Admin Password"
-                autocomplete="current-password"
-                required
-            >
-
-            <button type="submit">
-                🔐 Secure Login
+                Login as Admin
             </button>
 
-        </form>
+            <div
+                id="loginMessage"
+                class="login-message"
+            ></div>
 
-        <div id="error"></div>
+        </form>
 
     </div>
 
@@ -1209,116 +683,82 @@ body{
 
 
 <!-- =====================================================
-     DASHBOARD
+     ADMIN APP
 ===================================================== -->
 
-<div class="dashboard" id="dashboard">
-
+<div id="adminApp" class="admin-app">
 
     <!-- SIDEBAR -->
 
-    <div class="sidebar">
+    <aside class="sidebar">
 
         <div class="logo">
 
-            🤖 AI Habit Coach
-
-            <span>
-                ADMIN CONTROL CENTER
-            </span>
+            <h2>
+                🤖 <span>AI Habit</span> Coach
+            </h2>
 
         </div>
 
 
-        <div class="nav-item active"
-             data-target="dashboardSection">
-
-            📊 Dashboard
-
+        <div
+            class="nav-item active"
+            data-target="dashboardSection"
+        >
+            📊 Admin Dashboard
         </div>
 
 
-        <div class="nav-item"
-             data-target="usersSection">
-
-            👥 Users
-
+        <div
+            class="nav-item"
+            data-target="analysisSection"
+        >
+            📋 User Habit Analysis
         </div>
 
 
-        <div class="nav-item"
-             data-target="habitsSection">
-
-            📋 Habit Analytics
-
-        </div>
-
-
-        <div class="nav-item"
-             data-target="aiSection">
-
+        <div
+            class="nav-item"
+            data-target="aiSection"
+        >
             🤖 AI Insights
-
         </div>
 
 
-        <div class="nav-item logout"
-             onclick="logoutAdmin()">
-
+        <div
+            class="nav-item logout"
+            id="logoutButton"
+        >
             🚪 Logout
-
         </div>
 
-    </div>
+    </aside>
 
 
-    <!-- MAIN -->
+    <!-- MAIN CONTENT -->
 
-    <div class="main">
-
-
-        <div class="topbar">
-
-            <div>
-
-                <h2>
-                    Admin Dashboard
-                </h2>
-
-                <p>
-                    Monitor users, habits and AI insights
-                </p>
-
-            </div>
-
-
-            <button
-                class="refresh"
-                onclick="loadUsers()">
-
-                🔄 Refresh Data
-
-            </button>
-
-        </div>
+    <main class="main-content">
 
 
         <!-- =================================================
-             DASHBOARD
+             ADMIN DASHBOARD
         ================================================== -->
 
-        <div class="section"
-             id="dashboardSection">
+        <section
+            id="dashboardSection"
+            class="section active"
+        >
 
-            <div class="section-title">
+            <h1 class="page-title">
+                Admin Dashboard
+            </h1>
 
-                📊 Dashboard Overview
+            <p class="page-subtitle">
+                Overview of AI Habit Coach users and activities
+            </p>
 
-            </div>
 
-
-            <div class="stats">
-
+            <div class="stats-grid">
 
                 <div class="stat-card">
 
@@ -1326,14 +766,13 @@ body{
                         👥
                     </div>
 
-                    <h3>
-                        Total Users
+                    <h3 id="totalUsers">
+                        0
                     </h3>
 
-                    <div class="number"
-                         id="totalUsers">
-                        0
-                    </div>
+                    <p>
+                        Total Users
+                    </p>
 
                 </div>
 
@@ -1344,14 +783,13 @@ body{
                         📋
                     </div>
 
-                    <h3>
-                        Total Habits
+                    <h3 id="totalHabits">
+                        0
                     </h3>
 
-                    <div class="number"
-                         id="totalHabits">
-                        0
-                    </div>
+                    <p>
+                        Total Habits
+                    </p>
 
                 </div>
 
@@ -1362,14 +800,13 @@ body{
                         ✅
                     </div>
 
-                    <h3>
-                        Completed
+                    <h3 id="completedHabits">
+                        0
                     </h3>
 
-                    <div class="number"
-                         id="completedHabits">
-                        0
-                    </div>
+                    <p>
+                        Completed Habits
+                    </p>
 
                 </div>
 
@@ -1380,407 +817,347 @@ body{
                         ⏳
                     </div>
 
-                    <h3>
-                        Pending
+                    <h3 id="pendingHabits">
+                        0
                     </h3>
 
-                    <div class="number"
-                         id="pendingHabits">
-                        0
+                    <p>
+                        Pending Habits
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+                <div class="card">
+
+                    <div class="card-title">
+                        📈 Habit Completion
+                    </div>
+
+                    <div class="info-box">
+
+                        <h3 id="dashboardCompletion">
+                            0%
+                        </h3>
+
+                        <p>
+                            Overall habit completion rate
+                            across all registered users.
+                        </p>
+
                     </div>
 
                 </div>
 
 
+                <div class="card">
+
+                    <div class="card-title">
+                        🧠 System Status
+                    </div>
+
+                    <div class="info-box">
+
+                        <h3>
+                            🟢 Admin Connected
+                        </h3>
+
+                        <p>
+                            Admin authentication is active.
+                            User information is available only
+                            after successful admin authentication.
+                        </p>
+
+                    </div>
+
+                </div>
+
             </div>
 
-        </div>
+
+            <div class="card">
+
+                <div class="card-title">
+                    📊 Quick Summary
+                </div>
+
+                <div class="dashboard-grid">
+
+                    <div class="info-box">
+
+                        <h3>
+                            User Activity
+                        </h3>
+
+                        <p id="userSummary">
+                            Loading user activity...
+                        </p>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <h3>
+                            Habit Status
+                        </h3>
+
+                        <p id="habitSummary">
+                            Loading habit statistics...
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
 
 
         <!-- =================================================
-             HABIT ANALYTICS
+             USER HABIT ANALYSIS
         ================================================== -->
 
-        <div class="section"
-             id="habitsSection">
+        <section
+            id="analysisSection"
+            class="section"
+        >
 
-            <div class="section-title">
+            <h1 class="page-title">
+                User Habit Analysis
+            </h1>
 
-                📈 Habit Analytics
+            <p class="page-subtitle">
+                View user-wise habit activity and completion
+            </p>
+
+
+            <input
+                type="text"
+                id="userSearch"
+                class="search-box"
+                placeholder="🔍 Search user by name or email..."
+            >
+
+
+            <div
+                id="usersContainer"
+                class="users-grid"
+            >
+
+                <div class="loading">
+                    Loading user data...
+                </div>
 
             </div>
 
-
-            <div class="analytics">
-
-
-                <div class="chart-card">
-
-                    <h3>
-                        Habit Completion
-                    </h3>
-
-                    <canvas
-                        id="completionChart">
-                    </canvas>
-
-                </div>
-
-
-                <div class="chart-card">
-
-                    <h3>
-                        Category Distribution
-                    </h3>
-
-                    <canvas
-                        id="categoryChart">
-                    </canvas>
-
-                </div>
-
-
-                <div class="chart-card">
-
-                    <h3>
-                        User-wise Habits
-                    </h3>
-
-                    <canvas
-                        id="userChart">
-                    </canvas>
-
-                </div>
-
-
-            </div>
-
-        </div>
+        </section>
 
 
         <!-- =================================================
              AI INSIGHTS
         ================================================== -->
 
-        <div class="section"
-             id="aiSection">
+        <section
+            id="aiSection"
+            class="section"
+        >
 
-            <div class="section-title">
+            <h1 class="page-title">
+                AI Insights
+            </h1>
 
-                🤖 AI Insights
-
-            </div>
-
-
-            <div class="ai-grid">
+            <p class="page-subtitle">
+                Intelligent insights generated from habit activity
+            </p>
 
 
-                <div class="ai-card">
+            <div class="insights-grid">
+
+
+                <div class="insight-card">
+
+                    <div class="insight-icon">
+                        📈
+                    </div>
 
                     <h3>
-                        📊 Completion Rate
+                        Overall Completion Rate
                     </h3>
 
-                    <p id="completionRate">
+                    <div
+                        class="insight-value"
+                        id="aiCompletionRate"
+                    >
                         0%
-                    </p>
+                    </div>
+
+                    <div class="insight-description">
+                        Overall completion percentage
+                        of all user habits.
+                    </div>
 
                 </div>
 
 
-                <div class="ai-card">
+                <div class="insight-card">
+
+                    <div class="insight-icon">
+                        🏆
+                    </div>
 
                     <h3>
-                        🏆 Popular Category
+                        Popular Category
                     </h3>
 
-                    <p id="popularCategory">
+                    <div
+                        class="insight-value"
+                        id="popularCategory"
+                    >
                         -
-                    </p>
+                    </div>
+
+                    <div class="insight-description">
+                        Most frequently used habit category.
+                    </div>
 
                 </div>
 
 
-                <div class="ai-card">
+                <div class="insight-card">
+
+                    <div class="insight-icon">
+                        ⭐
+                    </div>
 
                     <h3>
-                        ⭐ Most Active User
+                        Most Active User
                     </h3>
 
-                    <p id="activeUser">
+                    <div
+                        class="insight-value"
+                        id="activeUser"
+                    >
                         -
-                    </p>
+                    </div>
 
-                </div>
-
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             USERS
-        ================================================== -->
-
-        <div class="section"
-             id="usersSection">
-
-            <div class="section-title">
-
-                👥 User Management
-
-            </div>
-
-
-            <input
-                type="text"
-                class="search-box"
-                id="searchBox"
-                placeholder="🔍 Search user by name or email..."
-                oninput="filterUsers()"
-            >
-
-
-            <div id="usersContainer">
-
-                <div class="empty-state">
-
-                    Loading users...
+                    <div class="insight-description">
+                        User with the highest number of habits.
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
 
+            <div class="recommendation">
 
-    </div>
+                <h2>
+                    🤖 AI Habit Recommendation
+                </h2>
+
+                <p id="aiRecommendation">
+                    Analyzing user habit activity...
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
 
 </div>
 
 
-<!-- =====================================================
-     USER PROFILE MODAL
-===================================================== -->
+<!-- TOAST -->
 
-<div class="modal"
-     id="userModal"
-     onclick="closeModalOutside(event)">
-
-    <div class="modal-box">
-
-
-        <button
-            class="close-btn"
-            onclick="closeUserModal()">
-
-            ×
-
-        </button>
-
-
-        <div class="profile-title"
-             id="profileName">
-
-            User Profile
-
-        </div>
-
-
-        <div class="profile-info">
-
-
-            <div class="info-box">
-
-                <small>
-                    User ID
-                </small>
-
-                <strong id="profileId">
-                    -
-                </strong>
-
-            </div>
-
-
-            <div class="info-box">
-
-                <small>
-                    Name
-                </small>
-
-                <strong id="profileUserName">
-                    -
-                </strong>
-
-            </div>
-
-
-            <div class="info-box">
-
-                <small>
-                    Email
-                </small>
-
-                <strong id="profileEmail">
-                    -
-                </strong>
-
-            </div>
-
-
-            <div class="info-box">
-
-                <small>
-                    Account
-                </small>
-
-                <strong>
-                    Active
-                </strong>
-
-            </div>
-
-
-        </div>
-
-
-        <div class="profile-stats">
-
-
-            <div class="profile-stat">
-
-                <strong id="profileTotal">
-                    0
-                </strong>
-
-                <span>
-                    Total Habits
-                </span>
-
-            </div>
-
-
-            <div class="profile-stat">
-
-                <strong id="profileCompleted">
-                    0
-                </strong>
-
-                <span>
-                    Completed
-                </span>
-
-            </div>
-
-
-            <div class="profile-stat">
-
-                <strong id="profilePending">
-                    0
-                </strong>
-
-                <span>
-                    Pending
-                </span>
-
-            </div>
-
-
-        </div>
-
-
-        <h3>
-            📋 User Habits
-        </h3>
-
-
-        <div id="profileHabits"></div>
-
-
-    </div>
-
-</div>
-
-
-<div class="api-status">
-    ● Backend Connected
-</div>
+<div
+    id="toast"
+    class="toast"
+></div>
 
 
 <script>
 
 /* =====================================================
-   BACKEND URL
+   API
 ===================================================== */
 
-const API =
+const API_BASE_URL =
     "https://ai-habit-coach-backend.onrender.com";
 
 
 /* =====================================================
-   VARIABLES
+   GLOBAL DATA
 ===================================================== */
 
 let allUsers = [];
 
-let completionChart = null;
 
-let categoryChart = null;
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
-let userChart = null;
+const loginPage =
+    document.getElementById("loginPage");
+
+const adminApp =
+    document.getElementById("adminApp");
+
+const loginForm =
+    document.getElementById("adminLoginForm");
+
+const loginButton =
+    document.getElementById("loginButton");
+
+const loginMessage =
+    document.getElementById("loginMessage");
+
+const usersContainer =
+    document.getElementById("usersContainer");
+
+const userSearch =
+    document.getElementById("userSearch");
 
 
 /* =====================================================
-   SAFE JSON
+   TOAST
 ===================================================== */
 
-async function getResponseJSON(response){
+function showToast(message, type = "success") {
 
-    const text =
-        await response.text();
+    const toast =
+        document.getElementById("toast");
 
-    if(!text){
+    toast.textContent = message;
 
-        return {};
+    toast.className =
+        "toast " + type;
 
-    }
+    toast.style.display = "block";
 
-    try{
+    setTimeout(() => {
 
-        return JSON.parse(text);
+        toast.style.display = "none";
 
-    }
-
-    catch(error){
-
-        console.error(
-            "Invalid JSON response:",
-            text
-        );
-
-        return {
-            message:text
-        };
-
-    }
-
+    }, 3000);
 }
 
 
 /* =====================================================
-   ADMIN LOGIN
+   LOGIN
 ===================================================== */
 
-document
-.getElementById("loginForm")
-.addEventListener(
+loginForm.addEventListener(
     "submit",
-    async function(event){
+    async function(event) {
 
         event.preventDefault();
-
 
         const email =
             document
@@ -1788,88 +1165,60 @@ document
             .value
             .trim();
 
-
         const password =
             document
             .getElementById("adminPassword")
             .value;
 
+        loginButton.disabled = true;
 
-        const errorBox =
-            document
-            .getElementById("error");
+        loginButton.textContent =
+            "Logging in...";
 
+        loginMessage.textContent = "";
 
-        errorBox.textContent = "";
-
-
-        try{
+        try {
 
             const response =
                 await fetch(
-                    API + "/admin/login",
+                    API_BASE_URL + "/admin/login",
                     {
-                        method:"POST",
+                        method: "POST",
 
-                        headers:{
+                        headers: {
                             "Content-Type":
                                 "application/json"
                         },
 
-                        body:JSON.stringify({
-
-                            email:email,
-
-                            password:password
-
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
                         })
-
                     }
                 );
 
 
             const data =
-                await getResponseJSON(
-                    response
-                );
+                await response.json()
+                .catch(() => ({}));
 
 
-            console.log(
-                "Admin Login Response:",
-                data
-            );
+            if (!response.ok) {
 
-
-            console.log(
-                "ADMIN LOGIN STATUS:",
-                response.status
-            );
-
-
-            console.log(
-                "ADMIN LOGIN URL:",
-                response.url
-            );
-
-
-            if(!response.ok){
-
-                errorBox.textContent =
+                throw new Error(
                     data.detail ||
                     data.message ||
-                    "Invalid admin email or password.";
-
-                return;
+                    "Invalid admin credentials"
+                );
 
             }
 
 
-            if(!data.token){
+            if (!data.token) {
 
-                errorBox.textContent =
-                    "Admin token was not received.";
-
-                return;
+                throw new Error(
+                    "Admin token was not received."
+                );
 
             }
 
@@ -1880,31 +1229,39 @@ document
             );
 
 
-            document
-            .getElementById("loginPage")
-            .style.display = "none";
+            loginMessage.style.color =
+                "#4ade80";
+
+            loginMessage.textContent =
+                "Admin login successful.";
 
 
-            document
-            .getElementById("dashboard")
-            .style.display = "block";
-
-
-            await loadUsers();
+            showAdminApp();
 
         }
 
-
-        catch(error){
+        catch(error) {
 
             console.error(
                 "Admin login error:",
                 error
             );
 
+            loginMessage.style.color =
+                "#f87171";
 
-            errorBox.textContent =
-                "Unable to connect to backend.";
+            loginMessage.textContent =
+                error.message ||
+                "Admin login failed.";
+
+        }
+
+        finally {
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login as Admin";
 
         }
 
@@ -1913,1424 +1270,45 @@ document
 
 
 /* =====================================================
-   LOAD USERS
+   SHOW ADMIN APP
 ===================================================== */
 
-async function loadUsers(){
+function showAdminApp() {
 
     const token =
-        localStorage.getItem(
-            "adminToken"
-        );
+        localStorage.getItem("adminToken");
 
+    if (!token) {
 
-    if(!token){
-
-        showLogin();
+        showLoginPage();
 
         return;
 
     }
 
 
-    const container =
-        document.getElementById(
-            "usersContainer"
-        );
-
-
-    container.innerHTML =
-        `<div class="empty-state">
-            ⏳ Loading users...
-         </div>`;
-
-
-    try{
-
-        const response =
-            await fetch(
-                API + "/admin/users",
-                {
-                    method:"GET",
-
-                    headers:{
-                        "X-Admin-Token":
-                            token
-                    }
-
-                }
-            );
-
-
-        const data =
-            await getResponseJSON(
-                response
-            );
-
-
-        /* =================================================
-           DEBUG INFORMATION
-        ================================================= */
-
-        console.log(
-            "Admin Users Response:",
-            data
-        );
-
-
-        console.log(
-            "ADMIN USERS STATUS:",
-            response.status
-        );
-
-
-        console.log(
-            "ADMIN USERS URL:",
-            response.url
-        );
-
-
-        console.log(
-            "ADMIN USERS RESPONSE JSON:",
-            JSON.stringify(
-                data,
-                null,
-                2
-            )
-        );
-
-
-        /* =================================================
-           401
-        ================================================= */
-
-        if(response.status === 401){
-
-            alert(
-                "Admin session expired. Please login again."
-            );
-
-            logoutAdmin();
-
-            return;
-
-        }
-
-
-        /* =================================================
-           404
-        ================================================= */
-
-        if(response.status === 404){
-
-            console.error(
-                "ADMIN USERS ENDPOINT 404:",
-                data
-            );
-
-
-            container.innerHTML =
-                `<div class="empty-state">
-
-                    ❌ Admin Users API not found.<br><br>
-
-                    <small>
-                    Check Render backend route:
-                    /admin/users
-                    </small>
-
-                </div>`;
-
-
-            return;
-
-        }
-
-
-        /* =================================================
-           OTHER ERROR
-        ================================================= */
-
-        if(!response.ok){
-
-            console.error(
-                "ADMIN USERS ERROR:",
-                data
-            );
-
-
-            container.innerHTML =
-                `<div class="empty-state">
-
-                    ❌ Unable to load users.<br><br>
-
-                    <small>
-                    ${
-                        data.detail ||
-                        data.message ||
-                        "Unknown backend error"
-                    }
-                    </small>
-
-                </div>`;
-
-
-            return;
-
-        }
-
-
-        /* =================================================
-           RESPONSE FORMAT
-        ================================================= */
-
-        if(Array.isArray(data)){
-
-            allUsers = data;
-
-        }
-
-        else if(
-            data &&
-            Array.isArray(data.users)
-        ){
-
-            allUsers =
-                data.users;
-
-        }
-
-        else if(
-            data &&
-            Array.isArray(data.data)
-        ){
-
-            allUsers =
-                data.data;
-
-        }
-
-        else{
-
-            console.error(
-                "Unexpected admin users response:",
-                data
-            );
-
-            allUsers = [];
-
-        }
-
-
-        if(!Array.isArray(allUsers)){
-
-            allUsers = [];
-
-        }
-
-
-        updateStats();
-
-        renderUsers(allUsers);
-
-        createCharts();
-
-        createInsights();
-
-    }
-
-
-    catch(error){
-
-        console.error(
-            "Load users error:",
-            error
-        );
-
-
-        container.innerHTML =
-            `<div class="empty-state">
-
-                ❌ Unable to connect to backend.
-
-                <br><br>
-
-                <small>
-                Check Render backend status.
-                </small>
-
-            </div>`;
-
-    }
-
-}
-
-
-/* =====================================================
-   STATS
-===================================================== */
-
-function updateStats(){
-
-    if(!Array.isArray(allUsers)){
-
-        allUsers = [];
-
-    }
-
-
-    let totalHabits = 0;
-
-    let completed = 0;
-
-    let pending = 0;
-
-
-    allUsers.forEach(
-        function(user){
-
-            totalHabits +=
-                Number(
-                    user.total_habits || 0
-                );
-
-
-            completed +=
-                Number(
-                    user.completed_habits || 0
-                );
-
-
-            pending +=
-                Number(
-                    user.pending_habits || 0
-                );
-
-        }
-    );
-
-
-    document
-    .getElementById(
-        "totalUsers"
-    )
-    .textContent =
-        allUsers.length;
-
-
-    document
-    .getElementById(
-        "totalHabits"
-    )
-    .textContent =
-        totalHabits;
-
-
-    document
-    .getElementById(
-        "completedHabits"
-    )
-    .textContent =
-        completed;
-
-
-    document
-    .getElementById(
-        "pendingHabits"
-    )
-    .textContent =
-        pending;
-
-}
-
-
-/* =====================================================
-   CHARTS
-===================================================== */
-
-function createCharts(){
-
-    if(!Array.isArray(allUsers)){
-
-        allUsers = [];
-
-    }
-
-
-    let totalCompleted = 0;
-
-    let totalPending = 0;
-
-    let categories = {};
-
-    let userNames = [];
-
-    let userHabitCounts = [];
-
-
-    allUsers.forEach(
-        function(user){
-
-            totalCompleted +=
-                Number(
-                    user.completed_habits || 0
-                );
-
-
-            totalPending +=
-                Number(
-                    user.pending_habits || 0
-                );
-
-
-            userNames.push(
-                user.name || "User"
-            );
-
-
-            userHabitCounts.push(
-                Number(
-                    user.total_habits || 0
-                )
-            );
-
-
-            const habits =
-                Array.isArray(
-                    user.habits
-                )
-                ? user.habits
-                : [];
-
-
-            habits.forEach(
-                function(habit){
-
-                    const category =
-                        habit.category ||
-                        "Other";
-
-
-                    categories[category] =
-                        (
-                            categories[category] ||
-                            0
-                        ) + 1;
-
-                }
-            );
-
-        }
-    );
-
-
-    /* Completion */
-
-    if(completionChart){
-
-        completionChart.destroy();
-
-    }
-
-
-    completionChart =
-        new Chart(
-            document.getElementById(
-                "completionChart"
-            ),
-            {
-
-                type:"doughnut",
-
-                data:{
-
-                    labels:[
-                        "Completed",
-                        "Pending"
-                    ],
-
-                    datasets:[{
-
-                        data:[
-                            totalCompleted,
-                            totalPending
-                        ]
-
-                    }]
-
-                },
-
-                options:{
-
-                    responsive:true,
-
-                    plugins:{
-
-                        legend:{
-                            position:"bottom"
-                        }
-
-                    }
-
-                }
-
-            }
-        );
-
-
-    /* Category */
-
-    if(categoryChart){
-
-        categoryChart.destroy();
-
-    }
-
-
-    categoryChart =
-        new Chart(
-            document.getElementById(
-                "categoryChart"
-            ),
-            {
-
-                type:"bar",
-
-                data:{
-
-                    labels:
-                        Object.keys(
-                            categories
-                        ),
-
-                    datasets:[{
-
-                        label:"Habits",
-
-                        data:
-                            Object.values(
-                                categories
-                            )
-
-                    }]
-
-                },
-
-                options:{
-
-                    responsive:true,
-
-                    scales:{
-
-                        y:{
-                            beginAtZero:true
-                        }
-
-                    }
-
-                }
-
-            }
-        );
-
-
-    /* User */
-
-    if(userChart){
-
-        userChart.destroy();
-
-    }
-
-
-    userChart =
-        new Chart(
-            document.getElementById(
-                "userChart"
-            ),
-            {
-
-                type:"bar",
-
-                data:{
-
-                    labels:userNames,
-
-                    datasets:[{
-
-                        label:"Total Habits",
-
-                        data:userHabitCounts
-
-                    }]
-
-                },
-
-                options:{
-
-                    responsive:true,
-
-                    scales:{
-
-                        y:{
-                            beginAtZero:true
-                        }
-
-                    }
-
-                }
-
-            }
-
-        );
-
-}
-
-
-/* =====================================================
-   AI INSIGHTS
-===================================================== */
-
-function createInsights(){
-
-    if(!Array.isArray(allUsers)){
-
-        allUsers = [];
-
-    }
-
-
-    let totalHabits = 0;
-
-    let completed = 0;
-
-    let categories = {};
-
-    let activeUser = null;
-
-
-    allUsers.forEach(
-        function(user){
-
-            totalHabits +=
-                Number(
-                    user.total_habits || 0
-                );
-
-
-            completed +=
-                Number(
-                    user.completed_habits || 0
-                );
-
-
-            if(
-                !activeUser ||
-
-                Number(
-                    user.total_habits || 0
-                ) >
-
-                Number(
-                    activeUser.total_habits || 0
-                )
-            ){
-
-                activeUser = user;
-
-            }
-
-
-            const habits =
-                Array.isArray(
-                    user.habits
-                )
-                ? user.habits
-                : [];
-
-
-            habits.forEach(
-                function(habit){
-
-                    const category =
-                        habit.category ||
-                        "Other";
-
-
-                    categories[category] =
-                        (
-                            categories[category] ||
-                            0
-                        ) + 1;
-
-                }
-            );
-
-        }
-    );
-
-
-    let rate = 0;
-
-
-    if(totalHabits > 0){
-
-        rate =
-            Math.round(
-                completed /
-                totalHabits *
-                100
-            );
-
-    }
-
-
-    let popularCategory = "-";
-
-
-    const categoryNames =
-        Object.keys(categories);
-
-
-    if(categoryNames.length > 0){
-
-        popularCategory =
-            categoryNames.reduce(
-                function(a,b){
-
-                    return
-                        categories[a] >=
-                        categories[b]
-                        ? a
-                        : b;
-
-                }
-            );
-
-    }
-
-
-    document
-    .getElementById(
-        "completionRate"
-    )
-    .textContent =
-        rate + "%";
-
-
-    document
-    .getElementById(
-        "popularCategory"
-    )
-    .textContent =
-        popularCategory;
-
-
-    document
-    .getElementById(
-        "activeUser"
-    )
-    .textContent =
-        activeUser
-        ? activeUser.name
-        : "-";
-
-}
-
-
-/* =====================================================
-   RENDER USERS
-===================================================== */
-
-function renderUsers(users){
-
-    const container =
-        document.getElementById(
-            "usersContainer"
-        );
-
-
-    if(!Array.isArray(users)){
-
-        users = [];
-
-    }
-
-
-    if(users.length === 0){
-
-        container.innerHTML =
-            `<div class="empty-state">
-
-                👥 No users found.
-
-             </div>`;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        users.map(
-            function(user){
-
-                const habits =
-                    Array.isArray(
-                        user.habits
-                    )
-                    ? user.habits
-                    : [];
-
-
-                const habitRows =
-                    habits.length
-
-                    ?
-
-                    habits.map(
-                        function(habit){
-
-                            return `
-
-                            <tr>
-
-                                <td>
-                                    ${escapeHTML(
-                                        habit.name ||
-                                        "-"
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        habit.category ||
-                                        "-"
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        habit.target ||
-                                        "-"
-                                    )}
-                                </td>
-
-                                <td class="${
-                                    habit.status ===
-                                    "Completed"
-                                    ? "status-completed"
-                                    : "status-pending"
-                                }">
-
-                                    ${escapeHTML(
-                                        habit.status ||
-                                        "Pending"
-                                    )}
-
-                                </td>
-
-                            </tr>
-
-                            `;
-
-                        }
-                    ).join("")
-
-                    :
-
-                    `
-
-                    <tr>
-
-                        <td colspan="4">
-
-                            No habits added
-
-                        </td>
-
-                    </tr>
-
-                    `;
-
-
-                const userId =
-                    Number(
-                        user.user_id ||
-                        user.id ||
-                        0
-                    );
-
-
-                return `
-
-                <div class="user-card">
-
-
-                    <div class="user-header">
-
-
-                        <div>
-
-                            <div class="user-name">
-
-                                👤
-                                ${escapeHTML(
-                                    user.name ||
-                                    "Unknown User"
-                                )}
-
-                            </div>
-
-
-                            <div class="user-email">
-
-                                ${escapeHTML(
-                                    user.email ||
-                                    "-"
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <button
-                            class="view-btn"
-                            onclick="openUserProfile(${userId})">
-
-                            👁 View Details
-
-                        </button>
-
-
-                    </div>
-
-
-                    <div class="user-stats">
-
-
-                        <span class="badge">
-
-                            🆔 ID:
-                            ${
-                                user.user_id ||
-                                user.id ||
-                                "-"
-                            }
-
-                        </span>
-
-
-                        <span class="badge">
-
-                            📋 Habits:
-                            ${
-                                user.total_habits ||
-                                0
-                            }
-
-                        </span>
-
-
-                        <span class="badge completed">
-
-                            ✅ Completed:
-                            ${
-                                user.completed_habits ||
-                                0
-                            }
-
-                        </span>
-
-
-                        <span class="badge pending">
-
-                            ⏳ Pending:
-                            ${
-                                user.pending_habits ||
-                                0
-                            }
-
-                        </span>
-
-
-                    </div>
-
-
-                    <table class="habit-table">
-
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Habit
-                                </th>
-
-                                <th>
-                                    Category
-                                </th>
-
-                                <th>
-                                    Target
-                                </th>
-
-                                <th>
-                                    Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            ${habitRows}
-
-                        </tbody>
-
-
-                    </table>
-
-
-                </div>
-
-                `;
-
-            }
-        ).join("");
-
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-function filterUsers(){
-
-    const search =
-        document
-        .getElementById("searchBox")
-        .value
-        .toLowerCase()
-        .trim();
-
-
-    if(!Array.isArray(allUsers)){
-
-        allUsers = [];
-
-    }
-
-
-    const filtered =
-        allUsers.filter(
-            function(user){
-
-                const name =
-                    String(
-                        user.name || ""
-                    ).toLowerCase();
-
-
-                const email =
-                    String(
-                        user.email || ""
-                    ).toLowerCase();
-
-
-                return (
-                    name.includes(search) ||
-                    email.includes(search)
-                );
-
-            }
-        );
-
-
-    renderUsers(filtered);
-
-}
-
-
-/* =====================================================
-   USER PROFILE
-===================================================== */
-
-function openUserProfile(userId){
-
-    if(!Array.isArray(allUsers)){
-
-        return;
-
-    }
-
-
-    const user =
-        allUsers.find(
-            function(u){
-
-                return Number(
-                    u.user_id ||
-                    u.id
-                ) ===
-                Number(userId);
-
-            }
-        );
-
-
-    if(!user){
-
-        return;
-
-    }
-
-
-    document
-    .getElementById(
-        "profileName"
-    )
-    .textContent =
-        "👤 " +
-        (
-            user.name ||
-            "User Profile"
-        );
-
-
-    document
-    .getElementById(
-        "profileId"
-    )
-    .textContent =
-        user.user_id ||
-        user.id ||
-        "-";
-
-
-    document
-    .getElementById(
-        "profileUserName"
-    )
-    .textContent =
-        user.name ||
-        "-";
-
-
-    document
-    .getElementById(
-        "profileEmail"
-    )
-    .textContent =
-        user.email ||
-        "-";
-
-
-    document
-    .getElementById(
-        "profileTotal"
-    )
-    .textContent =
-        user.total_habits ||
-        0;
-
-
-    document
-    .getElementById(
-        "profileCompleted"
-    )
-    .textContent =
-        user.completed_habits ||
-        0;
-
-
-    document
-    .getElementById(
-        "profilePending"
-    )
-    .textContent =
-        user.pending_habits ||
-        0;
-
-
-    const habits =
-        Array.isArray(
-            user.habits
-        )
-        ? user.habits
-        : [];
-
-
-    const profileHabits =
-        document.getElementById(
-            "profileHabits"
-        );
-
-
-    if(habits.length === 0){
-
-        profileHabits.innerHTML =
-            `<div class="empty-state">
-
-                This user has not added
-                any habits yet.
-
-             </div>`;
-
-    }
-
-    else{
-
-        profileHabits.innerHTML = `
-
-        <table class="habit-table">
-
-            <thead>
-
-                <tr>
-
-                    <th>Habit</th>
-
-                    <th>Category</th>
-
-                    <th>Target</th>
-
-                    <th>Status</th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                ${
-                    habits.map(
-                        function(habit){
-
-                            return `
-
-                            <tr>
-
-                                <td>
-                                    ${escapeHTML(
-                                        habit.name ||
-                                        "-"
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        habit.category ||
-                                        "-"
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHTML(
-                                        habit.target ||
-                                        "-"
-                                    )}
-                                </td>
-
-                                <td class="${
-                                    habit.status ===
-                                    "Completed"
-                                    ? "status-completed"
-                                    : "status-pending"
-                                }">
-
-                                    ${escapeHTML(
-                                        habit.status ||
-                                        "Pending"
-                                    )}
-
-                                </td>
-
-                            </tr>
-
-                            `;
-
-                        }
-                    ).join("")
-                }
-
-            </tbody>
-
-        </table>
-
-        `;
-
-    }
-
-
-    document
-    .getElementById(
-        "userModal"
-    )
-    .style.display =
-        "flex";
-
-}
-
-
-/* =====================================================
-   CLOSE MODAL
-===================================================== */
-
-function closeUserModal(){
-
-    document
-    .getElementById(
-        "userModal"
-    )
-    .style.display =
+    loginPage.style.display =
         "none";
 
-}
+    adminApp.style.display =
+        "block";
 
 
-function closeModalOutside(event){
-
-    if(
-        event.target.id ===
-        "userModal"
-    ){
-
-        closeUserModal();
-
-    }
+    loadAdminData();
 
 }
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHTML(value){
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-const navItems =
-    document.querySelectorAll(
-        ".nav-item[data-target]"
-    );
-
-
-navItems.forEach(
-    function(item){
-
-        item.addEventListener(
-            "click",
-            function(){
-
-                const targetId =
-                    this.getAttribute(
-                        "data-target"
-                    );
-
-
-                const target =
-                    document.getElementById(
-                        targetId
-                    );
-
-
-                if(!target){
-
-                    return;
-
-                }
-
-
-                navItems.forEach(
-                    function(nav){
-
-                        nav.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                this.classList.add(
-                    "active"
-                );
-
-
-                target.scrollIntoView({
-
-                    behavior:"smooth",
-
-                    block:"start"
-
-                });
-
-            }
-        );
-
-    }
-);
 
 
 /* =====================================================
    SHOW LOGIN
 ===================================================== */
 
-function showLogin(){
+function showLoginPage() {
 
-    document
-    .getElementById(
-        "loginPage"
-    )
-    .style.display =
+    loginPage.style.display =
         "flex";
 
-
-    document
-    .getElementById(
-        "dashboard"
-    )
-    .style.display =
+    adminApp.style.display =
         "none";
 
 }
@@ -3340,14 +1318,905 @@ function showLogin(){
    LOGOUT
 ===================================================== */
 
-function logoutAdmin(){
+document
+    .getElementById("logoutButton")
+    .addEventListener(
+        "click",
+        function() {
 
-    localStorage.removeItem(
-        "adminToken"
+            localStorage.removeItem(
+                "adminToken"
+            );
+
+            allUsers = [];
+
+            showLoginPage();
+
+            document
+                .getElementById("adminPassword")
+                .value = "";
+
+            loginMessage.textContent = "";
+
+            showToast(
+                "Admin logged out successfully."
+            );
+
+        }
     );
 
 
-    showLogin();
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+document
+    .querySelectorAll(".nav-item[data-target]")
+    .forEach(item => {
+
+        item.addEventListener(
+            "click",
+            function() {
+
+                const target =
+                    this.getAttribute(
+                        "data-target"
+                    );
+
+
+                document
+                    .querySelectorAll(
+                        ".nav-item[data-target]"
+                    )
+                    .forEach(nav => {
+
+                        nav.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                this.classList.add(
+                    "active"
+                );
+
+
+                document
+                    .querySelectorAll(
+                        ".section"
+                    )
+                    .forEach(section => {
+
+                        section.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                const targetSection =
+                    document.getElementById(
+                        target
+                    );
+
+
+                if (targetSection) {
+
+                    targetSection.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* =====================================================
+   ADMIN API
+===================================================== */
+
+async function getAdminUsers() {
+
+    const token =
+        localStorage.getItem(
+            "adminToken"
+        );
+
+
+    if (!token) {
+
+        throw new Error(
+            "Admin session expired."
+        );
+
+    }
+
+
+    const response =
+        await fetch(
+            API_BASE_URL + "/admin/users",
+            {
+                method: "GET",
+
+                headers: {
+                    "X-Admin-Token": token,
+                    "Accept": "application/json"
+                },
+
+                cache: "no-store"
+            }
+        );
+
+
+    const data =
+        await response.json()
+        .catch(() => ({}));
+
+
+    if (response.status === 401 ||
+        response.status === 403) {
+
+        localStorage.removeItem(
+            "adminToken"
+        );
+
+        showLoginPage();
+
+        throw new Error(
+            "Admin session expired."
+        );
+
+    }
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.detail ||
+            data.message ||
+            "Unable to load admin data."
+        );
+
+    }
+
+
+    return data;
+
+}
+
+
+/* =====================================================
+   NORMALIZE USERS
+===================================================== */
+
+function normalizeUsers(data) {
+
+    if (Array.isArray(data)) {
+
+        return data;
+
+    }
+
+
+    if (
+        data &&
+        Array.isArray(data.users)
+    ) {
+
+        return data.users;
+
+    }
+
+
+    if (
+        data &&
+        Array.isArray(data.data)
+    ) {
+
+        return data.data;
+
+    }
+
+
+    return [];
+
+}
+
+
+/* =====================================================
+   USER HABITS
+===================================================== */
+
+function getUserHabits(user) {
+
+    if (
+        user &&
+        Array.isArray(user.habits)
+    ) {
+
+        return user.habits;
+
+    }
+
+
+    if (
+        user &&
+        Array.isArray(user.habit)
+    ) {
+
+        return user.habit;
+
+    }
+
+
+    if (
+        user &&
+        Array.isArray(user.activities)
+    ) {
+
+        return user.activities;
+
+    }
+
+
+    return [];
+
+}
+
+
+/* =====================================================
+   HABIT STATUS
+===================================================== */
+
+function isCompleted(habit) {
+
+    const status =
+        String(
+            habit?.status || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    return (
+        status === "completed" ||
+        status === "complete" ||
+        status === "done"
+    );
+
+}
+
+
+/* =====================================================
+   LOAD ADMIN DATA
+===================================================== */
+
+async function loadAdminData() {
+
+    try {
+
+        const data =
+            await getAdminUsers();
+
+
+        allUsers =
+            normalizeUsers(data);
+
+
+        updateDashboard();
+
+        renderUsers(
+            allUsers
+        );
+
+        updateAIInsights();
+
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Admin data error:",
+            error
+        );
+
+
+        usersContainer.innerHTML = `
+            <div class="empty">
+                ❌ ${escapeHtml(
+                    error.message ||
+                    "Unable to load user data."
+                )}
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+function updateDashboard() {
+
+    let totalHabits = 0;
+
+    let completed = 0;
+
+    let pending = 0;
+
+
+    allUsers.forEach(user => {
+
+        const habits =
+            getUserHabits(user);
+
+
+        totalHabits +=
+            habits.length;
+
+
+        habits.forEach(habit => {
+
+            if (isCompleted(habit)) {
+
+                completed++;
+
+            }
+
+            else {
+
+                pending++;
+
+            }
+
+        });
+
+    });
+
+
+    const totalUsers =
+        allUsers.length;
+
+
+    const completionRate =
+        totalHabits > 0
+            ? Math.round(
+                (completed /
+                totalHabits) * 100
+            )
+            : 0;
+
+
+    document
+        .getElementById("totalUsers")
+        .textContent =
+        totalUsers;
+
+
+    document
+        .getElementById("totalHabits")
+        .textContent =
+        totalHabits;
+
+
+    document
+        .getElementById("completedHabits")
+        .textContent =
+        completed;
+
+
+    document
+        .getElementById("pendingHabits")
+        .textContent =
+        pending;
+
+
+    document
+        .getElementById("dashboardCompletion")
+        .textContent =
+        completionRate + "%";
+
+
+    document
+        .getElementById("userSummary")
+        .textContent =
+        totalUsers +
+        " registered user" +
+        (totalUsers === 1 ? "" : "s") +
+        " currently available in the admin analysis.";
+
+
+    document
+        .getElementById("habitSummary")
+        .textContent =
+        totalHabits +
+        " total habit" +
+        (totalHabits === 1 ? "" : "s") +
+        " found: " +
+        completed +
+        " completed and " +
+        pending +
+        " pending.";
+
+}
+
+
+/* =====================================================
+   RENDER USERS
+===================================================== */
+
+function renderUsers(users) {
+
+    if (!users.length) {
+
+        usersContainer.innerHTML = `
+            <div class="empty">
+                No registered users found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    usersContainer.innerHTML =
+        users
+        .map(
+            (user, index) =>
+                createUserCard(
+                    user,
+                    index
+                )
+        )
+        .join("");
+
+}
+
+
+/* =====================================================
+   USER CARD
+===================================================== */
+
+function createUserCard(user, index) {
+
+    const name =
+        user?.name ||
+        user?.username ||
+        "User " + (index + 1);
+
+
+    const email =
+        user?.email ||
+        "No email available";
+
+
+    const habits =
+        getUserHabits(user);
+
+
+    const completed =
+        habits.filter(
+            habit => isCompleted(habit)
+        ).length;
+
+
+    const pending =
+        habits.length -
+        completed;
+
+
+    const completion =
+        habits.length > 0
+            ? Math.round(
+                (completed /
+                habits.length) * 100
+            )
+            : 0;
+
+
+    const initial =
+        name
+        .charAt(0)
+        .toUpperCase();
+
+
+    const habitHTML =
+        habits.length
+            ? habits
+                .slice(0, 6)
+                .map(habit => {
+
+                    const habitName =
+                        habit?.name ||
+                        habit?.title ||
+                        "Unnamed Habit";
+
+
+                    const category =
+                        habit?.category ||
+                        "General";
+
+
+                    const status =
+                        isCompleted(habit)
+                            ? "Completed"
+                            : "Pending";
+
+
+                    const statusClass =
+                        isCompleted(habit)
+                            ? "completed"
+                            : "pending";
+
+
+                    return `
+                        <div class="habit-item">
+
+                            <div>
+
+                                <div class="habit-name">
+                                    ${escapeHtml(
+                                        habitName
+                                    )}
+                                </div>
+
+                                <div class="habit-category">
+                                    ${escapeHtml(
+                                        category
+                                    )}
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="status ${statusClass}"
+                            >
+                                ${status}
+                            </span>
+
+                        </div>
+                    `;
+
+                })
+                .join("")
+            : `
+                <div class="empty">
+                    No habits available.
+                </div>
+            `;
+
+
+    return `
+
+        <div
+            class="user-card"
+            data-user-search="${escapeHtml(
+                (name + " " + email)
+                .toLowerCase()
+            )}"
+        >
+
+            <div class="user-header">
+
+                <div class="user-avatar">
+                    ${escapeHtml(initial)}
+                </div>
+
+                <div>
+
+                    <div class="user-name">
+                        ${escapeHtml(name)}
+                    </div>
+
+                    <div class="user-email">
+                        ${escapeHtml(email)}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="user-stats">
+
+                <div class="user-stat">
+
+                    <strong>
+                        ${habits.length}
+                    </strong>
+
+                    <span>
+                        Habits
+                    </span>
+
+                </div>
+
+
+                <div class="user-stat">
+
+                    <strong>
+                        ${completed}
+                    </strong>
+
+                    <span>
+                        Completed
+                    </span>
+
+                </div>
+
+
+                <div class="user-stat">
+
+                    <strong>
+                        ${pending}
+                    </strong>
+
+                    <span>
+                        Pending
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-wrapper">
+
+                <div class="progress-label">
+
+                    <span>
+                        Completion
+                    </span>
+
+                    <span>
+                        ${completion}%
+                    </span>
+
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        style="width:${completion}%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <div class="habit-list">
+
+                ${habitHTML}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   USER SEARCH
+===================================================== */
+
+userSearch.addEventListener(
+    "input",
+    function() {
+
+        const search =
+            this.value
+            .trim()
+            .toLowerCase();
+
+
+        const cards =
+            document.querySelectorAll(
+                ".user-card"
+            );
+
+
+        cards.forEach(card => {
+
+            const text =
+                card
+                .getAttribute(
+                    "data-user-search"
+                ) || "";
+
+
+            card.style.display =
+                text.includes(search)
+                    ? "block"
+                    : "none";
+
+        });
+
+    }
+);
+
+
+/* =====================================================
+   AI INSIGHTS
+===================================================== */
+
+function updateAIInsights() {
+
+    let totalHabits = 0;
+
+    let completed = 0;
+
+    const categoryCounts = {};
+
+    let activeUserName = "-";
+
+    let activeUserCount = 0;
+
+
+    allUsers.forEach(user => {
+
+        const habits =
+            getUserHabits(user);
+
+
+        if (
+            habits.length >
+            activeUserCount
+        ) {
+
+            activeUserCount =
+                habits.length;
+
+
+            activeUserName =
+                user?.name ||
+                user?.username ||
+                "-";
+
+        }
+
+
+        habits.forEach(habit => {
+
+            totalHabits++;
+
+
+            if (isCompleted(habit)) {
+
+                completed++;
+
+            }
+
+
+            const category =
+                habit?.category ||
+                "General";
+
+
+            categoryCounts[category] =
+                (categoryCounts[category] || 0) + 1;
+
+        });
+
+    });
+
+
+    const completionRate =
+        totalHabits > 0
+            ? Math.round(
+                (completed /
+                totalHabits) * 100
+            )
+            : 0;
+
+
+    let popularCategory = "-";
+
+    let highestCategoryCount = 0;
+
+
+    Object.keys(categoryCounts)
+        .forEach(category => {
+
+            if (
+                categoryCounts[category] >
+                highestCategoryCount
+            ) {
+
+                highestCategoryCount =
+                    categoryCounts[category];
+
+                popularCategory =
+                    category;
+
+            }
+
+        });
+
+
+    document
+        .getElementById("aiCompletionRate")
+        .textContent =
+        completionRate + "%";
+
+
+    document
+        .getElementById("popularCategory")
+        .textContent =
+        popularCategory;
+
+
+    document
+        .getElementById("activeUser")
+        .textContent =
+        activeUserName;
+
+
+    let recommendation =
+        "";
+
+
+    if (totalHabits === 0) {
+
+        recommendation =
+            "No habit data is available yet. Once users create habits, AI Insights will analyze completion patterns and provide useful recommendations.";
+
+    }
+
+    else if (completionRate >= 80) {
+
+        recommendation =
+            "Excellent overall performance. Users are maintaining strong habit consistency. Continue encouraging regular routines and small achievable goals.";
+
+    }
+
+    else if (completionRate >= 50) {
+
+        recommendation =
+            "The overall habit completion is moderate. Users may benefit from reminders, smaller daily goals, and consistent progress tracking.";
+
+    }
+
+    else {
+
+        recommendation =
+            "The overall completion rate is low. Encourage users to create realistic habits, use reminders, and focus on completing one habit consistently before adding more.";
+
+    }
+
+
+    document
+        .getElementById("aiRecommendation")
+        .textContent =
+        recommendation;
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 
 }
 
@@ -3356,9 +2225,9 @@ function logoutAdmin(){
    AUTO LOGIN
 ===================================================== */
 
-window.addEventListener(
-    "load",
-    async function(){
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
         const token =
             localStorage.getItem(
@@ -3366,929 +2235,22 @@ window.addEventListener(
             );
 
 
-        if(!token){
+        if (token) {
 
-            showLogin();
-
-            return;
+            showAdminApp();
 
         }
 
+        else {
 
-        document
-        .getElementById(
-            "loginPage"
-        )
-        .style.display =
-            "none";
+            showLoginPage();
 
-
-        document
-        .getElementById(
-            "dashboard"
-        )
-        .style.display =
-            "block";
-
-
-        await loadUsers();
+        }
 
     }
 );
 
-</script><!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>AI Habit Coach - My Activities</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-
-        /* =====================================================
-           MY ACTIVITIES PAGE
-           ===================================================== */
-
-        .activities-section {
-            width: 100%;
-            margin-top: 30px;
-        }
-
-        .activities-section h2 {
-            color: #ffffff !important;
-            font-size: 30px;
-            font-weight: 800;
-            margin-bottom: 20px;
-        }
-
-
-        /* =====================================================
-           ACTIVITY CARD
-           ===================================================== */
-
-        .activity-card {
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(14, 12, 45, 0.98),
-                    rgba(31, 20, 75, 0.98)
-                ) !important;
-
-            padding: 22px !important;
-
-            margin-bottom: 18px !important;
-
-            border-radius: 20px !important;
-
-            border: 1px solid rgba(124, 92, 255, 0.65) !important;
-
-            box-shadow:
-                0 8px 30px rgba(0, 0, 0, 0.40),
-                0 0 25px rgba(124, 92, 255, 0.12) !important;
-
-            color: #ffffff !important;
-
-            opacity: 1 !important;
-
-            transition:
-                transform 0.25s ease,
-                box-shadow 0.25s ease,
-                border-color 0.25s ease;
-        }
-
-
-        .activity-card:hover {
-            transform: translateY(-3px);
-
-            border-color: #8b5cf6 !important;
-
-            box-shadow:
-                0 12px 35px rgba(0, 0, 0, 0.50),
-                0 0 30px rgba(139, 92, 246, 0.25) !important;
-        }
-
-
-        /* =====================================================
-           ACTIVITY TOP
-           ===================================================== */
-
-        .activity-top {
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: flex-start;
-
-            gap: 15px;
-
-            margin-bottom: 15px;
-        }
-
-
-        /* =====================================================
-           ACTIVITY NAME
-           ===================================================== */
-
-        .activity-top h3 {
-            margin: 0 0 10px 0;
-
-            font-size: 22px;
-
-            font-weight: 800;
-
-            color: #ffffff !important;
-
-            opacity: 1 !important;
-        }
-
-
-        /* =====================================================
-           CATEGORY BADGE
-           ===================================================== */
-
-        .category-badge {
-            display: inline-block;
-
-            padding: 6px 13px;
-
-            border-radius: 20px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #7c3aed,
-                    #a855f7
-                ) !important;
-
-            color: #ffffff !important;
-
-            font-size: 13px;
-
-            font-weight: 700;
-
-            border: none !important;
-
-            opacity: 1 !important;
-
-            box-shadow:
-                0 0 12px rgba(139, 92, 246, 0.25);
-        }
-
-
-        /* =====================================================
-           STATUS BADGE
-           ===================================================== */
-
-        .status-badge {
-            padding: 6px 13px;
-
-            border-radius: 20px;
-
-            font-size: 13px;
-
-            font-weight: 700;
-
-            white-space: nowrap;
-
-            opacity: 1 !important;
-        }
-
-
-        .status-badge.completed {
-            background:
-                rgba(34, 197, 94, 0.18) !important;
-
-            color: #4ade80 !important;
-
-            border: 1px solid rgba(74, 222, 128, 0.40);
-        }
-
-
-        .status-badge.pending {
-            background:
-                rgba(250, 204, 21, 0.15) !important;
-
-            color: #facc15 !important;
-
-            border: 1px solid rgba(250, 204, 21, 0.35);
-        }
-
-
-        /* =====================================================
-           COMPLETED ACTIVITY
-           ===================================================== */
-
-        .activity-completed {
-            opacity: 1 !important;
-        }
-
-
-        .activity-completed h3 {
-            color: #ffffff !important;
-        }
-
-
-        /* =====================================================
-           ACTIVITY INFO
-           ===================================================== */
-
-        .activity-info {
-            margin-top: 12px;
-
-            font-size: 16px;
-
-            color: #dbe4ff !important;
-
-            font-weight: 500;
-
-            opacity: 1 !important;
-        }
-
-
-        .activity-info strong {
-            color: #ffffff !important;
-        }
-
-
-        /* =====================================================
-           KEEP ALL CARD TEXT CLEAR
-           ===================================================== */
-
-        .activity-card h1,
-        .activity-card h2,
-        .activity-card h3,
-        .activity-card h4,
-        .activity-card p,
-        .activity-card span,
-        .activity-card label,
-        .activity-card div {
-            opacity: 1 !important;
-        }
-
-
-        /* =====================================================
-           ACTIVITY BUTTONS
-           ===================================================== */
-
-        .activity-buttons {
-            display: flex;
-
-            gap: 10px;
-
-            flex-wrap: wrap;
-
-            margin-top: 20px;
-        }
-
-
-        .activity-buttons button {
-            border: none;
-
-            padding: 10px 17px;
-
-            border-radius: 10px;
-
-            cursor: pointer;
-
-            font-weight: 700;
-
-            font-size: 14px;
-
-            color: #ffffff !important;
-
-            opacity: 1 !important;
-
-            transition:
-                transform 0.2s ease,
-                filter 0.2s ease;
-        }
-
-
-        .activity-buttons button:hover {
-            transform: translateY(-2px);
-
-            filter: brightness(1.12);
-        }
-
-
-        /* =====================================================
-           COMPLETE BUTTON
-           ===================================================== */
-
-        .complete-btn {
-            background:
-                linear-gradient(
-                    135deg,
-                    #16a34a,
-                    #22c55e
-                ) !important;
-
-            color: #ffffff !important;
-
-            box-shadow:
-                0 5px 15px rgba(34, 197, 94, 0.20);
-        }
-
-
-        /* =====================================================
-           EDIT BUTTON
-           ===================================================== */
-
-        .edit-btn {
-            background:
-                linear-gradient(
-                    135deg,
-                    #2563eb,
-                    #3b82f6
-                ) !important;
-
-            color: #ffffff !important;
-        }
-
-
-        /* =====================================================
-           DELETE BUTTON
-           ===================================================== */
-
-        .delete-btn {
-            background:
-                linear-gradient(
-                    135deg,
-                    #dc2626,
-                    #ef4444
-                ) !important;
-
-            color: #ffffff !important;
-
-            box-shadow:
-                0 5px 15px rgba(239, 68, 68, 0.15);
-        }
-
-
-        /* =====================================================
-           TIMER BOX
-           ===================================================== */
-
-        .timer-box {
-            margin-top: 18px;
-
-            padding: 16px;
-
-            background:
-                rgba(124, 58, 237, 0.12) !important;
-
-            border:
-                1px solid rgba(139, 92, 246, 0.35);
-
-            border-radius: 12px;
-
-            color: #ffffff !important;
-        }
-
-
-        .timer-display {
-            display: inline-block;
-
-            font-size: 26px;
-
-            font-weight: 800;
-
-            color: #c4b5fd !important;
-
-            margin-right: 10px;
-
-            margin-bottom: 8px;
-        }
-
-
-        .timer-btn {
-            border: none;
-
-            padding: 9px 14px;
-
-            border-radius: 9px;
-
-            cursor: pointer;
-
-            font-weight: 700;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #7c3aed,
-                    #8b5cf6
-                ) !important;
-
-            color: #ffffff !important;
-        }
-
-
-        .stop-timer-btn {
-            background:
-                linear-gradient(
-                    135deg,
-                    #dc2626,
-                    #ef4444
-                ) !important;
-
-            margin-left: 5px;
-        }
-
-
-        /* =====================================================
-           EMPTY STATE
-           ===================================================== */
-
-        .empty-state {
-            text-align: center;
-
-            padding: 45px 25px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(14, 12, 45, 0.98),
-                    rgba(31, 20, 75, 0.98)
-                ) !important;
-
-            border:
-                1px solid rgba(124, 92, 255, 0.55);
-
-            border-radius: 20px;
-
-            color: #ffffff !important;
-
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.30);
-        }
-
-
-        .empty-state h3,
-        .empty-state p {
-            color: #ffffff !important;
-        }
-
-
-        /* =====================================================
-           CUSTOM INPUTS
-           ===================================================== */
-
-        #customGoal {
-            display: none;
-
-            margin-top: 10px;
-        }
-
-
-        #otherCategory {
-            display: none;
-
-            margin-top: 10px;
-        }
-
-
-        /* =====================================================
-           FORM
-           ===================================================== */
-
-        .form-card {
-            color: #ffffff;
-        }
-
-
-        .form-card h2 {
-            color: #ffffff !important;
-        }
-
-
-        .form-card label {
-            color: #e5e7eb !important;
-        }
-
-
-        .form-card input,
-        .form-card select {
-            color: #ffffff !important;
-
-            background:
-                rgba(15, 12, 45, 0.90) !important;
-
-            border:
-                1px solid rgba(139, 92, 246, 0.40) !important;
-        }
-
-
-        .form-card input::placeholder {
-            color: #9ca3af !important;
-        }
-
-
-        .form-card option {
-            background: #15102f;
-
-            color: #ffffff;
-        }
-
-
-        /* =====================================================
-           AI SUGGESTION
-           ===================================================== */
-
-        .ai-suggestion {
-            color: #ffffff !important;
-        }
-
-
-        .ai-suggestion h3 {
-            color: #ffffff !important;
-        }
-
-
-        .ai-suggestion p {
-            color: #dbe4ff !important;
-        }
-
-
-        /* =====================================================
-           MOBILE RESPONSIVE
-           ===================================================== */
-
-        @media (max-width: 768px) {
-
-            .activities-section h2 {
-                font-size: 25px;
-            }
-
-
-            .activity-card {
-                padding: 18px !important;
-            }
-
-
-            .activity-top {
-                flex-direction: column;
-            }
-
-
-            .activity-top h3 {
-                font-size: 20px;
-            }
-
-
-            .activity-buttons {
-                width: 100%;
-            }
-
-
-            .activity-buttons button {
-                flex: 1;
-
-                min-width: 100px;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-<div class="dashboard">
-
-
-    <!-- =====================================================
-         SIDEBAR
-         ===================================================== -->
-
-    <aside class="sidebar">
-
-        <h2>AI Habit Coach</h2>
-
-        <nav>
-
-            <a href="dashboard.html">
-                Dashboard
-            </a>
-
-            <a href="habits.html" class="active">
-                My Activities
-            </a>
-
-            <a href="progress.html">
-                Progress
-            </a>
-
-            <a href="ai-coach.html">
-                AI Coach
-            </a>
-
-        </nav>
-
-
-        <button
-            type="button"
-            onclick="logout()"
-            class="logout-btn"
-        >
-            Logout
-        </button>
-
-    </aside>
-
-
-
-    <!-- =====================================================
-         MAIN CONTENT
-         ===================================================== -->
-
-    <main class="main-content">
-
-
-        <h1>My Activities</h1>
-
-        <p>
-            Add and manage your daily activities.
-        </p>
-
-
-
-        <!-- =================================================
-             ADD ACTIVITY FORM
-             ================================================= -->
-
-        <div class="form-card">
-
-            <h2>Add Activity</h2>
-
-
-            <form id="habitForm">
-
-
-                <!-- ACTIVITY NAME -->
-
-                <div class="form-group">
-
-                    <label for="habitName">
-                        Activity Name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="habitName"
-                        placeholder="Example: Exercise"
-                        required
-                    >
-
-                </div>
-
-
-
-                <!-- GOAL / TIME -->
-
-                <div class="form-group">
-
-                    <label for="habitGoalSelect">
-                        Goal / Time
-                    </label>
-
-                    <select
-                        id="habitGoalSelect"
-                        required
-                    >
-
-                        <option value="">
-                            Select Goal / Time
-                        </option>
-
-                        <option value="5 Minutes">
-                            5 Minutes
-                        </option>
-
-                        <option value="10 Minutes">
-                            10 Minutes
-                        </option>
-
-                        <option value="15 Minutes">
-                            15 Minutes
-                        </option>
-
-                        <option value="20 Minutes">
-                            20 Minutes
-                        </option>
-
-                        <option value="30 Minutes">
-                            30 Minutes
-                        </option>
-
-                        <option value="45 Minutes">
-                            45 Minutes
-                        </option>
-
-                        <option value="60 Minutes">
-                            60 Minutes
-                        </option>
-
-                        <option value="90 Minutes">
-                            90 Minutes
-                        </option>
-
-                        <option value="120 Minutes">
-                            120 Minutes
-                        </option>
-
-                        <option value="1 Hour">
-                            1 Hour
-                        </option>
-
-                        <option value="2 Hours">
-                            2 Hours
-                        </option>
-
-                        <option value="Other">
-                            Other
-                        </option>
-
-                    </select>
-
-
-                    <!-- CUSTOM GOAL -->
-
-                    <input
-                        type="text"
-                        id="habitGoal"
-                        placeholder="Example: 25 Minutes"
-                    >
-
-                </div>
-
-
-
-                <!-- =================================================
-                     CATEGORY
-                     ================================================= -->
-
-                <div class="form-group">
-
-                    <label for="habitCategory">
-                        Category
-                    </label>
-
-                    <select
-                        id="habitCategory"
-                        required
-                    >
-
-                        <option value="">
-                            Select Category
-                        </option>
-
-                        <option value="Health">
-                            Health
-                        </option>
-
-                        <option value="Study">
-                            Study
-                        </option>
-
-                        <option value="Fitness">
-                            Fitness
-                        </option>
-
-                        <option value="Personal">
-                            Personal
-                        </option>
-
-                        <option value="Lifestyle">
-                            Lifestyle
-                        </option>
-
-                        <option value="Other">
-                            Other
-                        </option>
-
-                    </select>
-
-
-                    <!-- CUSTOM CATEGORY -->
-
-                    <input
-                        type="text"
-                        id="otherCategory"
-                        placeholder="Type your own category..."
-                    >
-
-                </div>
-
-
-
-                <!-- =================================================
-                     REMINDER
-                     ================================================= -->
-
-                <div class="form-group">
-
-                    <label for="reminderTime">
-                        Reminder Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="reminderTime"
-                    >
-
-                </div>
-
-
-
-                <!-- =================================================
-                     FORM BUTTONS
-                     ================================================= -->
-
-                <div class="form-buttons">
-
-                    <button
-                        type="submit"
-                        id="habitSubmitBtn"
-                    >
-                        Add Activity
-                    </button>
-
-
-                    <button
-                        type="button"
-                        id="cancelEditBtn"
-                        style="display: none;"
-                    >
-                        Cancel
-                    </button>
-
-                </div>
-
-
-            </form>
-
-        </div>
-
-
-
-        <!-- =====================================================
-             AI SUGGESTION
-             ===================================================== -->
-
-        <div class="ai-suggestion">
-
-            <h3>🤖 AI Coach Suggestion</h3>
-
-            <p id="aiSuggestion">
-                Add an activity to get AI suggestions.
-            </p>
-
-        </div>
-
-
-
-        <!-- =====================================================
-             ACTIVITIES
-             ===================================================== -->
-
-        <div class="activities-section">
-
-            <h2>
-                Your Activities
-            </h2>
-
-
-            <div id="habitsList"></div>
-
-        </div>
-
-
-    </main>
-
-</div>
-
-
-
-<!-- =========================================================
-     JAVASCRIPT
-     ========================================================= -->
-
-<script src="script.js"></script>
-
+</script>
 
 </body>
-
-</html>
-
-</body>
-
 </html>
