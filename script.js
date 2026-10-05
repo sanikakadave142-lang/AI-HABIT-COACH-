@@ -1,6 +1,7 @@
 // ======================================================
 // AI HABIT COACH - FRONTEND SCRIPT
 // FastAPI Backend Connected Version
+// Error-Free Version
 // ======================================================
 
 const API_BASE_URL =
@@ -13,42 +14,151 @@ const API_BASE_URL =
 
 async function backendRequest(endpoint, options = {}) {
 
-    const config = {
-        method: options.method || "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    };
-
-    if (options.body !== undefined) {
-        config.body =
-            typeof options.body === "string"
-                ? options.body
-                : JSON.stringify(options.body);
-    }
-
-    const response = await fetch(
-        API_BASE_URL + endpoint,
-        config
-    );
-
-    let data = {};
-
     try {
-        data = await response.json();
-    } catch (error) {
-        data = {};
-    }
 
-    if (!response.ok) {
-        throw new Error(
-            data.detail ||
-            data.message ||
-            "Something went wrong."
+        const config = {
+            method: options.method || "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        if (options.body !== undefined) {
+
+            config.body =
+                typeof options.body === "string"
+                    ? options.body
+                    : JSON.stringify(options.body);
+        }
+
+        const response = await fetch(
+            API_BASE_URL + endpoint,
+            config
         );
-    }
 
-    return data;
+        let data = {};
+
+        try {
+            data = await response.json();
+        }
+        catch (jsonError) {
+
+            data = {
+                message:
+                    "Invalid response received from backend."
+            };
+        }
+
+
+        // ==================================================
+        // BACKEND ERROR HANDLING
+        // ==================================================
+
+        if (!response.ok) {
+
+            let errorMessage =
+                "Something went wrong.";
+
+            // FastAPI detail as string
+            if (
+                typeof data.detail === "string"
+            ) {
+
+                errorMessage =
+                    data.detail;
+            }
+
+            // FastAPI validation errors
+            else if (
+                Array.isArray(data.detail)
+            ) {
+
+                errorMessage =
+                    data.detail
+                        .map(function (item) {
+
+                            if (
+                                item &&
+                                typeof item.msg === "string"
+                            ) {
+                                return item.msg;
+                            }
+
+                            return JSON.stringify(item);
+                        })
+                        .join(", ");
+            }
+
+            // Backend message
+            else if (
+                data.message !== undefined
+            ) {
+
+                if (
+                    typeof data.message === "string"
+                ) {
+
+                    errorMessage =
+                        data.message;
+
+                } else {
+
+                    errorMessage =
+                        JSON.stringify(
+                            data.message
+                        );
+                }
+            }
+
+            // Generic error
+            else if (
+                data.error !== undefined
+            ) {
+
+                if (
+                    typeof data.error === "string"
+                ) {
+
+                    errorMessage =
+                        data.error;
+
+                } else {
+
+                    errorMessage =
+                        JSON.stringify(
+                            data.error
+                        );
+                }
+            }
+
+            throw new Error(
+                errorMessage
+            );
+        }
+
+        return data;
+
+    }
+    catch (error) {
+
+        console.error(
+            "Backend Request Error:",
+            error
+        );
+
+        // Network error
+        if (
+            error instanceof TypeError
+        ) {
+
+            throw new Error(
+                "Unable to connect to backend. Please check your internet connection."
+            );
+        }
+
+        // Already formatted error
+        throw error;
+    }
 }
 
 
@@ -59,9 +169,20 @@ async function backendRequest(endpoint, options = {}) {
 function saveBackendUser(data) {
 
     const sourceUser =
-        data && data.user
+        data &&
+        data.user
             ? data.user
             : data;
+
+    if (
+        !sourceUser ||
+        typeof sourceUser !== "object"
+    ) {
+
+        throw new Error(
+            "Invalid user data received from backend."
+        );
+    }
 
     const userId =
         sourceUser.id !== undefined
@@ -72,16 +193,24 @@ function saveBackendUser(data) {
         userId === undefined ||
         userId === null
     ) {
+
         throw new Error(
             "User ID was not returned by the backend."
         );
     }
 
     const user = {
-        id: Number(userId),
-        name: sourceUser.name || "",
-        email: sourceUser.email || ""
+
+        id:
+            Number(userId),
+
+        name:
+            sourceUser.name || "",
+
+        email:
+            sourceUser.email || ""
     };
+
 
     localStorage.setItem(
         "backendUser",
@@ -121,13 +250,26 @@ function getStoredUser() {
     try {
 
         const savedUser =
-            localStorage.getItem("backendUser");
+            localStorage.getItem(
+                "backendUser"
+            );
 
         if (savedUser) {
-            return JSON.parse(savedUser);
+
+            const user =
+                JSON.parse(savedUser);
+
+            if (
+                user &&
+                user.id !== undefined
+            ) {
+
+                return user;
+            }
         }
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "User storage error:",
@@ -153,15 +295,26 @@ function getUserId() {
         user.id !== undefined &&
         user.id !== null
     ) {
+
         return Number(user.id);
     }
 
     const storedId =
-        localStorage.getItem("user_id") ||
-        localStorage.getItem("userId");
+        localStorage.getItem(
+            "user_id"
+        ) ||
+        localStorage.getItem(
+            "userId"
+        );
 
     if (storedId) {
-        return Number(storedId);
+
+        const id =
+            Number(storedId);
+
+        if (!isNaN(id)) {
+            return id;
+        }
     }
 
     return null;
@@ -182,10 +335,17 @@ async function registerUser(
         "/register",
         {
             method: "POST",
+
             body: {
-                name: name,
-                email: email,
-                password: password
+
+                name:
+                    name,
+
+                email:
+                    email,
+
+                password:
+                    password
             }
         }
     );
@@ -205,9 +365,14 @@ async function loginUser(
         "/login",
         {
             method: "POST",
+
             body: {
-                email: email,
-                password: password
+
+                email:
+                    email,
+
+                password:
+                    password
             }
         }
     );
@@ -224,22 +389,37 @@ function showMessage(
 ) {
 
     let box =
-        document.getElementById("message");
+        document.getElementById(
+            "message"
+        );
 
     if (!box) {
+
         box =
-            document.getElementById("messageBox");
+            document.getElementById(
+                "messageBox"
+            );
     }
 
     if (!box) {
-        alert(message);
+
+        alert(
+            String(message)
+        );
+
         return;
     }
 
-    box.textContent = message;
-    box.style.display = "block";
+    box.textContent =
+        String(message);
+
+    box.style.display =
+        "block";
+
     box.style.color =
-        isError ? "red" : "green";
+        isError
+            ? "red"
+            : "green";
 }
 
 
@@ -250,11 +430,24 @@ function showMessage(
 function setupRegisterForm() {
 
     const form =
-        document.getElementById("registerForm");
+        document.getElementById(
+            "registerForm"
+        );
 
     if (!form) {
         return;
     }
+
+    if (
+        form.dataset.registerReady ===
+        "true"
+    ) {
+        return;
+    }
+
+    form.dataset.registerReady =
+        "true";
+
 
     form.addEventListener(
         "submit",
@@ -262,17 +455,24 @@ function setupRegisterForm() {
 
             event.preventDefault();
 
+
             const name =
-                document.getElementById("name")
-                    ?.value.trim() || "";
+                document.getElementById(
+                    "name"
+                )?.value.trim() || "";
+
 
             const email =
-                document.getElementById("email")
-                    ?.value.trim() || "";
+                document.getElementById(
+                    "email"
+                )?.value.trim() || "";
+
 
             const password =
-                document.getElementById("password")
-                    ?.value || "";
+                document.getElementById(
+                    "password"
+                )?.value || "";
+
 
             if (
                 !name ||
@@ -288,6 +488,7 @@ function setupRegisterForm() {
                 return;
             }
 
+
             try {
 
                 const data =
@@ -297,32 +498,40 @@ function setupRegisterForm() {
                         password
                     );
 
+
                 console.log(
                     "Registration:",
                     data
                 );
+
 
                 showMessage(
                     data.message ||
                     "Registration successful!"
                 );
 
+
                 form.reset();
+
 
                 setTimeout(
                     function () {
+
                         window.location.href =
                             "index.html";
+
                     },
                     1000
                 );
 
-            } catch (error) {
+            }
+            catch (error) {
 
                 console.error(
                     "Registration error:",
                     error
                 );
+
 
                 showMessage(
                     error.message ||
@@ -342,20 +551,24 @@ function setupRegisterForm() {
 function setupLoginForm() {
 
     const form =
-        document.getElementById("loginForm");
+        document.getElementById(
+            "loginForm"
+        );
 
     if (!form) {
         return;
     }
 
-    // Prevent duplicate listeners
     if (
-        form.dataset.loginReady === "true"
+        form.dataset.loginReady ===
+        "true"
     ) {
         return;
     }
 
-    form.dataset.loginReady = "true";
+    form.dataset.loginReady =
+        "true";
+
 
     form.addEventListener(
         "submit",
@@ -363,13 +576,18 @@ function setupLoginForm() {
 
             event.preventDefault();
 
+
             const email =
-                document.getElementById("email")
-                    ?.value.trim() || "";
+                document.getElementById(
+                    "email"
+                )?.value.trim() || "";
+
 
             const password =
-                document.getElementById("password")
-                    ?.value || "";
+                document.getElementById(
+                    "password"
+                )?.value || "";
+
 
             if (
                 !email ||
@@ -384,6 +602,7 @@ function setupLoginForm() {
                 return;
             }
 
+
             try {
 
                 const data =
@@ -392,47 +611,60 @@ function setupLoginForm() {
                         password
                     );
 
+
                 console.log(
                     "Login response:",
                     data
                 );
 
+
                 const user =
-                    saveBackendUser(data);
+                    saveBackendUser(
+                        data
+                    );
+
 
                 console.log(
                     "Logged in user:",
                     user
                 );
 
+
                 localStorage.setItem(
                     "loggedIn",
                     "true"
                 );
+
 
                 localStorage.setItem(
                     "loginEmail",
                     email
                 );
 
+
                 showMessage(
                     "Login successful!"
                 );
 
+
                 setTimeout(
                     function () {
+
                         window.location.href =
                             "dashboard.html";
+
                     },
                     500
                 );
 
-            } catch (error) {
+            }
+            catch (error) {
 
                 console.error(
                     "Login error:",
                     error
                 );
+
 
                 showMessage(
                     error.message ||
@@ -454,6 +686,7 @@ async function getHabits() {
     const userId =
         getUserId();
 
+
     if (!userId) {
 
         throw new Error(
@@ -461,8 +694,10 @@ async function getHabits() {
         );
     }
 
+
     return await backendRequest(
-        "/habits?user_id=" + userId
+        "/habits?user_id=" +
+        encodeURIComponent(userId)
     );
 }
 
@@ -480,6 +715,7 @@ async function createHabit(
     const userId =
         getUserId();
 
+
     if (!userId) {
 
         throw new Error(
@@ -487,15 +723,29 @@ async function createHabit(
         );
     }
 
+
     return await backendRequest(
-        "/habits?user_id=" + userId,
+        "/habits?user_id=" +
+        encodeURIComponent(userId),
+
         {
             method: "POST",
 
             body: {
-                name: name,
-                category: category,
-                target: target
+
+                name:
+                    name,
+
+                category:
+                    category,
+
+                target:
+                    target,
+
+                // IMPORTANT
+                // FastAPI HabitCreate requires user_id
+                user_id:
+                    Number(userId)
             }
         }
     );
@@ -514,22 +764,28 @@ async function updateHabit(
     const userId =
         getUserId();
 
+
     if (!userId) {
+
         throw new Error(
             "User ID not found."
         );
     }
 
+
     return await backendRequest(
         "/habits/" +
-        habitId +
+        encodeURIComponent(habitId) +
         "?user_id=" +
-        userId,
+        encodeURIComponent(userId),
+
         {
             method: "PUT",
 
             body: {
-                status: status
+
+                status:
+                    status
             }
         }
     );
@@ -547,17 +803,21 @@ async function deleteHabitFromBackend(
     const userId =
         getUserId();
 
+
     if (!userId) {
+
         throw new Error(
             "User ID not found."
         );
     }
 
+
     return await backendRequest(
         "/habits/" +
-        habitId +
+        encodeURIComponent(habitId) +
         "?user_id=" +
-        userId,
+        encodeURIComponent(userId),
+
         {
             method: "DELETE"
         }
@@ -579,22 +839,48 @@ async function createHabitLog(
     const userId =
         getUserId();
 
+
     if (!userId) {
+
         throw new Error(
             "User ID not found."
         );
     }
 
+
+    // Current date: YYYY-MM-DD
+    const today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+
     return await backendRequest(
-        "/habit-log?user_id=" + userId,
+        "/habit-log?user_id=" +
+        encodeURIComponent(userId),
+
         {
             method: "POST",
 
             body: {
-                habit_id: Number(habitId),
-                status: status,
-                duration: Number(duration) || 0,
-                note: note
+
+                user_id:
+                    Number(userId),
+
+                habit_id:
+                    Number(habitId),
+
+                date:
+                    today,
+
+                status:
+                    status,
+
+                duration:
+                    Number(duration) || 0,
+
+                note:
+                    note || ""
             }
         }
     );
@@ -610,14 +896,18 @@ async function getHabitLogs() {
     const userId =
         getUserId();
 
+
     if (!userId) {
+
         throw new Error(
             "User ID not found."
         );
     }
 
+
     return await backendRequest(
-        "/habit-log?user_id=" + userId
+        "/habit-log?user_id=" +
+        encodeURIComponent(userId)
     );
 }
 
@@ -637,6 +927,7 @@ async function completeHabit(
             "Completed"
         );
 
+
         await createHabitLog(
             habitId,
             "Completed",
@@ -644,21 +935,26 @@ async function completeHabit(
             ""
         );
 
+
         await loadHabits();
+
 
         alert(
             "Habit completed successfully!"
         );
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Complete habit error:",
             error
         );
 
+
         alert(
-            error.message
+            error.message ||
+            "Unable to complete habit."
         );
     }
 }
@@ -671,44 +967,68 @@ async function completeHabit(
 async function loadHabits() {
 
     const container =
-        document.getElementById("habitsList");
+        document.getElementById(
+            "habitsList"
+        );
+
 
     if (!container) {
         return;
     }
+
 
     try {
 
         const data =
             await getHabits();
 
+
         console.log(
             "Habits response:",
             data
         );
 
+
         let habits = [];
 
-        if (Array.isArray(data)) {
 
-            habits = data;
+        if (
+            Array.isArray(data)
+        ) {
 
-        } else if (
+            habits =
+                data;
+
+        }
+        else if (
             Array.isArray(data.habits)
         ) {
 
-            habits = data.habits;
+            habits =
+                data.habits;
 
-        } else if (
+        }
+        else if (
             Array.isArray(data.data)
         ) {
 
-            habits = data.data;
+            habits =
+                data.data;
+
+        }
+        else {
+
+            habits = [];
         }
 
-        container.innerHTML = "";
 
-        if (habits.length === 0) {
+        container.innerHTML =
+            "";
+
+
+        if (
+            habits.length === 0
+        ) {
 
             container.innerHTML = `
                 <div class="empty-state">
@@ -722,22 +1042,47 @@ async function loadHabits() {
             return;
         }
 
+
         habits.forEach(
             function (habit) {
 
                 const card =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
+
 
                 card.className =
                     "activity-card";
 
+
                 const status =
-                    habit.status ||
-                    "Pending";
+                    typeof habit.status ===
+                    "string"
+                        ? habit.status
+                        : "Pending";
+
 
                 const isCompleted =
                     status.toLowerCase() ===
                     "completed";
+
+
+                const habitName =
+                    habit.name || "Activity";
+
+
+                const category =
+                    habit.category || "-";
+
+
+                const target =
+                    habit.target || "-";
+
+
+                const habitId =
+                    Number(habit.id);
+
 
                 card.innerHTML = `
 
@@ -746,14 +1091,19 @@ async function loadHabits() {
                         <div>
 
                             <h3>
-                                ${habit.name || "Activity"}
+                                ${escapeHTML(
+                                    habitName
+                                )}
                             </h3>
 
                             <span class="category-badge">
-                                ${habit.category || "-"}
+                                ${escapeHTML(
+                                    category
+                                )}
                             </span>
 
                         </div>
+
 
                         <span
                             class="status-badge ${
@@ -762,20 +1112,26 @@ async function loadHabits() {
                                     : "pending"
                             }"
                         >
-                            ${status}
+                            ${escapeHTML(
+                                status
+                            )}
                         </span>
 
                     </div>
+
 
                     <div class="activity-info">
 
                         <p>
                             🎯
                             <strong>Goal:</strong>
-                            ${habit.target || "-"}
+                            ${escapeHTML(
+                                String(target)
+                            )}
                         </p>
 
                     </div>
+
 
                     <div class="activity-buttons">
 
@@ -784,7 +1140,7 @@ async function loadHabits() {
                                 ? `
                                     <button
                                         class="complete-btn"
-                                        onclick="completeHabit(${Number(habit.id)})"
+                                        onclick="completeHabit(${habitId})"
                                     >
                                         ✓ Complete
                                     </button>
@@ -792,9 +1148,10 @@ async function loadHabits() {
                                 : ""
                         }
 
+
                         <button
                             class="delete-btn"
-                            onclick="deleteHabit(${Number(habit.id)})"
+                            onclick="deleteHabit(${habitId})"
                         >
                             🗑 Delete
                         </button>
@@ -802,25 +1159,56 @@ async function loadHabits() {
                     </div>
                 `;
 
-                container.appendChild(card);
+
+                container.appendChild(
+                    card
+                );
             }
         );
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Load habits error:",
             error
         );
 
+
         container.innerHTML = `
+
             <div class="empty-state">
+
                 <p style="color:red;">
-                    ${error.message}
+
+                    ${escapeHTML(
+                        error.message ||
+                        "Unable to load habits."
+                    )}
+
                 </p>
+
             </div>
         `;
     }
+}
+
+
+// ======================================================
+// ESCAPE HTML
+// ======================================================
+
+function escapeHTML(value) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.textContent =
+        String(value);
+
+    return div.innerHTML;
 }
 
 
@@ -837,9 +1225,11 @@ async function deleteHabit(
             "Are you sure you want to delete this habit?"
         );
 
+
     if (!confirmDelete) {
         return;
     }
+
 
     try {
 
@@ -847,21 +1237,26 @@ async function deleteHabit(
             habitId
         );
 
+
         await loadHabits();
+
 
         alert(
             "Habit deleted successfully!"
         );
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Delete error:",
             error
         );
 
+
         alert(
-            error.message
+            error.message ||
+            "Unable to delete habit."
         );
     }
 }
@@ -874,19 +1269,26 @@ async function deleteHabit(
 function setupHabitForm() {
 
     const form =
-        document.getElementById("habitForm");
+        document.getElementById(
+            "habitForm"
+        );
+
 
     if (!form) {
         return;
     }
 
+
     if (
-        form.dataset.habitReady === "true"
+        form.dataset.habitReady ===
+        "true"
     ) {
         return;
     }
 
-    form.dataset.habitReady = "true";
+
+    form.dataset.habitReady =
+        "true";
 
 
     form.addEventListener(
@@ -895,25 +1297,30 @@ function setupHabitForm() {
 
             event.preventDefault();
 
+
             const name =
                 document.getElementById(
                     "habitName"
                 )?.value.trim() || "";
+
 
             const categorySelect =
                 document.getElementById(
                     "habitCategory"
                 );
 
+
             const goalSelect =
                 document.getElementById(
                     "habitGoalSelect"
                 );
 
+
             const customGoal =
                 document.getElementById(
                     "habitGoal"
                 );
+
 
             const otherCategory =
                 document.getElementById(
@@ -934,6 +1341,7 @@ function setupHabitForm() {
 
 
             // Other category
+
             if (
                 category === "Other"
             ) {
@@ -946,6 +1354,7 @@ function setupHabitForm() {
 
 
             // Other goal
+
             if (
                 target === "Other"
             ) {
@@ -992,9 +1401,14 @@ function setupHabitForm() {
                 console.log(
                     "Creating activity:",
                     {
-                        name: name,
-                        category: category,
-                        target: target
+                        name:
+                            name,
+
+                        category:
+                            category,
+
+                        target:
+                            target
                     }
                 );
 
@@ -1028,6 +1442,9 @@ function setupHabitForm() {
 
                     customGoal.required =
                         false;
+
+                    customGoal.value =
+                        "";
                 }
 
 
@@ -1038,17 +1455,22 @@ function setupHabitForm() {
 
                     otherCategory.required =
                         false;
+
+                    otherCategory.value =
+                        "";
                 }
 
 
                 await loadHabits();
 
-            } catch (error) {
+            }
+            catch (error) {
 
                 console.error(
                     "Create activity error:",
                     error
                 );
+
 
                 alert(
                     error.message ||
@@ -1068,6 +1490,7 @@ function setupHabitForm() {
             "habitGoalSelect"
         );
 
+
     const customGoal =
         document.getElementById(
             "habitGoal"
@@ -1084,7 +1507,8 @@ function setupHabitForm() {
             function () {
 
                 if (
-                    this.value === "Other"
+                    this.value ===
+                    "Other"
                 ) {
 
                     customGoal.style.display =
@@ -1093,7 +1517,8 @@ function setupHabitForm() {
                     customGoal.required =
                         true;
 
-                } else {
+                }
+                else {
 
                     customGoal.style.display =
                         "none";
@@ -1118,6 +1543,7 @@ function setupHabitForm() {
             "habitCategory"
         );
 
+
     const otherCategory =
         document.getElementById(
             "otherCategory"
@@ -1134,7 +1560,8 @@ function setupHabitForm() {
             function () {
 
                 if (
-                    this.value === "Other"
+                    this.value ===
+                    "Other"
                 ) {
 
                     otherCategory.style.display =
@@ -1143,7 +1570,8 @@ function setupHabitForm() {
                     otherCategory.required =
                         true;
 
-                } else {
+                }
+                else {
 
                     otherCategory.style.display =
                         "none";
@@ -1169,14 +1597,18 @@ async function getProgress() {
     const userId =
         getUserId();
 
+
     if (!userId) {
+
         throw new Error(
             "User ID not found."
         );
     }
 
+
     return await backendRequest(
-        "/progress?user_id=" + userId
+        "/progress?user_id=" +
+        encodeURIComponent(userId)
     );
 }
 
@@ -1192,15 +1624,18 @@ async function loadProgress() {
             "completedCount"
         );
 
+
     const missed =
         document.getElementById(
             "missedCount"
         );
 
+
     const total =
         document.getElementById(
             "totalCount"
         );
+
 
     const percentage =
         document.getElementById(
@@ -1214,6 +1649,7 @@ async function loadProgress() {
         !total &&
         !percentage
     ) {
+
         return;
     }
 
@@ -1223,6 +1659,7 @@ async function loadProgress() {
         const data =
             await getProgress();
 
+
         console.log(
             "Progress:",
             data
@@ -1230,27 +1667,37 @@ async function loadProgress() {
 
 
         if (completed) {
+
             completed.textContent =
                 data.completed || 0;
         }
 
+
         if (missed) {
+
             missed.textContent =
                 data.missed || 0;
         }
 
+
         if (total) {
+
             total.textContent =
                 data.total_logs || 0;
         }
 
+
         if (percentage) {
+
             percentage.textContent =
-                (data.completion_percentage || 0) +
-                "%";
+                (
+                    data.completion_percentage ||
+                    0
+                ) + "%";
         }
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Progress error:",
@@ -1269,15 +1716,19 @@ function displayUserInformation() {
     const user =
         getStoredUser();
 
+
     if (!user) {
         return;
     }
 
 
     document
-        .querySelectorAll(".user-name")
+        .querySelectorAll(
+            ".user-name"
+        )
         .forEach(
             function (element) {
+
                 element.textContent =
                     user.name || "";
             }
@@ -1285,9 +1736,12 @@ function displayUserInformation() {
 
 
     document
-        .querySelectorAll(".user-email")
+        .querySelectorAll(
+            ".user-email"
+        )
         .forEach(
             function (element) {
+
                 element.textContent =
                     user.email || "";
             }
@@ -1299,7 +1753,9 @@ function displayUserInformation() {
             "userName"
         );
 
+
     if (nameElement) {
+
         nameElement.textContent =
             user.name || "";
     }
@@ -1310,7 +1766,9 @@ function displayUserInformation() {
             "userEmail"
         );
 
+
     if (emailElement) {
+
         emailElement.textContent =
             user.email || "";
     }
@@ -1351,13 +1809,16 @@ function logoutUser() {
         "loggedIn"
     );
 
+
     window.location.href =
         "index.html";
 }
 
 
 // Support existing onclick="logout()"
+
 function logout() {
+
     logoutUser();
 }
 
@@ -1373,20 +1834,28 @@ function checkLogin() {
             .split("/")
             .pop();
 
+
     const publicPages = [
+
         "",
+
         "index.html",
+
         "register.html"
     ];
+
 
     if (
         publicPages.includes(page)
     ) {
+
         return true;
     }
 
+
     const userId =
         getUserId();
+
 
     if (!userId) {
 
@@ -1395,6 +1864,7 @@ function checkLogin() {
 
         return false;
     }
+
 
     return true;
 }
@@ -1411,25 +1881,37 @@ async function quickQuestion(
     const userId =
         getUserId();
 
+
     if (!userId) {
+
         throw new Error(
             "Please login first."
         );
     }
 
+
     return await backendRequest(
         "/ai/advice",
+
         {
             method: "POST",
 
             body: {
-                question: question,
-                user_id: userId
+
+                question:
+                    question,
+
+                user_id:
+                    Number(userId)
             }
         }
     );
 }
 
+
+// ======================================================
+// ASK AI QUESTION
+// ======================================================
 
 async function askAIQuestion() {
 
@@ -1438,21 +1920,26 @@ async function askAIQuestion() {
             "aiQuestion"
         );
 
+
     const result =
         document.getElementById(
             "aiResponse"
         );
 
+
     if (!input) {
         return;
     }
 
+
     const question =
         input.value.trim();
+
 
     if (!question) {
 
         if (result) {
+
             result.textContent =
                 "Please enter your question.";
         }
@@ -1460,17 +1947,21 @@ async function askAIQuestion() {
         return;
     }
 
+
     try {
 
         if (result) {
+
             result.textContent =
                 "AI is thinking...";
         }
+
 
         const response =
             await quickQuestion(
                 question
             );
+
 
         const answer =
             response.advice ||
@@ -1479,21 +1970,32 @@ async function askAIQuestion() {
             response.answer ||
             "No response received.";
 
+
         if (result) {
+
             result.textContent =
-                answer;
+                typeof answer ===
+                "string"
+                    ? answer
+                    : JSON.stringify(
+                        answer
+                    );
         }
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "AI error:",
             error
         );
 
+
         if (result) {
+
             result.textContent =
-                error.message;
+                error.message ||
+                "Unable to get AI response.";
         }
     }
 }
@@ -1506,20 +2008,29 @@ async function askAIQuestion() {
 window.logout =
     logout;
 
+
 window.logoutUser =
     logoutUser;
+
 
 window.completeHabit =
     completeHabit;
 
+
 window.deleteHabit =
     deleteHabit;
+
 
 window.askAIQuestion =
     askAIQuestion;
 
+
 window.quickQuestion =
     quickQuestion;
+
+
+window.loadHabits =
+    loadHabits;
 
 
 // ======================================================
@@ -1533,6 +2044,7 @@ document.addEventListener(
         console.log(
             "AI Habit Coach loaded"
         );
+
 
         console.log(
             "Backend:",
@@ -1556,11 +2068,14 @@ document.addEventListener(
 
 
         const protectedPages = [
+
             "dashboard.html",
+
             "habits.html",
+
             "progress.html",
-            "ai-coach.html",
-            "admin.html"
+
+            "ai-coach.html"
         ];
 
 
@@ -1570,14 +2085,18 @@ document.addEventListener(
             )
         ) {
 
-            if (!checkLogin()) {
+            if (
+                !checkLogin()
+            ) {
+
                 return;
             }
         }
 
 
-        // IMPORTANT:
-        // habits.html uses habitsList
+        // ==================================================
+        // HABITS PAGE
+        // ==================================================
 
         if (
             document.getElementById(
@@ -1589,7 +2108,9 @@ document.addEventListener(
         }
 
 
-        // Progress page
+        // ==================================================
+        // PROGRESS PAGE
+        // ==================================================
 
         if (
             document.getElementById(
