@@ -769,24 +769,237 @@
 
 <script src="script.js"></script>
 
-
 <script>
+async function displayProgress() {
+
+    const totalElement =
+        document.getElementById("progressTotal");
+
+    const completedElement =
+        document.getElementById("progressCompleted");
+
+    const rateElement =
+        document.getElementById("progressRate");
+
+    const percentageElement =
+        document.getElementById("overallPercentage");
+
+    const progressBar =
+        document.getElementById("overallProgressBar");
+
+    const completedList =
+        document.getElementById("completedActivitiesList");
+
+
+    try {
+
+        const user =
+            JSON.parse(
+                localStorage.getItem("backendUser")
+            );
+
+        const userId =
+            user?.id ||
+            localStorage.getItem("user_id") ||
+            localStorage.getItem("userId");
+
+
+        if (!userId) {
+
+            console.error("User ID not found.");
+
+            return;
+        }
+
+
+        const response =
+            await fetch(
+                "https://ai-habit-coach-backend.onrender.com/habits?user_id=" +
+                encodeURIComponent(userId)
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load activities."
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        let habits = [];
+
+
+        if (Array.isArray(data)) {
+
+            habits = data;
+
+        }
+        else if (Array.isArray(data.habits)) {
+
+            habits = data.habits;
+
+        }
+        else if (Array.isArray(data.data)) {
+
+            habits = data.data;
+
+        }
+
+
+        const total =
+            habits.length;
+
+
+        const completedHabits =
+            habits.filter(function (habit) {
+
+                return String(
+                    habit.status || ""
+                ).toLowerCase() === "completed";
+
+            });
+
+
+        const completed =
+            completedHabits.length;
+
+
+        const percentage =
+            total > 0
+                ? Math.round(
+                    (completed / total) * 100
+                )
+                : 0;
+
+
+        /* =========================
+           UPDATE STATISTICS
+        ========================= */
+
+        if (totalElement) {
+
+            totalElement.textContent =
+                total;
+        }
+
+
+        if (completedElement) {
+
+            completedElement.textContent =
+                completed;
+        }
+
+
+        if (rateElement) {
+
+            rateElement.textContent =
+                percentage + "%";
+        }
+
+
+        if (percentageElement) {
+
+            percentageElement.textContent =
+                percentage + "%";
+        }
+
+
+        if (progressBar) {
+
+            progressBar.style.width =
+                percentage + "%";
+        }
+
+
+        /* =========================
+           COMPLETED ACTIVITIES
+        ========================= */
+
+        if (completedList) {
+
+            if (completedHabits.length === 0) {
+
+                completedList.innerHTML = `
+                    <p>
+                        No activities completed yet.
+                    </p>
+                `;
+
+            }
+            else {
+
+                completedList.innerHTML =
+                    completedHabits.map(function (habit) {
+
+                        return `
+                            <div>
+                                <strong>
+                                    ${habit.name || "Activity"}
+                                </strong>
+
+                                <br>
+
+                                <span>
+                                    ${habit.category || "General"}
+                                </span>
+
+                                <br>
+
+                                <span>
+                                    🎯 Goal:
+                                    ${habit.target || habit.goal || "Not specified"}
+                                </span>
+
+                                <br>
+
+                                <span>
+                                    ✅ Completed
+                                </span>
+                            </div>
+                        `;
+
+                    }).join("");
+
+            }
+
+        }
+
+
+        console.log(
+            "Progress loaded:",
+            {
+                total: total,
+                completed: completed,
+                percentage: percentage
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Progress loading error:",
+            error
+        );
+
+    }
+
+}
+
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        if (
-            typeof displayProgress === "function"
-        ) {
-
-            displayProgress();
-
-        }
+        displayProgress();
 
     }
 );
-
 </script>
 
 
