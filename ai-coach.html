@@ -913,23 +913,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
 
-            catch (error) {
+           catch (error) {
 
-                console.error(
-                    "AI Coach Error:",
-                    error
-                );
+    console.error(
+        "AI Coach Error:",
+        error
+    );
 
+    if (responseText) {
 
-                if (responseText) {
+        responseText.innerText =
+            "AI Coach Error: " +
+            (error && error.message
+                ? error.message
+                : String(error));
 
-                    responseText.innerText =
-                        "Unable to connect to AI Coach. Please try again.";
+    }
 
-                }
-
-            }
-
+}
 
             finally {
 
